@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+</head>
+<body>
+    <button onclick="pre()">pre</button>
+    <button onclick="next()">next</button>
+</body>
+
+<script>
+    var selectDate = new initDate();
+
+    var pre = function () {
+        selectDate.prev();
+    };
+    var next = function () {
+        selectDate.next();
+    }
+    function initDate() {
+        this.now = new Date();
+        this.nowY = this.now.getFullYear();//当前
+        this.y = this.now.getFullYear();//筛选
+        this.year = this.now.getFullYear();//选择
+        this.nowM = this.now.getMonth();
+        this.m = this.now.getMonth();//0~11
+        this.month = this.now.getMonth();//0~11
+        this.nowD = this.now.getDate();
+        this.d = this.now.getDate();//1~31
+        this.date = this.now.getDate();
+        this.day = this.now.getDay();//0~6
+        this.start = this.d - this.day;
+
+        //当前星期是否跨月
+        this.isAcrossM = false;
+        //当前星期是否跨年
+        this.isAcrossY = false;
+
+        this.isSecond = false;//是否定位于第二月（跨月时）
+        this.afterSecond = false;//判断前进下个月跨月、本月与当月之隔一个月、当天是isSecond
+
+        this.prev = function () {
+            this.loadDate(-7);
+        };
+
+        this.next = function () {
+            this.loadDate(7);
+        };
+
+        this.loadDate = function (start) {
+            var day = 6;
+            var dates = [];
+            this.isAcrossM = false;
+            this.isAcrossY = false;
+            this.afterSecond = false;
+
+            this.start = this.start + start;
+
+            var t, time, i, _m = this.m, _y = this.y;
+            if (start < 0) {//后退
+                if (this.isSecond) {
+                    this.m--;
+                    if (this.m === -1) {
+                        this.m = 11;
+                        this.y--;
+                    }
+                    this.isSecond = false
+                }
+                if (this.start <= 0) {//上个星期跨月
+                    if (this.start !== -6) { //排除一星期刚好从一号开始的情况
+                        this.isAcrossM = true;
+                    }
+                    day = Math.abs(this.start);
+                    t = new Date(this.y, this.m, 0);
+                    time = t.getDate();//当月最大天数
+                    this.start = time - day;
+                    for (i = time - day; i <= time; i++) {
+                        dates.push(i);
+                    }
+                    start = 1;
+                    day = 7 - day - 2;
+                    if (this.m <= 0) {
+                        this.isAcrossY = true;
+                        this.y--;
+                    }
+                    this.m--;
+                    if (this.m < 0) {
+                        this.m = 11
+                    }
+                } else {
+                    start = this.start
+                }
+            } else if (start === 0) {//不变
+                var time; //当月最大天数
+                console.log("m:" + this.m);
+                console.log("start:" + this.start);
+                if (this.start <= 0) {//本周跨月并定位第二月
+                    time = new Date(this.y, this.m, 0).getDate();
+                    this.isSecond = true;
+                    this.isAcrossM = true;
+                    day = Math.abs(this.start);
+                    console.log("time" + time);
+
+                    this.start = time - day;
+                    for (i = time - day; i <= time; i++) {
+                        dates.push(i);
+                    }
+                    start = 1;
+                    day = 7 - day - 2;
+                } else {
+                    time = new Date(this.y, this.m + 1, 0).getDate();
+                    console.log("time" + time);
+
+                    if (this.start + 6 > time) {//本周跨月并定位第一月
+                        this.isAcrossM = true;
+                        diff = time - this.start;
+                        for (i = this.start; i <= time; i++) {
+                            dates.push(i)
+                        }
+                        start = 1;
+                        day = 5 - diff;
+                    } else {
+                        start = this.start
+                    }
+                }
+            } else {//前进
+                if (this.isSecond) {
+                    this.m--;
+                    this.isSecond = false
+                }
+
+                t = new Date(this.y, this.m + 1, 0);
+                time = t.getDate();//当月最大天数
+
+                var diff;
+                if (this.start - 1 >= time) {//当前星期跨月 或 下星期刚好从一号开始
+                    diff = this.start - time;
+                    this.start = diff;
+                    start = diff;
+
+                    this.m += 1;
+                    if (this.m > 11) {
+                        this.y++;
+                        this.m = 0;
+                    }
+                } else if (this.start <= time && this.start + 6 > time) {//下个星期跨月
+                    diff = time - this.start;
+                    for (i = this.start; i <= time; i++) {
+                        dates.push(i);
+                    }
+                    this.isAcrossM = true;
+
+                    start = 1;
+                    day = 5 - diff;
+                    if (this.m >= 11) {
+                        this.isAcrossY = true;
+                    }
+                    if (this.m === this.nowM && this.nowD < 7) {
+                        this.afterSecond = true;
+                    }
+                } else {
+                    start = this.start;
+                }
+            }
+            _m = this.m;
+            _y = this.y;
+            for (i = start; i <= start + day; i++) {
+                dates.push(i);
+            }
+            dates = dates.slice(0, 7);
+            for (var e in dates) {
+                if (dates[e] === this.nowD && this.m === this.nowM && this.y === this.nowY) {
+                    if (!this.afterSecond) {
+                        dates[e] = '今';
+                        if (this.isAcrossM) {
+                            if (this.nowD < 7) {
+                                this.isSecond = true;
+                                if (this.nowM <= 0) {
+                                    this.isAcrossY = true
+                                }
+                            }
+                            if (this.nowM === 11 && (time - this.nowD) < 7) {
+                                this.isAcrossY = true
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            if (this.isSecond) {
+                if (this.isAcrossY) {
+                    _y = this.y - 1
+                }
+                _m = this.m - 1
+            }
+            var html = '';
+            var start_next = false;//判断是否跨月给日子加的标记class
+            for (i = 0; i < dates.length; i++) {
+                var val = dates[i];
+                if (val === "今") {
+                    val = this.now.getDate();
+                }
+                var class_text = "";
+                // if (!!has_order_arr[i]) {
+                //     class_text = "red-dot";
+                // }
+
+                var flag_class = "";
+                if (val === 1 && i !== 0) {
+                    start_next = true;
+                }
+                var current_m = _m;
+                var current_y = _y;
+                if (start_next) {
+                    flag_class = " next_m";//跨月标记class
+                    current_m++;
+                    if (current_m > 11) {
+                        current_m = 0;
+                        current_y++;
+                    }
+                    if (current_m === 0) {
+                        current_y++;
+                    }
+                }
+
+                if (val === this.date && current_m === this.month && current_y === this.year) {
+                    class_text = "on" + flag_class;
+                    // $('.week li:nth-child(' + (i + 1) + ')').addClass('on')
+                } else {
+                    class_text = class_text + flag_class
+                }
+                html += '<li class="' + class_text + '" onclick="change_day(this)"><span>' + dates[i] + '</span></li>\n';
+            }
+            var YYMM;
+            var YY;
+            var view_y = _y, view_m = _m;
+            if (this.isAcrossY) {
+                YYMM = view_y + '年' + '12月/' + (parseInt(view_y + 1)) + '年' + '1月';
+            } else {
+                YY = view_y + '年';
+                if (this.isAcrossM) {
+                    YYMM = YY + parseInt(view_m + 1) + '/' + parseInt(view_m + 2) + '月'
+                } else {
+                    YYMM = YY + parseInt(view_m + 1) + '月'
+                }
+            }
+            console.log(html);
+        };
+        this.loadDate(0);
+    }
+
+</script>
+</html>

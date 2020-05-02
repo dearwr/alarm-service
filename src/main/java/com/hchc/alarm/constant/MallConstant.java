@@ -1,20 +1,38 @@
 package com.hchc.alarm.constant;
 
-import com.hchc.alarm.pack.MallConsoleInfo;
-
 import java.text.Collator;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MallConstant {
 
+    // 中文比较器
     public static final Collator CHINESE_COMPARATOR = Collator.getInstance(java.util.Locale.CHINA);
 
-    public static void main(String[] args) {
-        List<String> nameList = new ArrayList<>(MARK_NAME_MAP.values())
-                .stream()
-                .sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
-        System.out.println(nameList);
+    public enum PushMethod {
+        immediate("immediate", "实时"),
+        daily("daily", "定时"),
+        daily2("daily2", "定时");
+
+        private String pMethod;
+        private String pName;
+
+        PushMethod(String pMethod, String pName) {
+            this.pMethod = pMethod;
+            this.pName = pName;
+        }
+
+        public static String getNameByMethod(String pMethod) {
+            for (PushMethod pushMethod : PushMethod.values()) {
+                if (pushMethod.pMethod.equals(pMethod)) {
+                    return pushMethod.pName;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum PushType {
+        ftp, http, webservice;
     }
 
     public static final Map<String, String> MARK_NAME_MAP = new HashMap<>();

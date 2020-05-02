@@ -1,17 +1,16 @@
 package com.hchc.alarm.pack;
 
-import com.hchc.alarm.model.PushService;
+import com.hchc.alarm.model.MallService;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class MallConsoleInfo {
 
-    private String name;
+    private Set<String> cities;
 
-    private String cityName;
-
-    private List<PushService> services;
+    private List<MallService> services;
 
 }

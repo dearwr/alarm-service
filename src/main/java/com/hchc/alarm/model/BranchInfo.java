@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by wangrong 2020/4/27
  */
 @Data
-public class BranchConfig {
+public class BranchInfo extends Branch{
 
     private long hqId;
     private long branchId;
@@ -21,6 +21,6 @@ public class BranchConfig {
     private String ftpHost;    // ftp.host
     private int ftpPort;       // ftp.port
 
-    private Branch branch;
+    private String pushMethod;
 
 }

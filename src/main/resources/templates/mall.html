@@ -2,9 +2,176 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title>商场对接</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/mall.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
 </head>
-<body>
+
+<body onload="loadDataAfterInit()">
+<!--head-->
+<h1>商场对接</h1>
+<div id="context">
+    <!--搜索栏-->
+    <div id="search">
+        <a class="font_space">城市:</a><input id="ipt_hqId" type="text" placeholder="城市名" value="2439">
+        <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
+        <b id="err_size" class="font_space">size:</b>
+    </div>
+    <!--table-->
+    <table class="table">
+        <thead class="thead-dark">
+        <tr id="head">
+            <th>商场名</th>
+            <th>门店</th>
+            <th>kds标识</th>
+            <th>kds版本</th>
+            <th>最近心跳时间</th>
+            <th>小程序排队订单数</th>
+            <th>kds未完成订单数</th>
+        </tr>
+        </thead>
+        <tbody id="t_body"></tbody>
+    </table>
+
+    <!--提示框-->
+    <div id="tips" class="alert alert-warning">
+        <h5 id="tips_head"></h5>
+        <div id="tips_hr"></div>
+        <p id="tips_msg"></p>
+    </div>
+
+</div>
 
 </body>
+<script>
+    const tBody = $("#t_body");
+    const tips = $("#tips");
+    const tips_head = $("#tips_head");
+    const tips_msg = $("#tips_msg");
+    const errSize = $("#err_size");
+    const freshTime = $("#fresh_time");
+    var query_hqId = 2439;
+    var t;
+
+    //初始化后加载数据
+    var loadDataAfterInit = function () {
+        queryErrKdsInfo();
+        t = setInterval("queryErrKdsInfo()", 10000);
+    };
+
+    //按钮点击查询
+    var btnQuery =function () {
+        console.log("查询");
+        var ipt_hqId = $("#ipt_hqId").val();
+        console.log("ipt_hqId " + ipt_hqId);
+        if (!checkIsNumber(ipt_hqId)) {
+            return;
+        }
+        query_hqId = ipt_hqId;
+        scheduleQuery();
+    };
+
+    //定时查询
+    var scheduleQuery = function () {
+        clearInterval(t);
+        queryErrKdsInfo();
+        t = setInterval("queryErrKdsInfo()", 10000);
+    };
+
+    //判断输入是否为数字
+    var checkIsNumber = function (input) {
+        const patrn = /^(-)?\d+(\.\d+)?$/;
+        if (patrn.exec(input) == null || input === "") {
+            alert("请输入数字");
+            return false;
+        }
+        return true;
+    };
+
+    //暂停刷新、自动刷新切换
+    var pauseOrRestart =function (btn) {
+        if ($(btn).text() === "暂停刷新") {
+            console.log("暂停刷新");
+            clearInterval(t);
+            $(btn).removeClass("btn btn-success");
+            $(btn).addClass("btn btn-secondary");
+            $(btn).text("自动刷新");
+            showTips("已暂停", "", 2000);
+        }else {
+            console.log("自动刷新");
+            scheduleQuery();
+            $(btn).removeClass("btn btn-secondary");
+            $(btn).addClass("btn btn-success");
+            $(btn).text("暂停刷新");
+        }
+    };
+
+    //异步查询数据
+    var queryErrKdsInfo = function () {
+        console.log("query_hqId " + query_hqId);
+        $.ajax({
+            url: "http://lab2.51hchc.com:7676/kdsConsole/errKdsInfo",
+            type: "GET",
+            contentType: "application/json; charset=UTF-8",
+            data: {"hqId": query_hqId, "branchId": 0},
+            dataType: "json",
+            success: function (resp) {
+                console.log("suc resp : " + resp);
+                if (resp.code === "0") {
+                    var kdsInfoList = resp.data;
+                    if (kdsInfoList != null) {
+                        if (kdsInfoList.length === 0) {
+                            showTips("查询成功", "没有数据！！！", 2000);
+                        }else {
+                            var trData = '';
+                            var kdsInfo;
+                            for (var e in kdsInfoList) {
+                                kdsInfo = kdsInfoList[e];
+                                if (kdsInfo.offLine) {
+                                    trData += '<tr class="off_line">\n';
+                                } else {
+                                    trData += '<tr>\n';
+                                }
+                                trData += '<td>' + kdsInfo.brandName + '</td>\n' +
+                                    '<td>' + kdsInfo.branchName + '</td>\n' +
+                                    '<td>' + kdsInfo.uuid + '</td>\n' +
+                                    '<td>' + kdsInfo.versionCode + '</td>\n' +
+                                    '<td>' + kdsInfo.heartTime + '</td>\n' +
+                                    '<td>' + kdsInfo.wxCount + '</td>\n' +
+                                    '<td>' + kdsInfo.kdsCount + '</td>\n' +
+                                    '</tr>';
+                            }
+                            tBody.empty();
+                            tBody.append(trData);
+                            showTips("刷新成功", "", 1000);
+                        }
+                        errSize.text("size :  " + kdsInfoList.length);
+                        freshTime.text("刷新时间 :  " + resp.respTime);
+                    }
+                } else {
+                    showTips("刷新失败", resp.message, 2000);
+                }
+
+            },
+            error: function (resp) {
+                console.log("error resp : " + resp);
+                showTips("刷新失败", resp.data, 2000);
+            }
+        });
+    };
+
+    //提示信息
+    var showTips = function (head, msg, time) {
+        tips_head.text(head);
+        tips_msg.text(msg);
+        tips.show();
+        tips.fadeOut(time);
+    }
+</script>
+
 </html>
