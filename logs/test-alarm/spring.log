@@ -1,0 +1,56 @@
+2020-05-13 15:02:56.375  INFO 8660 --- [Test worker] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 8660 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:02:56.377  INFO 8660 --- [Test worker] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:02:58.002  INFO 8660 --- [Test worker] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:02:58.145  INFO 8660 --- [Test worker] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:02:59.213  INFO 8660 --- [Test worker] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:02:59.755  INFO 8660 --- [Test worker] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 3.857 seconds (JVM running for 5.896)
+2020-05-13 15:03:00.130  INFO 8660 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:15:13.773  INFO 9008 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 9008 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:15:13.776  INFO 9008 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:15:16.104  INFO 9008 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:15:16.358  INFO 9008 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:15:17.607  INFO 9008 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:15:18.353  INFO 9008 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.229 seconds (JVM running for 9.227)
+2020-05-13 15:17:06.000  INFO 9008 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:17:17.170  INFO 2076 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 2076 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:17:17.174  INFO 2076 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:17:19.336  INFO 2076 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:17:19.565  INFO 2076 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:17:21.385  INFO 2076 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:17:22.227  INFO 2076 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.838 seconds (JVM running for 8.369)
+2020-05-13 15:19:40.761  INFO 2076 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:19:49.978  INFO 1272 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 1272 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:19:49.981  INFO 1272 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:19:52.345  INFO 1272 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:19:52.660  INFO 1272 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:19:53.815  INFO 1272 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:19:54.676  INFO 1272 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.726 seconds (JVM running for 8.537)
+2020-05-13 15:21:15.123  INFO 1272 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:21:23.396  INFO 10224 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 10224 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:21:23.400  INFO 10224 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:21:25.606  INFO 10224 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:21:25.860  INFO 10224 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:21:26.928  INFO 10224 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:21:27.763  INFO 10224 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.181 seconds (JVM running for 7.572)
+2020-05-13 15:22:44.075  INFO 10224 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:22:53.230  INFO 9700 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 9700 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:22:53.234  INFO 9700 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:22:55.343  INFO 9700 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:22:55.606  INFO 9700 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:22:56.640  INFO 9700 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:22:57.442  INFO 9700 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.197 seconds (JVM running for 7.83)
+2020-05-13 15:22:59.110  INFO 9700 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:24:19.346  INFO 2276 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 2276 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:24:19.349  INFO 2276 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:24:21.368  INFO 2276 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:24:21.623  INFO 2276 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:24:22.648  INFO 2276 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:24:23.483  INFO 2276 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 4.892 seconds (JVM running for 7.31)
+2020-05-13 15:24:25.262  INFO 2276 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:26:23.516  INFO 9588 --- [main] com.hchc.alarm.AlarmApplicationTests     : Starting AlarmApplicationTests on DESKTOP-S63R4RE with PID 9588 (started by wangrong in C:\Users\wangrong\IdeaProjects\alarm)
+2020-05-13 15:26:23.521  INFO 9588 --- [main] com.hchc.alarm.AlarmApplicationTests     : No active profile set, falling back to default profiles: default
+2020-05-13 15:26:25.640  INFO 9588 --- [main] com.hchc.alarm.AlarmApplication          : rocket datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/rocket
+2020-05-13 15:26:25.891  INFO 9588 --- [main] com.hchc.alarm.AlarmApplication          : hchc datasource:jdbc:mysql://rds62pjg478k7ukl1g12.mysql.rds.aliyuncs.com:3306/hchc_cloud?serverTimezone=Asia/Shanghai
+2020-05-13 15:26:26.901  INFO 9588 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-05-13 15:26:27.720  INFO 9588 --- [main] com.hchc.alarm.AlarmApplicationTests     : Started AlarmApplicationTests in 5.232 seconds (JVM running for 7.712)
+2020-05-13 15:27:07.553  INFO 9588 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'

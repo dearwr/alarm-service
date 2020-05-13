@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KDS监控台</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div style="margin: auto; width: 80%">
+    <table id="table" class="table table-bordered">
+        <caption style="text-align: center; font-size: large; font-weight: bold;color: black">KDS监控台</caption>
+        <tr id="head">
+            <th>品牌</th>
+            <th>门店</th>
+            <th>kds</th>
+            <th>小程序排队订单数</th>
+            <th>kds未完成订单数</th>
+        </tr>
+    </table>
+</div>
+
+</body>
+<script>
+    var head = $("#head");
+    $(document).ready(function () {
+        getKdsInfo();
+        var schedule = function () {
+            setInterval("getKdsInfo()", 10000);
+        };
+        schedule();
+    });
+    var getKdsInfo = function () {
+        $.ajax({
+            url: "http://lab2.51hchc.com:7676/kdsConsole/errKdsInfo",
+            type: "GET",
+            contentType: "application/json; charset=UTF-8",
+            data: {"hqId": 2439, "branchId": 0},
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                var kdsInfoList = response.data;
+                if (kdsInfoList != null) {
+                    head.nextAll().remove();
+                    var trData = '';
+                    for (var e in kdsInfoList) {
+                        trData += '<tr class="rowInfo">\n' +
+                            '<td>' + kdsInfoList[e].brandName + '</td>\n' +
+                            '<td>' + kdsInfoList[e].branchName + '</td>\n' +
+                            '<td>' + kdsInfoList[e].uuid + '</td>\n' +
+                            '<td>' + kdsInfoList[e].wxCount + '</td>\n' +
+                            '<td>' + kdsInfoList[e].kdsCount + '</td>\n' +
+                            '</tr>';
+                    }
+                    head.after(trData);
+                }
+            }
+        })
+    }
+</script>
+
+</html>
