@@ -5,18 +5,21 @@ h1 {
     color: black;
 }
 
-#navigation {
+#header {
     margin-bottom: 20px;
     margin-top: 15px;
 }
 
 #ipt_hqId {
     width: 150px;
+    border: 1px solid gray;
+    color: black;
+    font-weight: bold;
 }
 
 #btn_query {
     color: green;
-    margin-left: 50px;
+    margin-left: 100px;
 }
 
 #b_size {
