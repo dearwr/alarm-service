@@ -1,6 +1,11 @@
+body {
+    background-image: url("/image/body1.jpg");
+    letter-spacing: 2px;
+}
+
 h1 {
     text-align: center;
-    margin: 25px auto 25px auto;
+    padding-top: 25px;
 }
 
 #context {
@@ -9,7 +14,7 @@ h1 {
 }
 
 #search {
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     margin-top: 15px;
 }
 
@@ -24,6 +29,10 @@ h1 {
     margin-left: 25px;
 }
 
+#btn_pause_restart{
+    margin-left: 50px;
+}
+
 #fresh_time {
     float: right;
     margin-right: 150px;
@@ -32,6 +41,10 @@ h1 {
 #err_size {
     float: right;
     margin-right: 80px;
+}
+
+table{
+    text-align: center;
 }
 
 #toast_hr {
