@@ -18,7 +18,7 @@
 <div id="context">
     <!--搜索栏-->
     <div id="search">
-        <strong>品牌：</strong><input id="ipt_hqId" type="text" placeholder="品牌id">
+        <strong>品牌：</strong><input id="ipt_hqId" type="text" placeholder="品牌id" value="2439">
         <button id="btn_query" class="btn btn-primary" onclick="scheduleQuery()">查询</button>
         <b id="err_size">size:</b>
         <b id="fresh_time">刷新时间:</b>
@@ -56,18 +56,16 @@
     var toast_msg = $("#toast_msg");
     var errSize = $("#err_size");
     var freshTime = $("#fresh_time");
-    var def_hqId = 2439;
-    var ipt_hqId;
     var query_hqId;
     var t;
     var loadKdsInfo = function () {
-        query_hqId = def_hqId;
+        query_hqId = $("#ipt_hqId").val();
         queryErrKdsInfo();
         t = setInterval("queryErrKdsInfo()", 10000);
     };
 
     var scheduleQuery = function () {
-        ipt_hqId = $("#ipt_hqId").val();
+        var ipt_hqId = $("#ipt_hqId").val();
         console.log("ipt_hqId " + ipt_hqId);
         if (!checkIsNumber(ipt_hqId)) {
             return;
@@ -104,31 +102,31 @@
                     if (kdsInfoList != null) {
                         if (kdsInfoList.length === 0) {
                             toastShow("查询成功", "没有数据！！！", 3000);
-                        }
-                        var trData = '';
-                        var kdsInfo;
-                        for (var e in kdsInfoList) {
-                            kdsInfo = kdsInfoList[e];
-                            if (kdsInfo.offLine) {
-                                trData += '<tr class="off_line">\n';
-                            } else {
-                                trData += '<tr>\n';
+                        }else {
+                            var trData = '';
+                            var kdsInfo;
+                            for (var e in kdsInfoList) {
+                                kdsInfo = kdsInfoList[e];
+                                if (kdsInfo.offLine) {
+                                    trData += '<tr class="off_line">\n';
+                                } else {
+                                    trData += '<tr>\n';
+                                }
+                                trData += '<td>' + kdsInfo.brandName + '</td>\n' +
+                                    '<td>' + kdsInfo.branchName + '</td>\n' +
+                                    '<td>' + kdsInfo.uuid + '</td>\n' +
+                                    '<td>' + kdsInfo.versionCode + '</td>\n' +
+                                    '<td>' + kdsInfo.heartTime + '</td>\n' +
+                                    '<td>' + kdsInfo.wxCount + '</td>\n' +
+                                    '<td>' + kdsInfo.kdsCount + '</td>\n' +
+                                    '</tr>';
                             }
-                            trData += '<td>' + kdsInfo.brandName + '</td>\n' +
-                                '<td>' + kdsInfo.branchName + '</td>\n' +
-                                '<td>' + kdsInfo.uuid + '</td>\n' +
-                                '<td>' + kdsInfo.versionCode + '</td>\n' +
-                                '<td>' + kdsInfo.heartTime + '</td>\n' +
-                                '<td>' + kdsInfo.wxCount + '</td>\n' +
-                                '<td>' + kdsInfo.kdsCount + '</td>\n' +
-                                '</tr>';
+                            tBody.empty();
+                            tBody.append(trData);
+                            toastShow("刷新成功", "", 1000);
                         }
-                        console.log("trData: " + trData);
-                        tBody.empty();
-                        tBody.append(trData);
-                        errSize.text("size : " + kdsInfoList.length);
-                        freshTime.text("刷新时间 : " + resp.respTime);
-                        toastShow("刷新成功", "", 1000);
+                        errSize.text("size :  " + kdsInfoList.length);
+                        freshTime.text("刷新时间 :  " + resp.respTime);
                     }
                 } else {
                     toastShow("刷新失败", resp.message, 3000);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public class KdsController {
                     kdsConsoleInfo.setKdsCount(kdsQueueOrders.size());
                     kdsConsoleInfo.setUuid(kds.getUuid());
                     if (kds.getHeartTime() != null) {
-                        kdsConsoleInfo.setHeartTime(DatetimeUtil.format(kds.getHeartTime()));
+                        kdsConsoleInfo.setHeartTime(kds.getHeartTime());
                     }
                     kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
                     branchInfo = branchInfoDao.query(kds.getHqId(), kds.getBranchId());
@@ -88,11 +89,11 @@ public class KdsController {
         return Output.ok(errKdsInfoList);
     }
 
-    private boolean checkOffLine(Date heartTime) {
+    private boolean checkOffLine(String heartTime) throws ParseException {
         if (heartTime == null) {
             return true;
         }
-        return new Date().getTime() - heartTime.getTime() > 60000;
+        return new Date().getTime() - DatetimeUtil.parse(heartTime).getTime() > 60000;
     }
 
 }

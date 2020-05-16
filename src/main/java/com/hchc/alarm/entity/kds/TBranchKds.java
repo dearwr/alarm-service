@@ -16,6 +16,6 @@ public class TBranchKds {
     private Date createTime;
     private Date offLineTime;
     private Date onlineTime;
-    private Date heartTime;
+    private String heartTime;
 
 }

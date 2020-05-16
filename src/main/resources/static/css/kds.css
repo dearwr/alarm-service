@@ -31,7 +31,7 @@ h1 {
 
 #err_size {
     float: right;
-    margin-right: 100px;
+    margin-right: 80px;
 }
 
 #toast_hr {
@@ -41,19 +41,18 @@ h1 {
     margin-bottom: 12px;
 }
 
-table{
-    z-index: 1;
-}
 
 #toast {
-    margin: 200px auto auto 670px;
+    z-index: 2;
+    position: absolute;
+    left: 860px;
+    top: 260px;
     height: 156px;
     width: 199px;
     padding: 10px;
     display: none;
     border-radius: 10px;
-    position: fixed;
-    z-index: 2;
+    text-align: center;
 }
 
 h5 {
@@ -61,5 +60,5 @@ h5 {
 }
 
 .off_line {
-    background-color: #888888;
+    background-color: gray;
 }
