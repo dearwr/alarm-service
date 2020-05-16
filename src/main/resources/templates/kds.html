@@ -18,11 +18,11 @@
 <div id="context">
     <!--搜索栏-->
     <div id="search">
-        <strong>品牌：</strong><input id="ipt_hqId" type="text" placeholder="品牌id" value="2439">
+        <a class="font_space">品牌:</a><input id="ipt_hqId" type="text" placeholder="品牌id" value="2439">
         <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
         <button id="btn_pause_restart" class="btn btn-success" onclick="pauseOrRestart(this)">暂停刷新</button>
-        <b id="err_size">size:</b>
-        <b id="fresh_time">刷新时间:</b>
+        <b id="err_size" class="font_space">size:</b>
+        <b id="fresh_time" class="font_space">刷新时间:</b>
     </div>
     <!--table-->
     <table class="table">
@@ -41,10 +41,10 @@
     </table>
 
     <!--提示框-->
-    <div id="toast" class="alert alert-warning">
-        <h5 id="toast_head"></h5>
-        <div id="toast_hr"></div>
-        <p id="toast_msg"></p>
+    <div id="tips" class="alert alert-warning">
+        <h5 id="tips_head"></h5>
+        <div id="tips_hr"></div>
+        <p id="tips_msg"></p>
     </div>
 
 </div>
@@ -52,9 +52,9 @@
 </body>
 <script>
     const tBody = $("#t_body");
-    const toast = $("#toast");
-    const toast_head = $("#toast_head");
-    const toast_msg = $("#toast_msg");
+    const tips = $("#tips");
+    const tips_head = $("#tips_head");
+    const tips_msg = $("#tips_msg");
     const errSize = $("#err_size");
     const freshTime = $("#fresh_time");
     var query_hqId = 2439;
@@ -103,7 +103,7 @@
             $(btn).removeClass("btn btn-success");
             $(btn).addClass("btn btn-secondary");
             $(btn).text("自动刷新");
-            toastShow("已暂停", "", 2000);
+            showTips("已暂停", "", 2000);
         }else {
             console.log("自动刷新");
             scheduleQuery();
@@ -128,7 +128,7 @@
                     var kdsInfoList = resp.data;
                     if (kdsInfoList != null) {
                         if (kdsInfoList.length === 0) {
-                            toastShow("查询成功", "没有数据！！！", 2000);
+                            showTips("查询成功", "没有数据！！！", 2000);
                         }else {
                             var trData = '';
                             var kdsInfo;
@@ -150,28 +150,29 @@
                             }
                             tBody.empty();
                             tBody.append(trData);
-                            toastShow("刷新成功", "", 1000);
+                            showTips("刷新成功", "", 1000);
                         }
                         errSize.text("size :  " + kdsInfoList.length);
                         freshTime.text("刷新时间 :  " + resp.respTime);
                     }
                 } else {
-                    toastShow("刷新失败", resp.message, 2000);
+                    showTips("刷新失败", resp.message, 2000);
                 }
 
             },
             error: function (resp) {
                 console.log("error resp : " + resp);
-                toastShow("刷新失败", resp.data, 2000);
+                showTips("刷新失败", resp.data, 2000);
             }
         });
     };
 
-    var toastShow = function (head, msg, time) {
-        toast_head.text(head);
-        toast_msg.text(msg);
-        toast.show();
-        toast.fadeOut(time);
+    //提示信息
+    var showTips = function (head, msg, time) {
+        tips_head.text(head);
+        tips_msg.text(msg);
+        tips.show();
+        tips.fadeOut(time);
     }
 </script>
 

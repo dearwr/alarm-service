@@ -1,11 +1,15 @@
 body {
     background-image: url("/image/body1.jpg");
-    letter-spacing: 2px;
 }
 
 h1 {
     text-align: center;
     padding-top: 25px;
+}
+
+.font_space {
+    font-weight: bolder;
+    letter-spacing: 1px;
 }
 
 #context {
@@ -29,7 +33,7 @@ h1 {
     margin-left: 25px;
 }
 
-#btn_pause_restart{
+#btn_pause_restart {
     margin-left: 50px;
 }
 
@@ -43,11 +47,11 @@ h1 {
     margin-right: 80px;
 }
 
-table{
+table {
     text-align: center;
 }
 
-#toast_hr {
+#tips_hr {
     border-top: darkgray 1px dashed;
     overflow: hidden;
     height: 1px;
@@ -55,7 +59,7 @@ table{
 }
 
 
-#toast {
+#tips {
     z-index: 2;
     position: absolute;
     left: 860px;
