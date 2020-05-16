@@ -9,8 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    @GetMapping("/")
+    @GetMapping("/kds")
     public String toMain() {
-        return "index";
+        return "kds";
+    }
+
+    @GetMapping("/mall")
+    public String toMall() {
+        return "mall";
     }
 }

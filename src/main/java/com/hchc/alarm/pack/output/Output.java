@@ -1,11 +1,15 @@
 package com.hchc.alarm.pack.output;
 
+import com.hchc.alarm.util.DatetimeUtil;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class Output {
     private String code;
     private String message;
+    private String respTime = DatetimeUtil.format(new Date());
     private Object data;
 
     public Output() {

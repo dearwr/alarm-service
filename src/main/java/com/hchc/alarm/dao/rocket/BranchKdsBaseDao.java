@@ -41,6 +41,7 @@ public class BranchKdsBaseDao extends RocketBaseDao {
         tBranchKds.setBranchId(rs.getInt("f_branchid"));
         tBranchKds.setName(rs.getString("f_name"));
         tBranchKds.setUuid(rs.getString("f_uuid"));
+        tBranchKds.setHeartTime(rs.getDate("f_heart_time"));
         return tBranchKds;
     }
 }

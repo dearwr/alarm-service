@@ -11,6 +11,9 @@ public class KdsConsoleInfo {
     private String brandName;
     private String branchName;
     private String uuid;
+    private String versionCode;
+    private String heartTime = "";
     private int wxCount;
     private int kdsCount;
+    private boolean offLine;
 }

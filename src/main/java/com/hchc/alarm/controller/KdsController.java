@@ -1,6 +1,7 @@
 package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchInfoBaseDao;
+import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
 import com.hchc.alarm.entity.kds.TBranchKds;
@@ -11,13 +12,12 @@ import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/kdsConsole")
 @Slf4j
-public class KdsConsoleController {
+public class KdsController {
 
     @Autowired
     private BranchKdsBaseDao branchKdsDao;
@@ -36,41 +36,63 @@ public class KdsConsoleController {
     private RemoteService remoteService;
     @Autowired
     private BranchInfoBaseDao branchInfoDao;
+    @Autowired
+    private KdsOperationLogDao kdsOperationLogDao;
 
     @GetMapping("/errKdsInfo")
     public Output getErrorKdsInfo(int hqId, int branchId) {
-        log.info("[getErrorKdsInfo] params hqId:{}, branchId:{}", hqId, branchId);
+        log.info("[getErrorKdsInfo] request params hqId:{}, branchId:{}", hqId, branchId);
         List<TBranchKds> kdsList = branchKdsDao.query(hqId, branchId);
         List<KdsConsoleInfo> errKdsInfoList = new ArrayList<>();
-        List<String> kdsQueueOrders = new ArrayList<>();
+        List<KdsConsoleInfo> offLineKds = new ArrayList<>();
+        List<KdsConsoleInfo> onLineKds = new ArrayList<>();
+        List<String> kdsQueueOrders;
         KdsConsoleInfo kdsConsoleInfo;
         BranchInfo branchInfo;
-        Date start;
+        Date start = DatetimeUtil.dayBegin(new Date());
         Date end;
         try {
             for (TBranchKds kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
-                end = new Date();
-                start = DatetimeUtil.dayBegin(end);
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
+                end = new Date();
                 kdsQueueOrders = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end)
                         .stream()
                         .distinct() // 去重
                         .collect(Collectors.toList());
-                log.info("[getErrorKdsInfo] kdsQueueOrders:{}", kdsQueueOrders);
-                kdsConsoleInfo.setKdsCount(kdsQueueOrders.size());
-                if (kdsConsoleInfo.getKdsCount() != kdsConsoleInfo.getWxCount()) {
+                log.info("[getErrorKdsInfo] branchId:{}, kdsQueueOrders:{}", kds.getBranchId(), kdsQueueOrders);
+                if (kdsQueueOrders.size() != kdsConsoleInfo.getWxCount()) {
+                    kdsConsoleInfo.setKdsCount(kdsQueueOrders.size());
+                    kdsConsoleInfo.setUuid(kds.getUuid());
+                    if (kds.getHeartTime() != null) {
+                        kdsConsoleInfo.setHeartTime(DatetimeUtil.format(kds.getHeartTime()));
+                    }
+                    kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
                     branchInfo = branchInfoDao.query(kds.getHqId(), kds.getBranchId());
                     kdsConsoleInfo.setBrandName(branchInfo.getBrandName());
                     kdsConsoleInfo.setBranchName(branchInfo.getBranchName());
-                    kdsConsoleInfo.setUuid(kds.getUuid());
-                    errKdsInfoList.add(kdsConsoleInfo);
+                    kdsConsoleInfo.setVersionCode(kdsOperationLogDao.queryVersionCode(hqId, branchId, DatetimeUtil.format(start), DatetimeUtil.format(end)));
+                    if (kdsConsoleInfo.isOffLine()) {
+                        offLineKds.add(kdsConsoleInfo);
+                    } else {
+                        onLineKds.add(kdsConsoleInfo);
+                    }
                 }
             }
+            errKdsInfoList.addAll(offLineKds);
+            errKdsInfoList.addAll(onLineKds);
         } catch (Exception e) {
             log.info("[getErrorKdsInfo] happen exception :{}", e.getMessage());
             return Output.fail(e.getMessage());
         }
         return Output.ok(errKdsInfoList);
     }
+
+    private boolean checkOffLine(Date heartTime) {
+        if (heartTime == null) {
+            return true;
+        }
+        return new Date().getTime() - heartTime.getTime() > 60000;
+    }
+
 }

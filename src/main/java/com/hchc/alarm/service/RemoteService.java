@@ -28,7 +28,7 @@ public class RemoteService {
         Output response;
         QueueInfo queueInfo;
         response = restTemplate.getForEntity(url, Output.class).getBody();
-        log.info("[getWxQueueSummaryInfo] response :{}", JSON.toJSONString(response));
+        log.info("[getWxQueueCount] response :{}", JSON.toJSONString(response));
         queueInfo = JSON.parseObject(JSON.toJSONString(response.getData()), QueueInfo.class);
         return queueInfo.getQueueCount();
     }

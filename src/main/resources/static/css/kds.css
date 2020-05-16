@@ -1,0 +1,65 @@
+h1 {
+    text-align: center;
+    margin: 25px auto 25px auto;
+}
+
+#context {
+    margin: auto;
+    width: 80%;
+}
+
+#search {
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+#ipt_hqId {
+    margin-left: 10px;
+    border-radius: 1px;
+    padding-left: 10px;
+
+}
+
+#btn_query {
+    margin-left: 25px;
+}
+
+#fresh_time {
+    float: right;
+    margin-right: 150px;
+}
+
+#err_size {
+    float: right;
+    margin-right: 100px;
+}
+
+#toast_hr {
+    border-top: darkgray 1px dashed;
+    overflow: hidden;
+    height: 1px;
+    margin-bottom: 12px;
+}
+
+table{
+    z-index: 1;
+}
+
+#toast {
+    margin: 200px auto auto 670px;
+    height: 156px;
+    width: 199px;
+    padding: 10px;
+    display: none;
+    border-radius: 10px;
+    position: fixed;
+    z-index: 2;
+}
+
+h5 {
+    padding: 5px;
+}
+
+.off_line {
+    background-color: #888888;
+}
