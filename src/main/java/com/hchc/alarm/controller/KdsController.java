@@ -1,18 +1,17 @@
 package com.hchc.alarm.controller;
 
-import com.hchc.alarm.dao.hchc.BranchInfoBaseDao;
+import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
-import com.hchc.alarm.entity.kds.TBranchKds;
-import com.hchc.alarm.pack.biz.BranchInfo;
-import com.hchc.alarm.pack.output.Output;
-import com.hchc.alarm.pack.output.KdsConsoleInfo;
+import com.hchc.alarm.entity.rocket.TBranchKds;
+import com.hchc.alarm.model.Branch;
+import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.pack.KdsConsoleInfo;
 import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +35,7 @@ public class KdsController {
     @Autowired
     private RemoteService remoteService;
     @Autowired
-    private BranchInfoBaseDao branchInfoDao;
+    private BranchDao branchDao;
     @Autowired
     private KdsOperationLogDao kdsOperationLogDao;
 
@@ -49,7 +48,7 @@ public class KdsController {
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
         List<String> kdsQueueOrders;
         KdsConsoleInfo kdsConsoleInfo;
-        BranchInfo branchInfo;
+        Branch branch;
         Date start = DatetimeUtil.dayBegin(new Date());
         Date end;
         try {
@@ -69,9 +68,9 @@ public class KdsController {
                         kdsConsoleInfo.setHeartTime(kds.getHeartTime());
                     }
                     kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
-                    branchInfo = branchInfoDao.query(kds.getHqId(), kds.getBranchId());
-                    kdsConsoleInfo.setBrandName(branchInfo.getBrandName());
-                    kdsConsoleInfo.setBranchName(branchInfo.getBranchName());
+                    branch = branchDao.query(kds.getHqId(), kds.getBranchId());
+                    kdsConsoleInfo.setBrandName(branch.getBrandName());
+                    kdsConsoleInfo.setBranchName(branch.getBranchName());
                     kdsConsoleInfo.setVersionCode(kdsOperationLogDao.queryVersionCode(hqId, branchId, DatetimeUtil.format(start), DatetimeUtil.format(end)));
                     if (kdsConsoleInfo.isOffLine()) {
                         offLineKds.add(kdsConsoleInfo);

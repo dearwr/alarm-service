@@ -1,7 +1,7 @@
 package com.hchc.alarm.dao.rocket;
 
 import com.hchc.alarm.dao.RocketBaseDao;
-import com.hchc.alarm.entity.kds.TBranchKds;
+import com.hchc.alarm.entity.rocket.TBranchKds;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 

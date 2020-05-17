@@ -1,4 +1,4 @@
-package com.hchc.alarm.pack.biz;
+package com.hchc.alarm.model;
 
 import lombok.Data;
 
@@ -6,8 +6,9 @@ import lombok.Data;
  * Created by wangrong 2020/5/13
  */
 @Data
-public class BranchInfo {
+public class Branch {
 
     private String brandName;
     private String branchName;
+    private String address;
 }

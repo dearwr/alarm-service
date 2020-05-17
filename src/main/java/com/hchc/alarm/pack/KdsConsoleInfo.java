@@ -1,4 +1,4 @@
-package com.hchc.alarm.pack.output;
+package com.hchc.alarm.pack;
 
 import lombok.Data;
 

@@ -1,15 +1,12 @@
 package com.hchc.alarm.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hchc.alarm.pack.output.Output;
-import com.hchc.alarm.pack.output.QueueInfo;
+import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.pack.QueueInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by wangrong 2020/5/13
