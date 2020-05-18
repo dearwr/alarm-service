@@ -18,8 +18,12 @@
 <div id="context">
     <!--搜索栏-->
     <div id="search">
-        <a class="font_space">城市:</a><input id="ipt_hqId" type="text" placeholder="城市名" value="2439">
-        <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
+        <div id="city_list" class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                所在城市
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink"></div>
+        </div>
         <b id="err_size" class="font_space">size:</b>
     </div>
     <!--table-->
@@ -27,16 +31,18 @@
         <thead class="thead-dark">
         <tr id="head">
             <th>商场名</th>
-            <th>门店</th>
-            <th>kds标识</th>
-            <th>kds版本</th>
-            <th>最近心跳时间</th>
-            <th>小程序排队订单数</th>
-            <th>kds未完成订单数</th>
+            <th>所在城市</th>
+            <th>对接方式</th>
+            <th>上传方式</th>
         </tr>
         </thead>
         <tbody id="t_body"></tbody>
     </table>
+
+    <!--加载中-->
+    <div id="loading" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
 
     <!--提示框-->
     <div id="tips" class="alert alert-warning">
@@ -54,113 +60,67 @@
     const tips_head = $("#tips_head");
     const tips_msg = $("#tips_msg");
     const errSize = $("#err_size");
-    const freshTime = $("#fresh_time");
-    var query_hqId = 2439;
-    var t;
+    const cityList = $("#dropdown-menu");
+    const loading = $("#loading");
 
     //初始化后加载数据
     var loadDataAfterInit = function () {
-        queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 10000);
-    };
-
-    //按钮点击查询
-    var btnQuery =function () {
-        console.log("查询");
-        var ipt_hqId = $("#ipt_hqId").val();
-        console.log("ipt_hqId " + ipt_hqId);
-        if (!checkIsNumber(ipt_hqId)) {
-            return;
-        }
-        query_hqId = ipt_hqId;
-        scheduleQuery();
-    };
-
-    //定时查询
-    var scheduleQuery = function () {
-        clearInterval(t);
-        queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 10000);
-    };
-
-    //判断输入是否为数字
-    var checkIsNumber = function (input) {
-        const patrn = /^(-)?\d+(\.\d+)?$/;
-        if (patrn.exec(input) == null || input === "") {
-            alert("请输入数字");
-            return false;
-        }
-        return true;
-    };
-
-    //暂停刷新、自动刷新切换
-    var pauseOrRestart =function (btn) {
-        if ($(btn).text() === "暂停刷新") {
-            console.log("暂停刷新");
-            clearInterval(t);
-            $(btn).removeClass("btn btn-success");
-            $(btn).addClass("btn btn-secondary");
-            $(btn).text("自动刷新");
-            showTips("已暂停", "", 2000);
-        }else {
-            console.log("自动刷新");
-            scheduleQuery();
-            $(btn).removeClass("btn btn-secondary");
-            $(btn).addClass("btn btn-success");
-            $(btn).text("暂停刷新");
-        }
+        queryMallInfo();
     };
 
     //异步查询数据
-    var queryErrKdsInfo = function () {
-        console.log("query_hqId " + query_hqId);
+    var queryMallInfo = function () {
+        console.log("queryMallInfo ");
         $.ajax({
-            url: "http://lab2.51hchc.com:7676/kdsConsole/errKdsInfo",
+            url: "http://lab2.51hchc.com:7676/mallConsole/mallInfos",
             type: "GET",
             contentType: "application/json; charset=UTF-8",
-            data: {"hqId": query_hqId, "branchId": 0},
+            data: {},
             dataType: "json",
             success: function (resp) {
                 console.log("suc resp : " + resp);
                 if (resp.code === "0") {
-                    var kdsInfoList = resp.data;
-                    if (kdsInfoList != null) {
-                        if (kdsInfoList.length === 0) {
+                    var mallData = resp.data;
+                    if (mallData != null) {
+                        var cities = mallData.cities;
+                        var malls = mallData.malls;
+                        if (cities.length === 0) {
+                            loading.hide();
                             showTips("查询成功", "没有数据！！！", 2000);
-                        }else {
-                            var trData = '';
-                            var kdsInfo;
-                            for (var e in kdsInfoList) {
-                                kdsInfo = kdsInfoList[e];
-                                if (kdsInfo.offLine) {
-                                    trData += '<tr class="off_line">\n';
-                                } else {
-                                    trData += '<tr>\n';
-                                }
-                                trData += '<td>' + kdsInfo.brandName + '</td>\n' +
-                                    '<td>' + kdsInfo.branchName + '</td>\n' +
-                                    '<td>' + kdsInfo.uuid + '</td>\n' +
-                                    '<td>' + kdsInfo.versionCode + '</td>\n' +
-                                    '<td>' + kdsInfo.heartTime + '</td>\n' +
-                                    '<td>' + kdsInfo.wxCount + '</td>\n' +
-                                    '<td>' + kdsInfo.kdsCount + '</td>\n' +
+                        } else {
+                            var htmlStr = '';
+                            for (var i in cities) {
+                                htmlStr += '<a class="dropdown-item">' + cities[i] + '</a>'
+                            }
+                            cityList.append(htmlStr);
+                            htmlStr = '';
+                            var mall;
+                            for (var e in malls) {
+                                mall = malls[e];
+                                htmlStr += '<tr>\n'+
+                                    '<td>' + mall.name + '</td>\n' +
+                                    '<td>' + mall.city + '</td>\n' +
+                                    '<td>' + mall.pushType + '</td>\n' +
+                                    '<td>' + mall.pushMethod + '</td>\n' +
                                     '</tr>';
                             }
+                            loading.hide();
                             tBody.empty();
-                            tBody.append(trData);
-                            showTips("刷新成功", "", 1000);
+                            tBody.append(htmlStr);
+                            showTips("查询成功", "", 1000);
                         }
                         errSize.text("size :  " + kdsInfoList.length);
-                        freshTime.text("刷新时间 :  " + resp.respTime);
                     }
                 } else {
-                    showTips("刷新失败", resp.message, 2000);
+                    loading.hide();
+                    showTips("查询失败", resp.message, 2000);
                 }
 
             },
             error: function (resp) {
                 console.log("error resp : " + resp);
-                showTips("刷新失败", resp.data, 2000);
+                loading.hide();
+                showTips("查询失败", resp.data, 2000);
             }
         });
     };
@@ -172,6 +132,7 @@
         tips.show();
         tips.fadeOut(time);
     }
+
 </script>
 
 </html>

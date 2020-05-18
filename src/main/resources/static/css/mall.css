@@ -7,6 +7,10 @@ h1 {
     padding-top: 25px;
 }
 
+#city_list{
+
+}
+
 .font_space {
     font-weight: bolder;
     letter-spacing: 1px;
@@ -30,6 +34,7 @@ h1 {
 }
 
 #btn_query {
+    float: right;
     margin-left: 25px;
 }
 
@@ -49,6 +54,14 @@ h1 {
 
 table {
     text-align: center;
+}
+
+#loading{
+    position: absolute;
+    left: 916px;
+    top: 399px;
+    height: 66px;
+    width: 66px;
 }
 
 #tips_hr {

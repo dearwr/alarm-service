@@ -1,11 +1,15 @@
 package com.hchc.alarm.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Created by wangrong 2020/4/27
  */
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class BranchInfo extends Branch{
 
     private long hqId;

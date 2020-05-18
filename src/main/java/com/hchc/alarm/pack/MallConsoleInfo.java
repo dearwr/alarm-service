@@ -11,6 +11,6 @@ public class MallConsoleInfo {
 
     private Set<String> cities;
 
-    private List<MallService> services;
+    private List<MallService> malls;
 
 }

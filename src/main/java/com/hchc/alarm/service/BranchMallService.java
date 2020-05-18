@@ -75,7 +75,7 @@ public class BranchMallService {
                 });
         services.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName())); // 排序
         mallConsoleInfo.setCities(cities);
-        mallConsoleInfo.setServices(services);
+        mallConsoleInfo.setMalls(services);
         return mallConsoleInfo;
     }
 }

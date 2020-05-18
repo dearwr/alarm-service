@@ -51,6 +51,14 @@ table {
     text-align: center;
 }
 
+#loading{
+    position: absolute;
+    left: 916px;
+    top: 399px;
+    height: 66px;
+    width: 66px;
+}
+
 #tips_hr {
     border-top: darkgray 1px dashed;
     overflow: hidden;

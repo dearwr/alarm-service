@@ -40,6 +40,11 @@
         <tbody id="t_body"></tbody>
     </table>
 
+    <!--加载中-->
+    <div id="loading" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+
     <!--提示框-->
     <div id="tips" class="alert alert-warning">
         <h5 id="tips_head"></h5>
@@ -57,6 +62,7 @@
     const tips_msg = $("#tips_msg");
     const errSize = $("#err_size");
     const freshTime = $("#fresh_time");
+    const loading = $("#loading");
     var query_hqId = 2439;
     var t;
 
@@ -128,6 +134,7 @@
                     var kdsInfoList = resp.data;
                     if (kdsInfoList != null) {
                         if (kdsInfoList.length === 0) {
+                            loading.hide();
                             showTips("查询成功", "没有数据！！！", 2000);
                         }else {
                             var trData = '';
@@ -148,6 +155,7 @@
                                     '<td>' + kdsInfo.kdsCount + '</td>\n' +
                                     '</tr>';
                             }
+                            loading.hide();
                             tBody.empty();
                             tBody.append(trData);
                             showTips("刷新成功", "", 1000);
@@ -156,12 +164,13 @@
                         freshTime.text("刷新时间 :  " + resp.respTime);
                     }
                 } else {
+                    loading.hide();
                     showTips("刷新失败", resp.message, 2000);
                 }
-
             },
             error: function (resp) {
                 console.log("error resp : " + resp);
+                loading.hide();
                 showTips("刷新失败", resp.data, 2000);
             }
         });
