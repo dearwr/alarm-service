@@ -1,9 +1,8 @@
-package com.hchc.alarm.dao.hchc;
+package com.hchc.alarm.dao.flip;
 
 import com.alibaba.fastjson.JSON;
-import com.hchc.alarm.dao.HcHcBaseDao;
+import com.hchc.alarm.dao.FlipBaseDao;
 import com.hchc.alarm.model.BranchInfo;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -11,18 +10,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Created by wangrong 2020/5/18
+ * Created by wangrong 2020/5/19
  */
 @Repository
-@Slf4j
-public class BranchMallDao extends HcHcBaseDao {
+public class FBranchMallDao extends FlipBaseDao {
 
     public List<BranchInfo> queryMallConsoleInfos() {
         String sql = "SELECT b.id, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config from t_branch_mall m" +
                 " LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
-                " WHERE m.f_enable = 1 and f_config <> '' and f_hqid <> 199 and f_mall <> 'huarun'";
-        return hJdbcTemplate.query(sql, this::queryMapping);
+                " WHERE m.f_enable = 1 and f_config <> '' and f_hqid <> 199";
+        return fJdbcTemplate.query(sql, this::queryMapping);
     }
 
     private BranchInfo queryMapping(ResultSet set, int i) throws SQLException {

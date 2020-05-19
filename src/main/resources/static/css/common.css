@@ -1,0 +1,80 @@
+body {
+    background-image: url("/image/body1.jpg");
+}
+
+h1 {
+    text-align: center;
+    padding-top: 25px;
+}
+
+h5 {
+    padding: 5px;
+}
+
+table {
+    text-align: center;
+}
+
+.font_space {
+    font-weight: bolder;
+    letter-spacing: 1px;
+}
+
+#context {
+    margin: auto;
+    width: 80%;
+}
+
+#search {
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+#ipt_hqId {
+    margin-left: 10px;
+    border-radius: 1px;
+    padding-left: 10px;
+
+}
+
+#err_size {
+    float: right;
+    margin-right: 80px;
+}
+
+#loading{
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px; /* 元素高度的一半 */
+    margin-left: -50px; /* 元素宽度的一半 */
+}
+
+#tips_hr {
+    border-top: darkgray 1px dashed;
+    overflow: hidden;
+    height: 1px;
+    margin-bottom: 12px;
+}
+
+
+#tips {
+    z-index: 2;
+    position: absolute;
+    height: 156px;
+    width: 198px;
+    padding: 10px;
+    display: none;
+    border-radius: 10px;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    margin-top: -78px; /* 元素高度的一半 */
+    margin-left: -99px; /* 元素宽度的一半 */
+}
+
+.off_line {
+    background-color: gray;
+}

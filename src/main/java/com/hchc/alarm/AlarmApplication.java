@@ -48,6 +48,24 @@ public class AlarmApplication {
 	}
 
 	@Bean
+	@ConfigurationProperties("flip")
+	public DataSourceProperties fDataSourceProperties() {
+		return new DataSourceProperties();
+	}
+
+	@Bean
+	public DataSource fDataSource() {
+		DataSourceProperties dataSourceProperties = fDataSourceProperties();
+		log.info("flip datasource:{}", dataSourceProperties.getUrl());
+		return dataSourceProperties.initializeDataSourceBuilder().build();
+	}
+
+	@Bean
+	public JdbcTemplate fJdbcTemplate() {
+		return new JdbcTemplate(fDataSource());
+	}
+
+	@Bean
 	@Resource
 	public PlatformTransactionManager hTransactionManager(DataSource hDataSource) {
 		return new DataSourceTransactionManager(hDataSource);

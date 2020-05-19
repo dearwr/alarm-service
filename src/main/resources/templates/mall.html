@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
 
     <title>商场对接</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+
     <link rel="stylesheet" type="text/css" href="/css/mall.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script src="/js/common.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
@@ -200,14 +203,6 @@
         }
         displayMallsData(mallsArray);
     };
-
-    //提示信息
-    var showTips = function (head, msg, time) {
-        tips_head.text(head);
-        tips_msg.text(msg);
-        tips.show();
-        tips.fadeOut(time);
-    }
 
 </script>
 

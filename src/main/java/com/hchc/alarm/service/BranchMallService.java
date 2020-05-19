@@ -1,7 +1,8 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.constant.MallConstant;
-import com.hchc.alarm.dao.hchc.BranchMallDao;
+import com.hchc.alarm.dao.flip.FBranchMallDao;
+import com.hchc.alarm.dao.hchc.HBranchMallDao;
 import com.hchc.alarm.model.BranchInfo;
 import com.hchc.alarm.model.MallService;
 import com.hchc.alarm.pack.MallConsoleInfo;
@@ -23,12 +24,23 @@ import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
 public class BranchMallService {
 
     @Autowired
-    private BranchMallDao branchMallDao;
+    private HBranchMallDao HBranchMallDao;
+    @Autowired
+    private FBranchMallDao fBranchMallDao;
 
     public MallConsoleInfo queryMallConsoleInfos() {
-        List<BranchInfo> branchInfos = branchMallDao.queryMallConsoleInfos();
-        if (CollectionUtils.isEmpty(branchInfos)) {
+        List<BranchInfo> branchInfos1 = HBranchMallDao.queryMallConsoleInfos();
+        List<BranchInfo> branchInfos2 = fBranchMallDao.queryMallConsoleInfos();
+        List<BranchInfo> branchInfos = new ArrayList<>();
+        if (CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
             return null;
+        } else if (!CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
+            branchInfos = branchInfos1;
+        } else if (!CollectionUtils.isEmpty(branchInfos2) && CollectionUtils.isEmpty(branchInfos1)) {
+            branchInfos = branchInfos2;
+        }else {
+            branchInfos.addAll(branchInfos1);
+            branchInfos.addAll(branchInfos2);
         }
 
         Map<String, List<BranchInfo>> mallBranches = branchInfos.stream()
