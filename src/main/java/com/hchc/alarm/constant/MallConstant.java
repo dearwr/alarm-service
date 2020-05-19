@@ -13,17 +13,17 @@ public class MallConstant {
         daily("daily", "定时"),
         daily2("daily2", "定时");
 
-        private String pMethod;
+        private String pCode;
         private String pName;
 
-        PushMethod(String pMethod, String pName) {
-            this.pMethod = pMethod;
+        PushMethod(String pCode, String pName) {
+            this.pCode = pCode;
             this.pName = pName;
         }
 
-        public static String getNameByMethod(String pMethod) {
+        public static String getNameByCode(String pCode) {
             for (PushMethod pushMethod : PushMethod.values()) {
-                if (pushMethod.pMethod.equals(pMethod)) {
+                if (pushMethod.pCode.equals(pCode)) {
                     return pushMethod.pName;
                 }
             }

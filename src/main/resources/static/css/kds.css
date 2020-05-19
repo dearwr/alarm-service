@@ -53,10 +53,12 @@ table {
 
 #loading{
     position: absolute;
-    left: 916px;
-    top: 399px;
-    height: 66px;
-    width: 66px;
+    height: 100px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px; /* 元素高度的一半 */
+    margin-left: -50px; /* 元素宽度的一半 */
 }
 
 #tips_hr {
@@ -70,14 +72,16 @@ table {
 #tips {
     z-index: 2;
     position: absolute;
-    left: 860px;
-    top: 260px;
     height: 156px;
-    width: 199px;
+    width: 198px;
     padding: 10px;
     display: none;
     border-radius: 10px;
     text-align: center;
+    top: 50%;
+    left: 50%;
+    margin-top: -78px; /* 元素高度的一半 */
+    margin-left: -99px; /* 元素宽度的一半 */
 }
 
 h5 {

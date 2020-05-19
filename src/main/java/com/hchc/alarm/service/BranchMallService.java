@@ -30,52 +30,77 @@ public class BranchMallService {
         if (CollectionUtils.isEmpty(branchInfos)) {
             return null;
         }
-        MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
-        Set<String> cities = new HashSet<>();
-        List<MallService> services = new ArrayList<>();
-        branchInfos.stream()
+
+        Map<String, List<BranchInfo>> mallBranches = branchInfos.stream()
                 .filter(b -> {  // 过滤mark名称存在的
                     if (MallConstant.MARK_NAME_MAP.get(b.getMark()) == null) {
-                        log.info("[queryMallConsoleInfos] app cache not exist markNameMapping: {}", b.getMark());
+                        log.info("[queryMallConsoleInfos] app cache not exist data mark : {}", b.getMark());
                         return false;
                     }
                     return true;
                 })
-                .collect(Collectors.groupingBy(BranchInfo::getMark))  // 按mark分组
-                .forEach((mark, branchList) -> {
-                    MallService mallService = new MallService();
-                    mallService.setMark(mark);
-                    mallService.setName(MallConstant.MARK_NAME_MAP.get(mark));
-                    String city = mallService.getName().substring(0, 2);
-                    mallService.setCity(city);
-                    cities.add(city);
-                    mallService.setBranchInfos(branchList);
-                    for (BranchInfo info : branchList) {
-                        String method = info.getPushMethod();
-                        if (MallConstant.PushMethod.getNameByMethod(method) != null) {
-                            mallService.setPushMethod(method);
-                            break;
-                        }
-                    }
-                    for (BranchInfo info : branchList) {
-                        String pType = null;
-                        if (info.getUrl() != null) {
-                            pType = MallConstant.PushType.webservice.name();
-                        } else if (info.getFtpHost() != null) {
-                            pType = MallConstant.PushType.ftp.name();
-                        } else if (info.getUrlHost() != null) {
-                            pType = MallConstant.PushType.http.name();
-                        }
-                        if (pType != null) {
-                            mallService.setPushType(pType);
-                            break;
-                        }
-                    }
-                    services.add(mallService);
-                });
-        services.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName())); // 排序
-        mallConsoleInfo.setCities(cities);
-        mallConsoleInfo.setMalls(services);
+                .collect(Collectors.groupingBy(BranchInfo::getMark)); // 按mark分组
+
+        List<String> cities = new ArrayList<>();
+        List<MallService> malls = new ArrayList<>();
+        List<String> list;
+        MallService mallService;
+        for (String mark : mallBranches.keySet()) {
+            mallService = new MallService();
+            mallService.setMark(mark);
+            mallService.setName(MallConstant.MARK_NAME_MAP.get(mark));
+            String city = mallService.getName().substring(0, 2);
+            mallService.setCity(city);
+            cities.add(city);
+            mallService.setBranchInfos(new HashSet<>(mallBranches.get(mark)));
+            for (BranchInfo info : mallBranches.get(mark)) {
+                String mCode = info.getPushMethod();
+                String mName = MallConstant.PushMethod.getNameByCode(mCode);
+                if (mName != null) {
+                    list = new ArrayList<>();
+                    list.add(mName);
+                    mallService.setMethods(list);
+                    break;
+                }
+            }
+            for (BranchInfo info : mallBranches.get(mark)) {
+                String pType = null;
+                if (info.getUrl() != null) {
+                    pType = MallConstant.PushType.webservice.name();
+                } else if (info.getFtpHost() != null) {
+                    pType = MallConstant.PushType.ftp.name();
+                } else if (info.getUrlHost() != null) {
+                    pType = MallConstant.PushType.http.name();
+                }
+                if (pType != null) {
+                    list = new ArrayList<>();
+                    list.add(pType);
+                    mallService.setTypes(list);
+                    break;
+                }
+            }
+            // 存在相同商场，合并数据
+            boolean exist = false;
+            for (MallService s : malls) {
+                if (s.getName().equals(mallService.getName())) {
+                    exist = true;
+                    s.setMark(s.getMark() + "、" + mallService.getMark());
+                    s.getMethods().addAll(mallService.getMethods());
+                    s.getTypes().addAll(mallService.getTypes());
+                    s.getBranchInfos().addAll(mallService.getBranchInfos());
+                    break;
+                }
+            }
+            if (!exist) {
+                malls.add(mallService);
+            }
+        }
+
+        malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName())); // 按商场名排序
+        List<String> cityNames = cities.stream().distinct().sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
+        MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
+        mallConsoleInfo.setMalls(malls);
+        mallConsoleInfo.setCities(cityNames);
         return mallConsoleInfo;
     }
 }

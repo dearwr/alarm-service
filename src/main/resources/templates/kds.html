@@ -129,7 +129,7 @@
             data: {"hqId": query_hqId, "branchId": 0},
             dataType: "json",
             success: function (resp) {
-                console.log("suc resp : " + resp);
+                console.log(resp);
                 if (resp.code === "0") {
                     var kdsInfoList = resp.data;
                     if (kdsInfoList != null) {
@@ -169,7 +169,7 @@
                 }
             },
             error: function (resp) {
-                console.log("error resp : " + resp);
+                console.log(resp);
                 loading.hide();
                 showTips("刷新失败", resp.data, 2000);
             }

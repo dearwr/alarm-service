@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Branch {
 
-    private String brandName;
-    private String branchName;
-    private String address;
+    protected String brandName;
+    protected String branchName;
+    protected String address;
 }

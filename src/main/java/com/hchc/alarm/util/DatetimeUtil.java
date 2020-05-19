@@ -67,4 +67,19 @@ public class DatetimeUtil {
         return c.getTime();
     }
 
+    /**
+     * 获取指定时间的那一天的开始时间(精确到毫秒)
+     * @param date
+     * @return
+     */
+    public static Date getDayStart(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
 }
