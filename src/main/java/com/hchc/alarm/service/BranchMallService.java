@@ -13,8 +13,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
-import static com.hchc.alarm.constant.MallConstant.MARK_FULL_NAME_MAP;
+import static com.hchc.alarm.constant.MallConstant.*;
 
 /**
  * Created by wangrong 2020/5/18
@@ -25,13 +24,11 @@ public class BranchMallService {
 
     @Autowired
     private HBranchMallDao hBranchMallDao;
-    @Autowired
-    private RemoteService remoteService;
 
     public MallConsoleInfo queryMallConsoleInfos() {
-        List<BranchInfo> branchInfos1 = hBranchMallDao.queryBranchInfos();
-        List<BranchInfo> branchInfos2 = remoteService.queryBranchInfos();
         List<BranchInfo> branchInfos = new ArrayList<>();
+        List<BranchInfo> branchInfos1 = hBranchMallDao.queryBranchInfos();
+        List<BranchInfo> branchInfos2 = FLIP_BRANCH_DATA;
         if (CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
             return null;
         } else if (!CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {

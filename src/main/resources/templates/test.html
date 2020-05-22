@@ -92,15 +92,15 @@
                     start = this.start
                 }
             } else if (start === 0) {//不变
-                var time; //当月最大天数
-                console.log("m:" + this.m);
-                console.log("start:" + this.start);
+                var time = new Date(this.y, this.m, 0).getDate(); //当月最大天数
+                if (this.start > 0 && this.d - this.day > 0) {
+                    time = new Date(this.y, this.m + 1, 0).getDate();
+                }
+                console.log("time" + time);
                 if (this.start <= 0) {//本周跨月并定位第二月
-                    time = new Date(this.y, this.m, 0).getDate();
                     this.isSecond = true;
                     this.isAcrossM = true;
                     day = Math.abs(this.start);
-                    console.log("time" + time);
 
                     this.start = time - day;
                     for (i = time - day; i <= time; i++) {
@@ -109,9 +109,6 @@
                     start = 1;
                     day = 7 - day - 2;
                 } else {
-                    time = new Date(this.y, this.m + 1, 0).getDate();
-                    console.log("time" + time);
-
                     if (this.start + 6 > time) {//本周跨月并定位第一月
                         this.isAcrossM = true;
                         diff = time - this.start;
@@ -246,6 +243,7 @@
                 }
             }
             console.log(html);
+            console.log(YYMM);
         };
         this.loadDate(0);
     }
