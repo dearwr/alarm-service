@@ -81,7 +81,7 @@ public class MallConstant {
         MARK_FULL_NAME_MAP.put("bubugao", "长沙步步高梅溪新天地");
         MARK_FULL_NAME_MAP.put("ninedragon", "长沙九龙仓国金中心");
         MARK_FULL_NAME_MAP.put("wincor", "长沙坡子街悦方");
-        MARK_FULL_NAME_MAP.put("airport", "长沙市黄花机场");
+        MARK_FULL_NAME_MAP.put("airport", "长沙黄花机场");
         MARK_FULL_NAME_MAP.put("rglaifushi", "上海来福士");
         MARK_FULL_NAME_MAP.put("why", "长沙文和友海信广场");
         MARK_FULL_NAME_MAP.put("newxzg","北京新中关");
