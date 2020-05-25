@@ -7,11 +7,8 @@ import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.BranchMallService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -35,7 +32,7 @@ public class BranchMallController {
     public Output pushBranchInfos(@RequestBody List<BranchInfo> branchInfos) {
         log.info("[pushBranchInfos] params :{}", JSON.toJSONString(branchInfos));
         if (branchInfos != null) {
-            MallConstant.FLIP_BRANCH_DATA = branchInfos;
+            MallConstant.FLIP_MALL_BRANCH_DATA = branchInfos;
         }
         return Output.ok();
     }

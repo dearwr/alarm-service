@@ -28,15 +28,11 @@ public class BranchMallService {
     public MallConsoleInfo queryMallConsoleInfos() {
         List<BranchInfo> branchInfos = new ArrayList<>();
         List<BranchInfo> branchInfos1 = hBranchMallDao.queryBranchInfos();
-        List<BranchInfo> branchInfos2 = FLIP_BRANCH_DATA;
-        if (CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
-            return null;
-        } else if (!CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
-            branchInfos = branchInfos1;
-        } else if (!CollectionUtils.isEmpty(branchInfos2) && CollectionUtils.isEmpty(branchInfos1)) {
-            branchInfos = branchInfos2;
-        }else {
+        List<BranchInfo> branchInfos2 = FLIP_MALL_BRANCH_DATA;   // flip对接商场数据
+        if (!CollectionUtils.isEmpty(branchInfos1)) {
             branchInfos.addAll(branchInfos1);
+        }
+        if (!CollectionUtils.isEmpty(branchInfos2)) {
             branchInfos.addAll(branchInfos2);
         }
 

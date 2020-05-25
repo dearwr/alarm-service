@@ -38,7 +38,7 @@ public class MallConstant {
     }
 
     // flip 服务器商场门店数据
-    public static List<BranchInfo> FLIP_BRANCH_DATA;
+    public static List<BranchInfo> FLIP_MALL_BRANCH_DATA;
 
     public static final Map<String, String> MARK_FULL_NAME_MAP = new HashMap<>();
 

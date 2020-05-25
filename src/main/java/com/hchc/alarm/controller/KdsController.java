@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.util.DateUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -55,7 +56,7 @@ public class KdsController {
             for (TBranchKds kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                end = new Date();
+                end = DatetimeUtil.addSecond(new Date(), 6);
                 kdsQueueOrders = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end)
                         .stream()
                         .distinct() // 去重

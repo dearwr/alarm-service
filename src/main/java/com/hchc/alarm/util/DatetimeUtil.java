@@ -82,4 +82,10 @@ public class DatetimeUtil {
         return calendar.getTime();
     }
 
+    public static Date addSecond(Date date, int offset) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.SECOND, offset);
+        return c.getTime();
+    }
 }
