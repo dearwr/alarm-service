@@ -64,16 +64,12 @@ public class BranchMallService {
 
     private void handleMallBranches(Map<String, List<BranchInfo>> mallBranches, List<MallService> malls, List<String> cities) {
         MallService mallService;
-        String fullName;
-        String city;
         for (String mark : mallBranches.keySet()) {
+            cities.add(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallService = new MallService();
             mallService.setMark(mark);
-            fullName = MARK_FULL_NAME_MAP.get(mark);
-            mallService.setName(fullName.substring(2));
-            city = fullName.substring(0, 2);
-            mallService.setCity(city);
-            cities.add(city);
+            mallService.setName(MARK_FULL_NAME_MAP.get(mark).substring(2));
+            mallService.setCity(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallService.setBranchInfos(mallBranches.get(mark));
             for (BranchInfo info : mallBranches.get(mark)) {
                 String mCode = info.getPushMethod();
