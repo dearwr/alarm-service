@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * Created by wangrong 2020/4/27
+ * @author wangrong
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,13 +16,22 @@ public class BranchInfo extends Branch{
     private String mark;
 
     // http、webservice
-    private String url;     // 正式地址
+    /**
+     * 正式地址
+     */
+    private String url;
     private String urlHost;
     private String urlPort;
 
     // ftp
-    private String ftpHost;    // ftp.host
-    private int ftpPort;       // ftp.port
+    /**
+     * host
+     */
+    private String ftpHost;
+    /**
+     * port
+     */
+    private int ftpPort;
 
     private String pushMethod;
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by wangrong 2020/5/13
+ * @author wangrong
  */
 @Repository
 public class KdsMessageBaseDao extends RocketBaseDao {

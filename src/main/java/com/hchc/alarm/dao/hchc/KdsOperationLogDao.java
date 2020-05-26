@@ -6,6 +6,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+/**
+ * @author wangrong
+ */
 @Repository
 public class KdsOperationLogDao extends HcHcBaseDao {
 

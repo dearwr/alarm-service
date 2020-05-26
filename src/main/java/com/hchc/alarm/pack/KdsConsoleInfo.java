@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * Created by wangrong 2020/5/12
+ * @author wangrong
  */
 @Data
 public class KdsConsoleInfo {

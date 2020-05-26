@@ -4,7 +4,7 @@ import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
-import com.hchc.alarm.entity.TBranchKds;
+import com.hchc.alarm.entity.BranchKdsTb;
 import com.hchc.alarm.model.Branch;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.KdsConsoleInfo;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.util.DateUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -23,6 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by wangrong 2020/5/12
+ * @author wangrong
  */
 @RestController
 @RequestMapping("/kdsConsole")
@@ -42,8 +42,8 @@ public class KdsController {
 
     @GetMapping("/errKdsInfo")
     public Output getErrorKdsInfo(int hqId, int branchId) {
-        log.info("[getErrorKdsInfo] request params hqId:{}, branchId:{}", hqId, branchId);
-        List<TBranchKds> kdsList = branchKdsDao.query(hqId, branchId);
+        log.info("[getErrorKdsInfo] recv request params hqId:{}, branchId:{}", hqId, branchId);
+        List<BranchKdsTb> kdsList = branchKdsDao.query(hqId, branchId);
         List<KdsConsoleInfo> errKdsInfoList = new ArrayList<>();
         List<KdsConsoleInfo> offLineKds = new ArrayList<>();
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
@@ -53,10 +53,10 @@ public class KdsController {
         Date start = DatetimeUtil.dayBegin(new Date());
         Date end;
         try {
-            for (TBranchKds kds : kdsList) {
+            for (BranchKdsTb kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                end = DatetimeUtil.addSecond(new Date(), 6);
+                end = DatetimeUtil.addSecond(new Date(), 10);
                 kdsQueueOrders = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end)
                         .stream()
                         .distinct() // 去重
@@ -93,7 +93,7 @@ public class KdsController {
         if (heartTime == null) {
             return true;
         }
-        return new Date().getTime() - DatetimeUtil.parse(heartTime).getTime() > 60000;
+        return System.currentTimeMillis() - DatetimeUtil.parse(heartTime).getTime() > 60000;
     }
 
 }

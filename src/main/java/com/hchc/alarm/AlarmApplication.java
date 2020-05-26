@@ -19,6 +19,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+/**
+ * @author wangrong
+ */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class,
 		JdbcTemplateAutoConfiguration.class})
@@ -85,8 +88,10 @@ public class AlarmApplication {
 	@Bean
 	public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
 		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-		factory.setReadTimeout(5000);//单位为ms
-		factory.setConnectTimeout(5000);//单位为ms
+		//超时时间、单位为ms
+		factory.setReadTimeout(5000);
+		//连接时间、单位为ms
+		factory.setConnectTimeout(5000);
 		return factory;
 	}
 }

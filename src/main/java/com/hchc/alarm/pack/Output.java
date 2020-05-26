@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @author wangrong
+ */
 @Data
 public class Output {
     private String code;

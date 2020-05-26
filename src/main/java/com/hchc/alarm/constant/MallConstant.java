@@ -5,14 +5,25 @@ import com.hchc.alarm.model.BranchInfo;
 import java.text.Collator;
 import java.util.*;
 
+/**
+ * @author wangrong
+ */
 public class MallConstant {
 
-    // 中文比较器
+    /**
+     * 中文比较器
+     */
     public static final Collator CHINESE_COMPARATOR = Collator.getInstance(java.util.Locale.CHINA);
 
+    /**
+     * 推送方式
+     */
     public enum PushMethod {
+        //实时
         immediate("immediate", "实时"),
+        //定时
         daily("daily", "定时"),
+        //定时
         daily2("daily2", "定时");
 
         private String pCode;
@@ -33,11 +44,21 @@ public class MallConstant {
         }
     }
 
+    /**
+     * 推送类型
+     */
     public enum PushType {
-        ftp, http, webservice;
+        // ftp
+        ftp,
+        // http
+        http,
+        // webservice
+        webservice
     }
 
-    // flip 服务器商场门店数据
+    /**
+     * flip 服务器商场门店数据
+     */
     public static List<BranchInfo> FLIP_MALL_BRANCH_DATA;
 
     public static final Map<String, String> MARK_FULL_NAME_MAP = new HashMap<>();

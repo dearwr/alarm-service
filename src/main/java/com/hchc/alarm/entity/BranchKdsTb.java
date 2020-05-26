@@ -4,8 +4,11 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @author wangrong
+ */
 @Data
-public class TBranchKds {
+public class BranchKdsTb {
 
     private int id;
     private int hqId;

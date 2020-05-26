@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by wangrong 2020/5/18
+ * @author wangrong
  */
 @RestController
 @RequestMapping("/mallConsole")

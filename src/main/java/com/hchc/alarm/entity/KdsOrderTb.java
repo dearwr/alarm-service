@@ -5,8 +5,11 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author wangrong
+ */
 @Data
-public class TKdsOrder implements Serializable {
+public class KdsOrderTb implements Serializable {
 
     private int id;
     private int hqId;

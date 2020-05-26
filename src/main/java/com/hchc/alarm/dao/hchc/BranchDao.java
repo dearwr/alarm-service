@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 /**
  * Created by wangrong 2020/5/13
+ * @author wangrong
  */
 @Repository
 public class BranchDao extends HcHcBaseDao {
@@ -17,10 +18,10 @@ public class BranchDao extends HcHcBaseDao {
         String sql = "select h.name as brandName, b.name as branchName from t_headquarter h " +
                 "left join t_branch b on h.id = b.hq_id " +
                 " where b.hq_id = ? and b.id = ?";
-        return hJdbcTemplate.query(sql, this::Mapping, hqId, branchId).get(0);
+        return hJdbcTemplate.query(sql, this::mapping, hqId, branchId).get(0);
     }
 
-    private Branch Mapping(ResultSet rs, int i) throws SQLException {
+    private Branch mapping(ResultSet rs, int i) throws SQLException {
         Branch branch = new Branch();
         branch.setBrandName(rs.getString("brandName"));
         branch.setBranchName(rs.getString("branchName"));

@@ -1,7 +1,7 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.constant.MallConstant;
-import com.hchc.alarm.dao.hchc.HBranchMallDao;
+import com.hchc.alarm.dao.hchc.BranchMallDao;
 import com.hchc.alarm.model.BranchInfo;
 import com.hchc.alarm.model.MallService;
 import com.hchc.alarm.pack.MallConsoleInfo;
@@ -16,19 +16,20 @@ import java.util.stream.Collectors;
 import static com.hchc.alarm.constant.MallConstant.*;
 
 /**
- * Created by wangrong 2020/5/18
+ * @author wangrong
  */
 @Service
 @Slf4j
 public class BranchMallService {
 
     @Autowired
-    private HBranchMallDao hBranchMallDao;
+    private BranchMallDao branchMallDao;
 
     public MallConsoleInfo queryMallConsoleInfos() {
         List<BranchInfo> branchInfos = new ArrayList<>();
-        List<BranchInfo> branchInfos1 = hBranchMallDao.queryBranchInfos();
-        List<BranchInfo> branchInfos2 = FLIP_MALL_BRANCH_DATA;   // flip对接商场数据
+        List<BranchInfo> branchInfos1 = branchMallDao.queryBranchInfos();
+        // flip服务器对接商场数据
+        List<BranchInfo> branchInfos2 = FLIP_MALL_BRANCH_DATA;
         if (!CollectionUtils.isEmpty(branchInfos1)) {
             branchInfos.addAll(branchInfos1);
         }
@@ -37,18 +38,31 @@ public class BranchMallService {
         }
 
         Map<String, List<BranchInfo>> mallBranches = branchInfos.stream()
-                .filter(b -> {  // 过滤mark名称存在的
+                // 过滤mark名称存在的
+                .filter(b -> {
                     if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
                         log.info("[queryMallConsoleInfos] app cache not exist data mark : {}", b.getMark());
                         return false;
                     }
                     return true;
                 })
-                .collect(Collectors.groupingBy(BranchInfo::getMark)); // 按mark分组
+                // 按mark分组
+                .collect(Collectors.groupingBy(BranchInfo::getMark));
 
-        List<String> cities = new ArrayList<>();
         List<MallService> malls = new ArrayList<>();
-        List<String> list;
+        List<String> cities = new ArrayList<>();
+        handleMallBranches(mallBranches, malls, cities);
+        // 商场名排序
+        malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName()));
+        // 城市名排序
+        List<String> cityNames = cities.stream().distinct().sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
+        MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
+        mallConsoleInfo.setMalls(malls);
+        mallConsoleInfo.setCities(cityNames);
+        return mallConsoleInfo;
+    }
+
+    private void handleMallBranches(Map<String, List<BranchInfo>> mallBranches, List<MallService> malls, List<String> cities) {
         MallService mallService;
         String fullName;
         String city;
@@ -65,9 +79,7 @@ public class BranchMallService {
                 String mCode = info.getPushMethod();
                 String mName = MallConstant.PushMethod.getNameByCode(mCode);
                 if (mName != null) {
-                    list = new ArrayList<>();
-                    list.add(mName);
-                    mallService.setMethods(list);
+                    mallService.setMethods(new ArrayList<>(Collections.singletonList(mName)));
                     break;
                 }
             }
@@ -81,9 +93,7 @@ public class BranchMallService {
                     pType = MallConstant.PushType.http.name();
                 }
                 if (pType != null) {
-                    list = new ArrayList<>();
-                    list.add(pType);
-                    mallService.setTypes(list);
+                    mallService.setTypes(new ArrayList<>(Collections.singletonList(pType)));
                     break;
                 }
             }
@@ -115,13 +125,5 @@ public class BranchMallService {
                 malls.add(mallService);
             }
         }
-        // 商场名排序
-        malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName()));
-        // 城市名排序
-        List<String> cityNames = cities.stream().distinct().sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
-        MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
-        mallConsoleInfo.setMalls(malls);
-        mallConsoleInfo.setCities(cityNames);
-        return mallConsoleInfo;
     }
 }

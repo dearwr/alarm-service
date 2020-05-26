@@ -12,10 +12,11 @@ import java.util.List;
 
 /**
  * Created by wangrong 2020/5/18
+ * @author wangrong
  */
 @Repository
 @Slf4j
-public class HBranchMallDao extends HcHcBaseDao {
+public class BranchMallDao extends HcHcBaseDao {
 
     public List<BranchInfo> queryBranchInfos() {
         String sql = "SELECT b.id, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config from t_branch_mall m" +
