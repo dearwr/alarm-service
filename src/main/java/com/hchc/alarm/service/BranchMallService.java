@@ -56,9 +56,39 @@ public class BranchMallService {
         malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName()));
         // 城市名排序
         List<String> cityNames = cities.stream().distinct().sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
+        // 筛选品牌名及对应的商场
+        Map<String, List<MallService>> brandMalls = new HashMap<>(128);
+        List<MallService> mallList;
+        String brandName;
+        boolean exitMall;
+        for (MallService mall : malls) {
+            for (BranchInfo branchInfo : mall.getBranchInfos()) {
+                brandName = branchInfo.getBrandName();
+                if (brandName == null) {
+                    continue;
+                }
+                exitMall = false;
+                if (brandMalls.containsKey(brandName)) {
+                    for (MallService brandMall : brandMalls.get(brandName)) {
+                        if (brandMall.getName().equals(mall.getName()) && brandMall.getCity().equals(mall.getCity())) {
+                            exitMall = true;
+                            break;
+                        }
+                    }
+                    if (!exitMall) {
+                        brandMalls.get(brandName).add(mall);
+                    }
+                } else {
+                    mallList = new ArrayList<>();
+                    mallList.add(mall);
+                    brandMalls.put(brandName, mallList);
+                }
+            }
+        }
         MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
         mallConsoleInfo.setMalls(malls);
         mallConsoleInfo.setCities(cityNames);
+        mallConsoleInfo.setBrandMalls(brandMalls);
         return mallConsoleInfo;
     }
 

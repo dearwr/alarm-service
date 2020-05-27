@@ -1,11 +1,13 @@
 #city_select{
-    /*float: left;*/
+    float: left;
+    margin-bottom: 5px;
 }
 
-/*#brand_select{*/
-/*    float: left;*/
-/*    margin-left: 50px;*/
-/*}*/
+#brand_select{
+    float: left;
+    margin-left: 100px;
+    margin-bottom: 5px;
+}
 
 #branch_table{
     height: 10px;

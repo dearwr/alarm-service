@@ -22,11 +22,18 @@
     <div id="search">
         <!-- 城市列表下拉框 -->
         <div id="city_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownCityList"
+            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 所在城市
             </a>
             <div id="city-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
+        </div>
+        <div id="brand_select" class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownBrandList"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                所属品牌
+            </a>
+            <div id="brand-menu" class="dropdown-menu" aria-labelledby="dropdownBrandList"></div>
         </div>
         <!-- 行数 -->
         <b id="row_size" class="font_space">size:</b>
@@ -87,7 +94,6 @@
     </div>
 </div>
 
-</body>
 <script>
     const tBody = $("#mall_body");
     const bBody = $("#branch_body");
@@ -97,9 +103,12 @@
     const rowSize = $("#row_size");
     const citySelect = $("#city_select");
     const cities_menu = $("#city-menu");
+    const brandSelect = $("#brand_select");
+    const brand_menu = $("#brand-menu");
     const loading = $("#loading");
     var citiesData;
     var mallsData;
+    var brandData;
 
     //初始化后加载数据
     var loadDataAfterInit = function () {
@@ -122,17 +131,27 @@
                     if (mallData != null) {
                         var cities = mallData.cities;
                         var malls = mallData.malls;
+                        var brandMalls = mallData.brandMalls;
                         if (cities.length === 0) {
                             loading.hide();
                             showTips("查询成功", "没有数据！！！", 2000);
                         } else {
                             citiesData = cities;
                             mallsData = malls;
+                            brandData = brandMalls;
+                            // 填充城市下拉框
                             var htmlStr = '<a class="dropdown-item" onclick="displayByCity(this)">所有</a>';
                             for (var i in cities) {
                                 htmlStr += '<a class="dropdown-item" onclick="displayByCity(this)">' + cities[i] + '</a>';
                             }
                             cities_menu.append(htmlStr);
+                            // 填充品牌下拉框
+                            htmlStr = '';
+                            for (var key in brandMalls) {
+                                htmlStr += '<a class="dropdown-item" onclick="displayByBrand(this)">' + key + '</a>';
+                            }
+                            brand_menu.append(htmlStr);
+                            // 显示商场表数据
                             displayMallsData(malls);
                             loading.hide();
                             showTips("查询成功", "", 1000);
@@ -195,8 +214,8 @@
     };
 
     //通过城市名筛选
-    var displayByCity = function (select) {
-        var sCity = $(select).text();
+    var displayByCity = function (city_select) {
+        var sCity = $(city_select).text();
         console.log("queryByCity:" + sCity);
         var mallsArray = [];
         if ("所有" === sCity) {
@@ -209,9 +228,28 @@
             }
         }
         citySelect.children('a').eq(0).text(sCity);
+        brandSelect.children('a').eq(0).text("所属品牌");
         displayMallsData(mallsArray);
     };
 
+    var displayByBrand = function (brand_select) {
+        var brand = $(brand_select).text();
+        console.log("queryByBrand:" + brand);
+        var mallsArray = [];
+        for (var key in brandData) {
+            if (key === brand) {
+                for (var i in brandData[key]) {
+                    mallsArray.push(brandData[key][i]);
+                }
+                break;
+            }
+        }
+        brandSelect.children('a').eq(0).text(brand);
+        citySelect.children('a').eq(0).text("所在城市");
+        displayMallsData(mallsArray);
+    }
+
 </script>
+</body>
 
 </html>

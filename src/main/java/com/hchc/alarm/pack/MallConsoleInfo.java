@@ -4,6 +4,7 @@ import com.hchc.alarm.model.MallService;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangrong
@@ -14,5 +15,7 @@ public class MallConsoleInfo {
     private List<String> cities;
 
     private List<MallService> malls;
+
+    private Map<String, List<MallService>> brandMalls;
 
 }

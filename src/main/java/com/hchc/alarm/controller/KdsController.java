@@ -56,7 +56,7 @@ public class KdsController {
             for (BranchKdsTb kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                end = DatetimeUtil.addSecond(new Date(), 15);
+                end = DatetimeUtil.addSecond(new Date(), 20);
                 kdsQueueOrders = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end)
                         .stream()
                         // 去重
