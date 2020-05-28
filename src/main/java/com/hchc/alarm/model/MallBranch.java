@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BranchInfo extends Branch{
+public class MallBranch extends Branch{
 
     private long hqId;
     private long branchId;

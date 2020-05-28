@@ -2,7 +2,7 @@ package com.hchc.alarm.service;
 
 import com.hchc.alarm.constant.MallConstant;
 import com.hchc.alarm.dao.hchc.BranchMallDao;
-import com.hchc.alarm.model.BranchInfo;
+import com.hchc.alarm.model.MallBranch;
 import com.hchc.alarm.model.MallService;
 import com.hchc.alarm.pack.MallConsoleInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -26,18 +26,18 @@ public class BranchMallService {
     private BranchMallDao branchMallDao;
 
     public MallConsoleInfo queryMallConsoleInfos() {
-        List<BranchInfo> branchInfos = new ArrayList<>();
-        List<BranchInfo> branchInfos1 = branchMallDao.queryBranchInfos();
+        List<MallBranch> branchInfos = new ArrayList<>();
+        List<MallBranch> mallBranchInfos1 = branchMallDao.queryBranchInfos(null);
         // flip服务器对接商场数据
-        List<BranchInfo> branchInfos2 = FLIP_MALL_BRANCH_DATA;
-        if (!CollectionUtils.isEmpty(branchInfos1)) {
-            branchInfos.addAll(branchInfos1);
+        List<MallBranch> mallBranchInfos2 = FLIP_MALL_BRANCH_DATA;
+        if (!CollectionUtils.isEmpty(mallBranchInfos1)) {
+            branchInfos.addAll(mallBranchInfos1);
         }
-        if (!CollectionUtils.isEmpty(branchInfos2)) {
-            branchInfos.addAll(branchInfos2);
+        if (!CollectionUtils.isEmpty(mallBranchInfos2)) {
+            branchInfos.addAll(mallBranchInfos2);
         }
 
-        Map<String, List<BranchInfo>> mallBranches = branchInfos.stream()
+        Map<String, List<MallBranch>> mallBranches = branchInfos.stream()
                 // 过滤mark名称存在的
                 .filter(b -> {
                     if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
@@ -47,7 +47,7 @@ public class BranchMallService {
                     return true;
                 })
                 // 按mark分组
-                .collect(Collectors.groupingBy(BranchInfo::getMark));
+                .collect(Collectors.groupingBy(MallBranch::getMark));
 
         List<MallService> malls = new ArrayList<>();
         List<String> cities = new ArrayList<>();
@@ -62,8 +62,8 @@ public class BranchMallService {
         String brandName;
         boolean exitMall;
         for (MallService mall : malls) {
-            for (BranchInfo branchInfo : mall.getBranchInfos()) {
-                brandName = branchInfo.getBrandName();
+            for (MallBranch mallBranch : mall.getMallBranches()) {
+                brandName = mallBranch.getBrandName();
                 if (brandName == null) {
                     continue;
                 }
@@ -92,7 +92,7 @@ public class BranchMallService {
         return mallConsoleInfo;
     }
 
-    private void handleMallBranches(Map<String, List<BranchInfo>> mallBranches, List<MallService> malls, List<String> cities) {
+    private void handleMallBranches(Map<String, List<MallBranch>> mallBranches, List<MallService> malls, List<String> cities) {
         MallService mallService;
         for (String mark : mallBranches.keySet()) {
             cities.add(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
@@ -100,8 +100,8 @@ public class BranchMallService {
             mallService.setMark(mark);
             mallService.setName(MARK_FULL_NAME_MAP.get(mark).substring(2));
             mallService.setCity(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
-            mallService.setBranchInfos(mallBranches.get(mark));
-            for (BranchInfo info : mallBranches.get(mark)) {
+            mallService.setMallBranches(mallBranches.get(mark));
+            for (MallBranch info : mallBranches.get(mark)) {
                 String mCode = info.getPushMethod();
                 String mName = MallConstant.PushMethod.getNameByCode(mCode);
                 if (mName != null) {
@@ -109,7 +109,7 @@ public class BranchMallService {
                     break;
                 }
             }
-            for (BranchInfo info : mallBranches.get(mark)) {
+            for (MallBranch info : mallBranches.get(mark)) {
                 String pType = null;
                 if (info.getUrl() != null) {
                     pType = MallConstant.PushType.webservice.name();
@@ -132,16 +132,16 @@ public class BranchMallService {
                     s.getMethods().addAll(mallService.getMethods());
                     s.getTypes().addAll(mallService.getTypes());
                     boolean existBranch;
-                    for (BranchInfo newBranch : mallService.getBranchInfos()) {
+                    for (MallBranch newBranch : mallService.getMallBranches()) {
                         existBranch = false;
-                        for (BranchInfo oldBranch : s.getBranchInfos()) {
+                        for (MallBranch oldBranch : s.getMallBranches()) {
                             if (newBranch.getBranchName().equals(oldBranch.getBranchName())) {
                                 existBranch = true;
                                 break;
                             }
                         }
                         if (!existBranch) {
-                            s.getBranchInfos().add(newBranch);
+                            s.getMallBranches().add(newBranch);
                         }
                     }
                     break;

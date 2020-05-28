@@ -1,7 +1,7 @@
 package com.hchc.alarm.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hchc.alarm.model.BranchInfo;
+import com.hchc.alarm.model.MallBranch;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.QueueInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -35,11 +35,11 @@ public class RemoteService {
         return queueInfo.getQueueCount();
     }
 
-    public List<BranchInfo> queryBranchInfos() {
+    public List<MallBranch> queryBranchInfos() {
         String url = FLIP_TEST_SERVER_URL + "/mallConsole/branchInfos";
         Output response;
         response = restTemplate.getForEntity(url, Output.class).getBody();
         log.info("[queryBranchInfos] response :{}", JSON.toJSONString(response));
-        return JSON.parseArray(JSON.toJSONString(response.getData()), BranchInfo.class);
+        return JSON.parseArray(JSON.toJSONString(response.getData()), MallBranch.class);
     }
 }

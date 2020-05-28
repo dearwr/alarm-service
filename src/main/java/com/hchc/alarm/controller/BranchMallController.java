@@ -2,7 +2,7 @@ package com.hchc.alarm.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.constant.MallConstant;
-import com.hchc.alarm.model.BranchInfo;
+import com.hchc.alarm.model.MallBranch;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.BranchMallService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +30,10 @@ public class BranchMallController {
     }
 
     @PostMapping("/pushBranchInfos")
-    public Output pushBranchInfos(@RequestBody List<BranchInfo> branchInfos) {
-        log.info("[pushBranchInfos] params :{}", JSON.toJSONString(branchInfos));
-        if (branchInfos != null) {
-            MallConstant.FLIP_MALL_BRANCH_DATA = branchInfos;
+    public Output pushBranchInfos(@RequestBody List<MallBranch> mallBranches) {
+        log.info("[pushBranchInfos] params :{}", JSON.toJSONString(mallBranches));
+        if (mallBranches != null) {
+            MallConstant.FLIP_MALL_BRANCH_DATA = mallBranches;
         }
         return Output.ok();
     }

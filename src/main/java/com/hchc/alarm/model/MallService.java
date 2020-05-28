@@ -20,6 +20,6 @@ public class MallService {
 
     private List<String> methods;
 
-    private List<BranchInfo> branchInfos;
+    private List<MallBranch> mallBranches;
 
 }
