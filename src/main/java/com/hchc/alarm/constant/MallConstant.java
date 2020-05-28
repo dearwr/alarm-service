@@ -16,47 +16,6 @@ public class MallConstant {
     public static final Collator CHINESE_COMPARATOR = Collator.getInstance(java.util.Locale.CHINA);
 
     /**
-     * 推送方式
-     */
-    public enum PushMethod {
-        //实时
-        immediate("immediate", "实时"),
-        //定时
-        daily("daily", "定时"),
-        //定时
-        daily2("daily2", "定时");
-
-        private String pCode;
-        private String pName;
-
-        PushMethod(String pCode, String pName) {
-            this.pCode = pCode;
-            this.pName = pName;
-        }
-
-        public static String getNameByCode(String pCode) {
-            for (PushMethod pushMethod : PushMethod.values()) {
-                if (pushMethod.pCode.equals(pCode)) {
-                    return pushMethod.pName;
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * 推送类型
-     */
-    public enum PushType {
-        // ftp
-        ftp,
-        // http
-        http,
-        // webservice
-        webservice
-    }
-
-    /**
      * flip 服务器商场门店数据
      */
     public static List<MallBranchBO> FLIP_MALL_BRANCH_DATA;

@@ -3,6 +3,7 @@ package com.hchc.alarm.dao.hchc;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.model.CheckOrderBO;
 import com.hchc.alarm.model.BranchCheckBO;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
@@ -14,62 +15,65 @@ import java.util.stream.Collectors;
  * @author wangrong
  * @date 2020-05-28
  */
+@Repository
 public class MallRecordDao extends HcHcBaseDao {
 
-    private CheckOrderBO orderMapping(ResultSet set, int rowNum) throws SQLException {
-        CheckOrderBO checkOrderBO = new CheckOrderBO();
-        checkOrderBO.setHqId(set.getLong("hq_id"));
-        checkOrderBO.setBranchId(set.getLong("branch_id"));
-        checkOrderBO.setCreateTime(set.getDate("created_at"));
-        checkOrderBO.setOrderNo(set.getString("bill"));
-        checkOrderBO.setPlatform(set.getString("platform"));
-        checkOrderBO.setStatus(set.getString("status"));
-        return checkOrderBO;
-    }
-
-    private CheckOrderBO recordMapping(ResultSet set, int rowNum) throws SQLException {
-        CheckOrderBO checkOrderBO = new CheckOrderBO();
-        checkOrderBO.setOrderNo("f_orderno");
-        checkOrderBO.setCreateTime(set.getDate("f_createtime"));
-        checkOrderBO.setRemark(set.getString("f_remark"));
-        return checkOrderBO;
-    }
-
-    public List<CheckOrderBO> queryUnPushOrders(BranchCheckBO branchCheckBO) {
+    public List<CheckOrderBO> queryPushFailOrders(BranchCheckBO b) {
         String sql = "SELECT hq_id, branch_id, created_at, bill, platform, `status` FROM t_order " +
                 "WHERE branch_id = ? AND created_at BETWEEN ? AND ? AND `status`='COMPLETE' " +
                 "AND bill NOT IN (" +
                 "SELECT f_orderno FROM t_mall_record WHERE f_branchid = ? AND f_mall = ? " +
                 "AND f_abbdate BETWEEN ? AND ? AND f_status IN ('suc' , 'skip' , 'exist') )";
         Object[] args = new Object[]{
-                branchCheckBO.getBranchId(), branchCheckBO.getStartTime(), branchCheckBO.getEndTime(),
-                branchCheckBO.getBranchId(), branchCheckBO.getMall(), branchCheckBO.getStartText(), branchCheckBO.getEndText()
+                b.getBranchId(), b.getStartTime(), b.getEndTime(),
+                b.getBranchId(), b.getMall(), b.getStartText(), b.getEndText()
         };
-        List<CheckOrderBO> unPushOrders = hJdbcTemplate.query(sql, this::orderMapping, args);
-        if (CollectionUtils.isEmpty(unPushOrders)) {
+        List<CheckOrderBO> pushFailOrders = hJdbcTemplate.query(sql, this::orderMapping, args);
+        if (CollectionUtils.isEmpty(pushFailOrders)) {
             return null;
         }
-        return queryUnPushReason(branchCheckBO, unPushOrders);
+        return queryPushFailReason(b, pushFailOrders);
     }
 
-    private List<CheckOrderBO> queryUnPushReason(BranchCheckBO branchCheckBO, List<CheckOrderBO> checkOrderBOS) {
-        String orderStr = checkOrderBOS.stream().map(CheckOrderBO::getOrderNo).collect(Collectors.joining("','", "'", "'"));
+    private List<CheckOrderBO> queryPushFailReason(BranchCheckBO b, List<CheckOrderBO> failOrders) {
+        String orderStr = failOrders.stream().map(CheckOrderBO::getOrderNo).collect(Collectors.joining("','", "'", "'"));
         String sql = "SELECT f_orderno, f_createtime, f_remark FROM t_mall_record WHERE f_branchid = ? AND f_abbdate BETWEEN ? AND ? AND f_orderno IN (" + orderStr + ")";
         Object[] args = new Object[]{
-                branchCheckBO.getBranchId(), branchCheckBO.getStartText(), branchCheckBO.getEndText()
+                b.getBranchId(), b.getStartText(), b.getEndText()
         };
-        List<CheckOrderBO> checkOrderBOList = hJdbcTemplate.query(sql, this::recordMapping, args);
-        if (CollectionUtils.isEmpty(checkOrderBOList)) {
-            return checkOrderBOS;
+        List<CheckOrderBO> reasonOrderList = hJdbcTemplate.query(sql, this::recordMapping, args);
+        if (CollectionUtils.isEmpty(reasonOrderList)) {
+            return failOrders;
         }
-        for (CheckOrderBO order : checkOrderBOS) {
-            for (CheckOrderBO record : checkOrderBOList) {
-                if (order.getOrderNo().equals(record.getOrderNo())) {
-                    order.setCreateTime(record.getCreateTime());
-                    order.setRemark(record.getRemark());
+        for (CheckOrderBO failOrder : failOrders) {
+            for (CheckOrderBO reasonOrder : reasonOrderList) {
+                if (failOrder.getOrderNo().equals(reasonOrder.getOrderNo())) {
+                    failOrder.setPushTime(reasonOrder.getPushTime());
+                    failOrder.setPushRemark(reasonOrder.getPushRemark());
+                    break;
                 }
             }
         }
-        return checkOrderBOS;
+        return failOrders;
     }
+
+    private CheckOrderBO orderMapping(ResultSet set, int rowNum) throws SQLException {
+        CheckOrderBO checkOrderBO = new CheckOrderBO();
+        checkOrderBO.setHqId(set.getLong("hq_id"));
+        checkOrderBO.setBranchId(set.getLong("branch_id"));
+        checkOrderBO.setCreatedAt(set.getDate("created_at"));
+        checkOrderBO.setOrderNo(set.getString("bill"));
+        checkOrderBO.setPlatform(set.getString("platform"));
+        checkOrderBO.setOrderStatus(set.getString("status"));
+        return checkOrderBO;
+    }
+
+    private CheckOrderBO recordMapping(ResultSet set, int rowNum) throws SQLException {
+        CheckOrderBO checkOrderBO = new CheckOrderBO();
+        checkOrderBO.setOrderNo("f_orderno");
+        checkOrderBO.setPushTime(set.getDate("f_createtime"));
+        checkOrderBO.setPushRemark(set.getString("f_remark"));
+        return checkOrderBO;
+    }
+
 }

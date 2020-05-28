@@ -1,6 +1,7 @@
 package com.hchc.alarm.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -9,24 +10,25 @@ import java.util.Date;
  * @date 2020-05-28
  */
 @Data
-public class CheckOrderBO {
-
-    private long hqId;
-
-    private long branchId;
-
-    private String mall;
+@EqualsAndHashCode(callSuper = true)
+public class CheckOrderBO extends BranchBO{
 
     private String orderNo;
 
+    private Date createdAt;
+
     private String platform;
+
+    private String orderStatus;
+
+    private String mall;
 
     private String abbDate;
 
-    private String status;
+    private String pushStatus;
 
-    private String remark;
+    private String pushRemark;
 
-    private Date createTime;
+    private Date pushTime;
 
 }

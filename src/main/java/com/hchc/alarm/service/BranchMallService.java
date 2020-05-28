@@ -1,7 +1,8 @@
 package com.hchc.alarm.service;
 
-import com.hchc.alarm.constant.MallConstant;
 import com.hchc.alarm.dao.hchc.BranchMallDao;
+import com.hchc.alarm.enums.PushMethodEm;
+import com.hchc.alarm.enums.PushTypeEm;
 import com.hchc.alarm.model.MallBranchBO;
 import com.hchc.alarm.model.MallServiceBO;
 import com.hchc.alarm.pack.MallConsoleInfo;
@@ -41,7 +42,7 @@ public class BranchMallService {
                 // 过滤mark名称存在的
                 .filter(b -> {
                     if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
-                        log.info("[queryMallConsoleInfos] app cache not exist data mark : {}", b.getMark());
+                        log.info("[queryMallConsoleInfos] not find mapping for mark:{}, branchId:{}", b.getMark(), b.getBranchId());
                         return false;
                     }
                     return true;
@@ -94,6 +95,11 @@ public class BranchMallService {
 
     private void handleMallBranches(Map<String, List<MallBranchBO>> mallBranches, List<MallServiceBO> malls, List<String> cities) {
         MallServiceBO mallServiceBO;
+        String pCode;
+        String pName;
+        String pType;
+        boolean existMall;
+        boolean existBranch;
         for (String mark : mallBranches.keySet()) {
             cities.add(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallServiceBO = new MallServiceBO();
@@ -102,21 +108,21 @@ public class BranchMallService {
             mallServiceBO.setCity(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallServiceBO.setMallBranches(mallBranches.get(mark));
             for (MallBranchBO info : mallBranches.get(mark)) {
-                String mCode = info.getPushMethod();
-                String mName = MallConstant.PushMethod.getNameByCode(mCode);
-                if (mName != null) {
-                    mallServiceBO.setMethods(new ArrayList<>(Collections.singletonList(mName)));
+                pCode = info.getPushMethod();
+                pName = PushMethodEm.getNameByCode(pCode);
+                if (pName != null) {
+                    mallServiceBO.setMethods(new ArrayList<>(Collections.singletonList(pName)));
                     break;
                 }
             }
             for (MallBranchBO info : mallBranches.get(mark)) {
-                String pType = null;
+                pType = null;
                 if (info.getUrl() != null) {
-                    pType = MallConstant.PushType.webservice.name();
+                    pType = PushTypeEm.webservice.name();
                 } else if (info.getFtpHost() != null) {
-                    pType = MallConstant.PushType.ftp.name();
+                    pType = PushTypeEm.ftp.name();
                 } else if (info.getUrlHost() != null) {
-                    pType = MallConstant.PushType.http.name();
+                    pType = PushTypeEm.http.name();
                 }
                 if (pType != null) {
                     mallServiceBO.setTypes(new ArrayList<>(Collections.singletonList(pType)));
@@ -124,14 +130,13 @@ public class BranchMallService {
                 }
             }
             // 存在相同商场，合并数据
-            boolean existMall = false;
+            existMall = false;
             for (MallServiceBO s : malls) {
                 if (s.getName().equals(mallServiceBO.getName()) && s.getCity().equals(mallServiceBO.getCity())) {
                     existMall = true;
                     s.setMark(s.getMark() + "、" + mallServiceBO.getMark());
                     s.getMethods().addAll(mallServiceBO.getMethods());
                     s.getTypes().addAll(mallServiceBO.getTypes());
-                    boolean existBranch;
                     for (MallBranchBO newBranch : mallServiceBO.getMallBranches()) {
                         existBranch = false;
                         for (MallBranchBO oldBranch : s.getMallBranches()) {

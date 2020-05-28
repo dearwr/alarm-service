@@ -13,7 +13,7 @@ import java.util.Date;
 public class DatetimeUtil {
 
     private static final String TIMESTAMP_PATTERN = "yyyyMMddHHmmssSSS";
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 
     public static String now() {

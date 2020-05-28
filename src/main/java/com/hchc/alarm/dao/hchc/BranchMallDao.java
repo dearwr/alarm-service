@@ -20,8 +20,8 @@ import java.util.List;
 public class BranchMallDao extends HcHcBaseDao {
 
     public List<MallBranchBO> queryBranchInfos(String pushType) {
-        String sql = "SELECT b.id, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config from t_branch_mall m" +
-                " LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
+        String sql = "SELECT h.id as hId, b.id as bId, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config " +
+                "from t_branch_mall m LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
                 " WHERE m.f_enable = 1 and f_config <> '' and f_hqid not in (199,4)";
         List<Object> paramList = new ArrayList<>();
@@ -34,7 +34,8 @@ public class BranchMallDao extends HcHcBaseDao {
 
     private MallBranchBO queryMapping(ResultSet set, int i) throws SQLException {
         MallBranchBO bInfo = JSON.parseObject(set.getString("f_config"), MallBranchBO.class);
-        bInfo.setBranchId(set.getLong("id"));
+        bInfo.setHqId(set.getLong("hId"));
+        bInfo.setBranchId(set.getLong("bId"));
         bInfo.setBrandName(set.getString("hName"));
         bInfo.setBranchName(set.getString("bName"));
         bInfo.setAddress(set.getString("address"));
