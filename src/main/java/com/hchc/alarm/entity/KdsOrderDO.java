@@ -9,7 +9,7 @@ import java.util.Date;
  * @author wangrong
  */
 @Data
-public class KdsOrderTb implements Serializable {
+public class KdsOrderDO implements Serializable {
 
     private int id;
     private int hqId;

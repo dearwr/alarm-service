@@ -9,7 +9,7 @@ import java.util.Map;
  * @author wangrong
  */
 @Data
-public class AirportFileEntity {
+public class AirportFileBO {
 
     /**
      * 商品编号

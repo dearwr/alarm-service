@@ -1,6 +1,6 @@
 package com.hchc.alarm.pack;
 
-import com.hchc.alarm.model.MallService;
+import com.hchc.alarm.model.MallServiceBO;
 import lombok.Data;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public class MallConsoleInfo {
 
     private List<String> cities;
 
-    private List<MallService> malls;
+    private List<MallServiceBO> malls;
 
-    private Map<String, List<MallService>> brandMalls;
+    private Map<String, List<MallServiceBO>> brandMalls;
 
 }

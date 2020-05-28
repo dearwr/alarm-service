@@ -8,7 +8,7 @@ import java.util.Date;
  * @author wangrong
  */
 @Data
-public class BranchKdsTb {
+public class BranchKdsDO {
 
     private int id;
     private int hqId;

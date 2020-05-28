@@ -1,7 +1,7 @@
 package com.hchc.alarm.dao.rocket;
 
 import com.hchc.alarm.dao.RocketBaseDao;
-import com.hchc.alarm.entity.BranchKdsTb;
+import com.hchc.alarm.entity.BranchKdsDO;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public class BranchKdsBaseDao extends RocketBaseDao {
 
-    public List<BranchKdsTb> query(int hqId, int branchId) {
+    public List<BranchKdsDO> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
         StringBuilder sb = new StringBuilder("select * from t_branch_kds where f_open=1");
         if (hqId != 0) {
@@ -29,15 +29,15 @@ public class BranchKdsBaseDao extends RocketBaseDao {
             sb.append(" and f_branchid = ? ");
             params.add(branchId);
         }
-        List<BranchKdsTb> kdsList = rJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
+        List<BranchKdsDO> kdsList = rJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
         if (CollectionUtils.isEmpty(kdsList)) {
             return Collections.emptyList();
         }
         return kdsList;
     }
 
-    private BranchKdsTb mapping(ResultSet rs, int i) throws SQLException {
-        BranchKdsTb branchKdsTb = new BranchKdsTb();
+    private BranchKdsDO mapping(ResultSet rs, int i) throws SQLException {
+        BranchKdsDO branchKdsTb = new BranchKdsDO();
         branchKdsTb.setHqId(rs.getInt("f_hqid"));
         branchKdsTb.setBranchId(rs.getInt("f_branchid"));
         branchKdsTb.setName(rs.getString("f_name"));

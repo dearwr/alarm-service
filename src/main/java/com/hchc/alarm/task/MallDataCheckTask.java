@@ -1,7 +1,7 @@
 package com.hchc.alarm.task;
 
 import com.hchc.alarm.dao.hchc.BranchMallDao;
-import com.hchc.alarm.model.MallBranch;
+import com.hchc.alarm.model.MallBranchBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import java.util.List;
@@ -17,7 +17,7 @@ public class MallDataCheckTask {
 
     @Scheduled(cron = " 0 15 06 * * ? ")
     public void checkMallData() {
-        List<MallBranch> immediateBranches = branchMallDao.queryBranchInfos("immediate");
+        List<MallBranchBO> immediateBranches = branchMallDao.queryBranchInfos("immediate");
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Date;
  * @date 2020-05-28
  */
 @Data
-public class CheckOrder {
+public class CheckOrderBO {
 
     private long hqId;
 

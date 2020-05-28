@@ -2,7 +2,7 @@ package com.hchc.alarm.dao.hchc;
 
 import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.dao.HcHcBaseDao;
-import com.hchc.alarm.model.MallBranch;
+import com.hchc.alarm.model.MallBranchBO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class BranchMallDao extends HcHcBaseDao {
 
-    public List<MallBranch> queryBranchInfos(String pushType) {
+    public List<MallBranchBO> queryBranchInfos(String pushType) {
         String sql = "SELECT b.id, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config from t_branch_mall m" +
                 " LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
@@ -32,8 +32,8 @@ public class BranchMallDao extends HcHcBaseDao {
         return hJdbcTemplate.query(sql, this::queryMapping, paramList.toArray());
     }
 
-    private MallBranch queryMapping(ResultSet set, int i) throws SQLException {
-        MallBranch bInfo = JSON.parseObject(set.getString("f_config"), MallBranch.class);
+    private MallBranchBO queryMapping(ResultSet set, int i) throws SQLException {
+        MallBranchBO bInfo = JSON.parseObject(set.getString("f_config"), MallBranchBO.class);
         bInfo.setBranchId(set.getLong("id"));
         bInfo.setBrandName(set.getString("hName"));
         bInfo.setBranchName(set.getString("bName"));

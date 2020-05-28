@@ -4,8 +4,8 @@ import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
-import com.hchc.alarm.entity.BranchKdsTb;
-import com.hchc.alarm.model.Branch;
+import com.hchc.alarm.entity.BranchKdsDO;
+import com.hchc.alarm.model.BranchBO;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.KdsConsoleInfo;
 import com.hchc.alarm.service.RemoteService;
@@ -43,17 +43,17 @@ public class KdsController {
     @GetMapping("/errKdsInfo")
     public Output getErrorKdsInfo(int hqId, int branchId) {
         log.info("[getErrorKdsInfo] recv request params hqId:{}, branchId:{}", hqId, branchId);
-        List<BranchKdsTb> kdsList = branchKdsDao.query(hqId, branchId);
+        List<BranchKdsDO> kdsList = branchKdsDao.query(hqId, branchId);
         List<KdsConsoleInfo> errKdsInfoList = new ArrayList<>();
         List<KdsConsoleInfo> offLineKds = new ArrayList<>();
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
         List<String> kdsQueueOrders;
         KdsConsoleInfo kdsConsoleInfo;
-        Branch branch;
+        BranchBO branchBO;
         Date start = DatetimeUtil.dayBegin(new Date());
         Date end;
         try {
-            for (BranchKdsTb kds : kdsList) {
+            for (BranchKdsDO kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
                 end = DatetimeUtil.addSecond(new Date(), 20);
@@ -66,9 +66,9 @@ public class KdsController {
                 if (kdsQueueOrders.size() != kdsConsoleInfo.getWxCount()) {
                     kdsConsoleInfo.setKdsCount(kdsQueueOrders.size());
                     kdsConsoleInfo.setUuid(kds.getUuid());
-                    branch = branchDao.query(kds.getHqId(), kds.getBranchId());
-                    kdsConsoleInfo.setBrandName(branch.getBrandName());
-                    kdsConsoleInfo.setBranchName(branch.getBranchName());
+                    branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
+                    kdsConsoleInfo.setBrandName(branchBO.getBrandName());
+                    kdsConsoleInfo.setBranchName(branchBO.getBranchName());
                     kdsConsoleInfo.setVersionCode(kdsOperationLogDao.queryVersionCode(hqId, branchId, DatetimeUtil.format(start), DatetimeUtil.format(end)));
                     if (kds.getHeartTime() != null) {
                         kdsConsoleInfo.setHeartTime(kds.getHeartTime());

@@ -8,7 +8,7 @@ import java.util.Date;
  * @author wangrong
  */
 @Data
-public class MallProductCode {
+public class MallProductCodeDO {
 
     private int id;
     private int hqId;

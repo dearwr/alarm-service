@@ -7,7 +7,7 @@ import lombok.Data;
  * @author wangrong
  */
 @Data
-public class Branch {
+public class BranchBO {
 
     protected String brandName;
     protected String branchName;

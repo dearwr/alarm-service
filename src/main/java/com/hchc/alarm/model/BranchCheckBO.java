@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Data
 @NoArgsConstructor
-public class BranchCheck {
+public class BranchCheckBO {
 
     private long hqId;
 
@@ -27,7 +27,7 @@ public class BranchCheck {
 
     private String endText;
 
-    public BranchCheck(MallBranch mallBranch) {
+    public BranchCheckBO(MallBranchBO mallBranch) {
         this.hqId = mallBranch.getHqId();
         this.branchId = mallBranch.getBranchId();
         this.mall = mallBranch.getMark();

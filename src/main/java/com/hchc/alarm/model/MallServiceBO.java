@@ -8,7 +8,7 @@ import java.util.List;
  * @author wangrong
  */
 @Data
-public class MallService {
+public class MallServiceBO {
 
     private String mark;
 
@@ -20,6 +20,6 @@ public class MallService {
 
     private List<String> methods;
 
-    private List<MallBranch> mallBranches;
+    private List<MallBranchBO> mallBranches;
 
 }

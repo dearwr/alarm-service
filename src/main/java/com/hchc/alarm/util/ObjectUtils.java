@@ -1,6 +1,6 @@
 package com.hchc.alarm.util;
 
-import com.hchc.alarm.model.CheckOrder;
+import com.hchc.alarm.model.CheckOrderBO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -63,7 +63,7 @@ public class ObjectUtils {
      * @param mallName
      * @return
      */
-    public static String convertToString(List<CheckOrder> errorOrders, String mallName) {
+    public static String convertToString(List<CheckOrderBO> errorOrders, String mallName) {
         StringBuilder sb = new StringBuilder();
         sb.append("#").append(errorOrders.get(0).getBranchId()).append("-").append(mallName).append(TAB_STR).append(errorOrders.size())
                 .append(NEXT_LINE)
