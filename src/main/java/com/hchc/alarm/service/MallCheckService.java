@@ -1,22 +1,17 @@
 package com.hchc.alarm.service;
 
-import com.alibaba.fastjson.JSON;
-import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.BranchCheckBO;
 import com.hchc.alarm.model.CheckOrderBO;
+import com.hchc.alarm.pack.MallCheckInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -27,18 +22,12 @@ import java.util.*;
 @Slf4j
 public class MallCheckService {
 
-    @Autowired
-    private MallRecordDao mallRecordDao;
+    private final String SHEET_NAME = "checkSheet";
 
     /**
-     * 检查商场数据并保存到文件
-     *
-     * @param branchCheckBO
-     * @return
+     * 保存到文件
      */
-    public List<CheckOrderBO> checkDataAndSaveToFile(BranchCheckBO branchCheckBO) {
-        log.info("[checkDataAndSaveToFile] param:{}", JSON.toJSONString(branchCheckBO));
-        List<CheckOrderBO> failOrders = mallRecordDao.queryPushFailOrders(branchCheckBO);
+    public List<CheckOrderBO> saveFile(BranchCheckBO branchCheckBO, List<CheckOrderBO> failOrders) {
         File recordFile = getRecordFile(branchCheckBO);
         if (recordFile == null) {
             log.info("[checkDataAndSaveToFile] 获取记录文件失败");
@@ -52,7 +41,7 @@ public class MallCheckService {
             //判断是否为新文件
             if (recordFile.length() == 0) {
                 workbook = new XSSFWorkbook();
-                firstSheet = workbook.createSheet("checkSheet");
+                firstSheet = workbook.createSheet(SHEET_NAME);
                 firstSheet.setDefaultRowHeight((short) (14 * 20));
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setWrapText(true);
@@ -60,7 +49,7 @@ public class MallCheckService {
                 writeFirstRow(firstSheet);
             } else {
                 workbook = new XSSFWorkbook(fi);
-                firstSheet = workbook.getSheet("checkSheet");
+                firstSheet = workbook.getSheet(SHEET_NAME);
             }
             writeDataRow(firstSheet, failOrders, branchCheckBO);
             // 设置列宽
@@ -89,8 +78,8 @@ public class MallCheckService {
      * @param b
      * @return
      */
-    private File getRecordFile(BranchCheckBO b) {
-        String fileName = b.getMall() + "-" + b.getBranchId() + ".xls";
+    public File getRecordFile(BranchCheckBO b) {
+        String fileName = b.getHqId() + "-" + b.getBranchId() + ".xls";
         File file;
         try {
             // 创建目录
@@ -171,4 +160,19 @@ public class MallCheckService {
         }
     }
 
+    /**
+     * 解析文件
+     *
+     * @param recordFile
+     * @return
+     */
+    public List<MallCheckInfo> parseFile(File recordFile) {
+        try (FileInputStream fis = new FileInputStream(recordFile);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            Sheet firstSheet = workbook.getSheet(SHEET_NAME);
+            // todo
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

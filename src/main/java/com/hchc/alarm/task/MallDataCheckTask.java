@@ -1,6 +1,7 @@
 package com.hchc.alarm.task;
 
 import com.hchc.alarm.dao.hchc.BranchMallDao;
+import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.BranchCheckBO;
 import com.hchc.alarm.model.MallBranchBO;
 import com.hchc.alarm.service.MallCheckService;
@@ -27,6 +28,8 @@ public class MallDataCheckTask {
     @Autowired
     private BranchMallDao branchMallDao;
     @Autowired
+    private MallRecordDao mallRecordDao;
+    @Autowired
     private MallCheckService mallCheckService;
 
     @Scheduled(cron = " 0 05 05 * * ? ")
@@ -52,7 +55,7 @@ public class MallDataCheckTask {
             branchCheckBO.setStartText(startText);
             branchCheckBO.setEndText(endText);
             log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
-            mallCheckService.checkDataAndSaveToFile(branchCheckBO);
+            mallCheckService.saveFile(branchCheckBO, mallRecordDao.queryPushFailOrders(branchCheckBO));
             log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());
         }
     }
