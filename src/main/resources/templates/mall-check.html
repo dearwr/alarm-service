@@ -5,7 +5,7 @@
 
     <title>商场数据排查</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/mall.css">
+    <link rel="stylesheet" type="text/css" href="/css/mall-check.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <script src="/js/common.js"></script>
     <!-- Bootstrap -->
@@ -16,37 +16,41 @@
 </head>
 
 <body onload="loadDataAfterInit()">
-<h1>商场对接</h1>
+<h1>商场数据排查</h1>
 <div id="context">
     <!-- header -->
     <div id="search">
         <!-- 城市列表下拉框 -->
-        <div id="city_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                所在城市
-            </a>
-            <div id="city-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
-        </div>
         <div id="brand_select" class="dropdown">
             <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownBrandList"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                所属品牌
+                品牌
             </a>
             <div id="brand-menu" class="dropdown-menu" aria-labelledby="dropdownBrandList"></div>
         </div>
+        <div id="branch_select" class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                门店
+            </a>
+            <div id="branch-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
+        </div>
+        <button class="btn btn-primary">月份选择</button>
+        <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
+        <button id="btn_downLoad" class="btn btn-primary" onclick="downLoadFile()">下载表格</button>
         <!-- 行数 -->
         <b id="row_size" class="font_space">size:</b>
     </div>
 
-    <!-- 商场表 -->
+    <!-- 数据表 -->
     <table class="table">
         <thead class="thead-dark">
         <tr>
-            <th>所在城市</th>
-            <th>商场名</th>
-            <th>对接方式</th>
-            <th>上传方式</th>
+            <th>日期</th>
+            <th>品牌</th>
+            <th>门店</th>
+            <th>状态</th>
+            <th>详情</th>
         </tr>
         </thead>
         <tbody id="mall_body"></tbody>
@@ -101,8 +105,8 @@
     const tips_head = $("#tips_head");
     const tips_msg = $("#tips_msg");
     const rowSize = $("#row_size");
-    const citySelect = $("#city_select");
-    const cities_menu = $("#city-menu");
+    const branchSelect = $("#branch_select");
+    const branch_menu = $("#branch-menu");
     const brandSelect = $("#brand_select");
     const brand_menu = $("#brand-menu");
     const loading = $("#loading");
@@ -144,7 +148,7 @@
                             for (var i in cities) {
                                 htmlStr += '<a class="dropdown-item" onclick="displayByCity(this)">' + cities[i] + '</a>';
                             }
-                            cities_menu.append(htmlStr);
+                            branch_menu.append(htmlStr);
                             // 填充品牌下拉框
                             htmlStr = '';
                             for (var key in brandMalls) {
@@ -227,7 +231,7 @@
                 }
             }
         }
-        citySelect.children('a').eq(0).text(sCity);
+        branchSelect.children('a').eq(0).text(sCity);
         brandSelect.children('a').eq(0).text("所属品牌");
         displayMallsData(mallsArray);
     };
@@ -245,8 +249,13 @@
             }
         }
         brandSelect.children('a').eq(0).text(brand);
-        citySelect.children('a').eq(0).text("所在城市");
+        branchSelect.children('a').eq(0).text("所在城市");
         displayMallsData(mallsArray);
+    };
+
+    //下载文件
+    var downLoadFile = function () {
+
     }
 
 </script>

@@ -25,7 +25,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class MallRecordService {
+public class MallCheckService {
 
     @Autowired
     private MallRecordDao mallRecordDao;
@@ -36,13 +36,13 @@ public class MallRecordService {
      * @param branchCheckBO
      * @return
      */
-    public String checkDataAndSaveToFile(BranchCheckBO branchCheckBO) {
+    public List<CheckOrderBO> checkDataAndSaveToFile(BranchCheckBO branchCheckBO) {
         log.info("[checkDataAndSaveToFile] param:{}", JSON.toJSONString(branchCheckBO));
         List<CheckOrderBO> failOrders = mallRecordDao.queryPushFailOrders(branchCheckBO);
         File recordFile = getRecordFile(branchCheckBO);
         if (recordFile == null) {
             log.info("[checkDataAndSaveToFile] 获取记录文件失败");
-            return "getRecordFile is null";
+            return failOrders;
         }
         // 写并保存记录文件
         try (FileInputStream fi = new FileInputStream(recordFile);
@@ -63,7 +63,7 @@ public class MallRecordService {
                 firstSheet = workbook.getSheet("checkSheet");
             }
             writeDataRow(firstSheet, failOrders, branchCheckBO);
-            // 行宽自适应
+            // 设置列宽
             for (int i = 0; i <= 9; i++) {
                 if (3 == i || 2 == i) {
                     firstSheet.setColumnWidth(i, 22 * 256);
@@ -78,9 +78,9 @@ public class MallRecordService {
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[checkDataAndSaveToFile]保存数据失败 file:{}, reason:{}", recordFile.getAbsolutePath(), e.getMessage());
-            return e.getMessage();
+            return failOrders;
         }
-        return "suc";
+        return failOrders;
     }
 
     /**

@@ -3,7 +3,7 @@ package com.hchc.alarm.task;
 import com.hchc.alarm.dao.hchc.BranchMallDao;
 import com.hchc.alarm.model.BranchCheckBO;
 import com.hchc.alarm.model.MallBranchBO;
-import com.hchc.alarm.service.MallRecordService;
+import com.hchc.alarm.service.MallCheckService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class MallDataCheckTask {
     @Autowired
     private BranchMallDao branchMallDao;
     @Autowired
-    private MallRecordService mallRecordService;
+    private MallCheckService mallCheckService;
 
     @Scheduled(cron = " 0 05 05 * * ? ")
     public void checkMallData() {
@@ -52,7 +52,7 @@ public class MallDataCheckTask {
             branchCheckBO.setStartText(startText);
             branchCheckBO.setEndText(endText);
             log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
-            mallRecordService.checkDataAndSaveToFile(branchCheckBO);
+            mallCheckService.checkDataAndSaveToFile(branchCheckBO);
             log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());
         }
     }

@@ -19,4 +19,9 @@ public class PageController {
     public String toMall() {
         return "mall";
     }
+
+    @GetMapping("/mallCheck")
+    public String toMallCheck() {
+        return "mall-check";
+    }
 }

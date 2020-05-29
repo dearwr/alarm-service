@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mallConsole")
 @Slf4j
-public class BranchMallController {
+public class MallController {
 
     @Autowired
     private BranchMallService branchMallService;
