@@ -29,7 +29,7 @@ public class MallDataCheckTask {
     @Autowired
     private MallRecordService mallRecordService;
 
-    @Scheduled(cron = " 0 10 06 * * ? ")
+    @Scheduled(cron = " 0 05 05 * * ? ")
     public void checkMallData() {
         List<MallBranchBO> immediateBranches = branchMallDao.queryBranchInfos("immediate");
         if (CollectionUtils.isEmpty(immediateBranches)) {
@@ -52,7 +52,7 @@ public class MallDataCheckTask {
             branchCheckBO.setStartText(startText);
             branchCheckBO.setEndText(endText);
             log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
-            mallRecordService.checkMallDataAndSave(branchCheckBO);
+            mallRecordService.checkDataAndSaveToFile(branchCheckBO);
             log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());
         }
     }

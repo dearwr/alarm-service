@@ -37,19 +37,17 @@ public class MallRecordDao extends HcHcBaseDao {
 
     private List<CheckOrderBO> queryPushFailReason(BranchCheckBO b, List<CheckOrderBO> failOrders) {
         String orderStr = failOrders.stream().map(CheckOrderBO::getOrderNo).collect(Collectors.joining("','", "'", "'"));
-        String sql = "SELECT f_orderno, f_createtime, f_remark FROM t_mall_record WHERE f_branchid = ? AND f_abbdate BETWEEN ? AND ? AND f_orderno IN (" + orderStr + ")";
-        Object[] args = new Object[]{
-                b.getBranchId(), b.getStartText(), b.getEndText()
-        };
-        List<CheckOrderBO> reasonOrderList = hJdbcTemplate.query(sql, this::recordMapping, args);
+        String sql = "SELECT f_orderno, f_createtime, f_remark, f_status FROM t_mall_record WHERE f_branchid = ? AND f_abbdate BETWEEN ? AND ? AND f_orderno IN (" + orderStr + ")";
+        List<CheckOrderBO> reasonOrderList = hJdbcTemplate.query(sql, this::recordMapping, b.getBranchId(), b.getStartText(), b.getEndText());
         if (CollectionUtils.isEmpty(reasonOrderList)) {
             return failOrders;
         }
-        for (CheckOrderBO failOrder : failOrders) {
-            for (CheckOrderBO reasonOrder : reasonOrderList) {
+        for (CheckOrderBO reasonOrder : reasonOrderList) {
+            for (CheckOrderBO failOrder : failOrders) {
                 if (failOrder.getOrderNo().equals(reasonOrder.getOrderNo())) {
                     failOrder.setPushTime(reasonOrder.getPushTime());
                     failOrder.setPushRemark(reasonOrder.getPushRemark());
+                    failOrder.setPushStatus(reasonOrder.getPushStatus());
                     break;
                 }
             }
@@ -70,9 +68,10 @@ public class MallRecordDao extends HcHcBaseDao {
 
     private CheckOrderBO recordMapping(ResultSet set, int rowNum) throws SQLException {
         CheckOrderBO checkOrderBO = new CheckOrderBO();
-        checkOrderBO.setOrderNo("f_orderno");
+        checkOrderBO.setOrderNo(set.getString("f_orderno"));
         checkOrderBO.setPushTime(set.getDate("f_createtime"));
         checkOrderBO.setPushRemark(set.getString("f_remark"));
+        checkOrderBO.setPushStatus(set.getString("f_status"));
         return checkOrderBO;
     }
 

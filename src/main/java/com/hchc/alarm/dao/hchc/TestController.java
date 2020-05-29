@@ -23,7 +23,7 @@ public class TestController {
     @PostMapping("/check")
     public Output mallCheck(@RequestBody BranchCheckBO branchCheckBO) {
         log.info("[mallCheck] param:{}", JSON.toJSONString(branchCheckBO));
-        String result = mallRecordService.checkMallDataAndSave(branchCheckBO);
+        String result = mallRecordService.checkDataAndSaveToFile(branchCheckBO);
         if ("suc".equals(result)) {
             return Output.ok();
         }else {
