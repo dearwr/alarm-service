@@ -72,7 +72,7 @@
     //初始化后加载数据
     var loadDataAfterInit = function () {
         queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 15000);
+        t = setInterval("queryErrKdsInfo()", 30000);
     };
 
     //按钮点击查询
@@ -91,7 +91,7 @@
     var scheduleQuery = function () {
         clearInterval(t);
         queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 15000);
+        t = setInterval("queryErrKdsInfo()", 30000);
     };
 
     //判断输入是否为数字

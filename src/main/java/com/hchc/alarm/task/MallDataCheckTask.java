@@ -57,6 +57,11 @@ public class MallDataCheckTask {
             log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
             mallCheckService.saveFile(branchCheckBO, mallRecordDao.queryPushFailOrders(branchCheckBO));
             log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
