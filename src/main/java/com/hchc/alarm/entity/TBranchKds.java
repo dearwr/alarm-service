@@ -1,4 +1,4 @@
-package com.hchc.alarm.entity.rocket;
+package com.hchc.alarm.entity;
 
 import lombok.Data;
 

@@ -3,7 +3,6 @@ package com.hchc.alarm.model;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class MallService {
@@ -18,6 +17,6 @@ public class MallService {
 
     private List<String> methods;
 
-    private Set<BranchInfo> branchInfos;
+    private List<BranchInfo> branchInfos;
 
 }

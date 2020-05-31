@@ -4,7 +4,7 @@ import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
-import com.hchc.alarm.entity.rocket.TBranchKds;
+import com.hchc.alarm.entity.TBranchKds;
 import com.hchc.alarm.model.Branch;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.KdsConsoleInfo;

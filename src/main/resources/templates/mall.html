@@ -16,21 +16,23 @@
 </head>
 
 <body onload="loadDataAfterInit()">
-<!--head-->
 <h1>商场对接</h1>
 <div id="context">
-    <!--搜索栏-->
+    <!-- header -->
     <div id="search">
-        <div id="city_list" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+        <!-- 城市列表下拉框 -->
+        <div id="city_select" class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownCityList"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 所在城市
             </a>
-            <div id="dropdown-menu" class="dropdown-menu" aria-labelledby="dropdownMenuLink"></div>
+            <div id="city-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
         </div>
-        <b id="err_size" class="font_space">size:</b>
+        <!-- 行数 -->
+        <b id="row_size" class="font_space">size:</b>
     </div>
-    <!-- mall table-->
+
+    <!-- 商场表 -->
     <table class="table">
         <thead class="thead-dark">
         <tr>
@@ -40,7 +42,7 @@
             <th>上传方式</th>
         </tr>
         </thead>
-        <tbody id="t_body"></tbody>
+        <tbody id="mall_body"></tbody>
     </table>
 
 </div>
@@ -69,7 +71,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- branch table-->
+                <!-- 门店表 -->
                 <table id="branch_table" class="table">
                     <thead class="btn-success">
                     <tr>
@@ -87,13 +89,14 @@
 
 </body>
 <script>
-    const tBody = $("#t_body");
+    const tBody = $("#mall_body");
     const bBody = $("#branch_body");
     const tips = $("#tips");
     const tips_head = $("#tips_head");
     const tips_msg = $("#tips_msg");
-    const rowSize = $("#err_size");
-    const cities_menu = $("#dropdown-menu");
+    const rowSize = $("#row_size");
+    const citySelect = $("#city_select");
+    const cities_menu = $("#city-menu");
     const loading = $("#loading");
     var citiesData;
     var mallsData;
@@ -125,9 +128,9 @@
                         } else {
                             citiesData = cities;
                             mallsData = malls;
-                            var htmlStr = '';
+                            var htmlStr = '<a class="dropdown-item" onclick="displayByCity(this)">所有</a>';
                             for (var i in cities) {
-                                htmlStr += '<a class="dropdown-item" onclick="displayByCity(this)">' + cities[i] + '</a>'
+                                htmlStr += '<a class="dropdown-item" onclick="displayByCity(this)">' + cities[i] + '</a>';
                             }
                             cities_menu.append(htmlStr);
                             displayMallsData(malls);
@@ -196,11 +199,16 @@
         var sCity = $(select).text();
         console.log("queryByCity:" + sCity);
         var mallsArray = [];
-        for (var i in mallsData) {
-            if (mallsData[i].city === sCity) {
-                mallsArray.push(mallsData[i]);
+        if ("所有" === sCity) {
+            mallsArray = mallsData;
+        } else {
+            for (var i in mallsData) {
+                if (mallsData[i].city === sCity) {
+                    mallsArray.push(mallsData[i]);
+                }
             }
         }
+        citySelect.children('a').eq(0).text(sCity);
         displayMallsData(mallsArray);
     };
 

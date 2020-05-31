@@ -24,7 +24,7 @@
         <a class="font_space">品牌:</a><input id="ipt_hqId" type="text" placeholder="品牌id" value="2439">
         <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
         <button id="btn_pause_restart" class="btn btn-success" onclick="pauseOrRestart(this)">暂停刷新</button>
-        <b id="err_size" class="font_space">size:</b>
+        <b id="row_size" class="font_space">size:</b>
         <b id="fresh_time" class="font_space">刷新时间:</b>
     </div>
     <!--table-->
@@ -63,7 +63,7 @@
     const tips = $("#tips");
     const tips_head = $("#tips_head");
     const tips_msg = $("#tips_msg");
-    const errSize = $("#err_size");
+    const errSize = $("#row_size");
     const freshTime = $("#fresh_time");
     const loading = $("#loading");
     var query_hqId = 2439;

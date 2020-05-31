@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class HBranchMallDao extends HcHcBaseDao {
 
-    public List<BranchInfo> queryMallConsoleInfos() {
+    public List<BranchInfo> queryBranchInfos() {
         String sql = "SELECT b.id, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config from t_branch_mall m" +
                 " LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +

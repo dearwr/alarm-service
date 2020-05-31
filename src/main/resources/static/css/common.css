@@ -1,6 +1,6 @@
-body {
-    background-image: url("/image/body1.jpg");
-}
+/*body {*/
+/*    background-image: url("/image/body1.jpg");*/
+/*}*/
 
 h1 {
     text-align: center;
@@ -26,7 +26,7 @@ table {
 }
 
 #search {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     margin-top: 15px;
 }
 
@@ -37,9 +37,9 @@ table {
 
 }
 
-#err_size {
+#row_size {
     float: right;
-    margin-right: 80px;
+    margin-right: 102px;
 }
 
 #loading{

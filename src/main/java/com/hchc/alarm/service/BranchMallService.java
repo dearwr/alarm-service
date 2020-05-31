@@ -1,7 +1,6 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.constant.MallConstant;
-import com.hchc.alarm.dao.flip.FBranchMallDao;
 import com.hchc.alarm.dao.hchc.HBranchMallDao;
 import com.hchc.alarm.model.BranchInfo;
 import com.hchc.alarm.model.MallService;
@@ -15,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
+import static com.hchc.alarm.constant.MallConstant.MARK_FULL_NAME_MAP;
 
 /**
  * Created by wangrong 2020/5/18
@@ -24,13 +24,13 @@ import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
 public class BranchMallService {
 
     @Autowired
-    private HBranchMallDao HBranchMallDao;
+    private HBranchMallDao hBranchMallDao;
     @Autowired
-    private FBranchMallDao fBranchMallDao;
+    private RemoteService remoteService;
 
     public MallConsoleInfo queryMallConsoleInfos() {
-        List<BranchInfo> branchInfos1 = HBranchMallDao.queryMallConsoleInfos();
-        List<BranchInfo> branchInfos2 = fBranchMallDao.queryMallConsoleInfos();
+        List<BranchInfo> branchInfos1 = hBranchMallDao.queryBranchInfos();
+        List<BranchInfo> branchInfos2 = remoteService.queryBranchInfos();
         List<BranchInfo> branchInfos = new ArrayList<>();
         if (CollectionUtils.isEmpty(branchInfos1) && CollectionUtils.isEmpty(branchInfos2)) {
             return null;
@@ -45,7 +45,7 @@ public class BranchMallService {
 
         Map<String, List<BranchInfo>> mallBranches = branchInfos.stream()
                 .filter(b -> {  // 过滤mark名称存在的
-                    if (MallConstant.MARK_NAME_MAP.get(b.getMark()) == null) {
+                    if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
                         log.info("[queryMallConsoleInfos] app cache not exist data mark : {}", b.getMark());
                         return false;
                     }
@@ -57,14 +57,17 @@ public class BranchMallService {
         List<MallService> malls = new ArrayList<>();
         List<String> list;
         MallService mallService;
+        String fullName;
+        String city;
         for (String mark : mallBranches.keySet()) {
             mallService = new MallService();
             mallService.setMark(mark);
-            mallService.setName(MallConstant.MARK_NAME_MAP.get(mark));
-            String city = mallService.getName().substring(0, 2);
+            fullName = MARK_FULL_NAME_MAP.get(mark);
+            mallService.setName(fullName.substring(2));
+            city = fullName.substring(0, 2);
             mallService.setCity(city);
             cities.add(city);
-            mallService.setBranchInfos(new HashSet<>(mallBranches.get(mark)));
+            mallService.setBranchInfos(mallBranches.get(mark));
             for (BranchInfo info : mallBranches.get(mark)) {
                 String mCode = info.getPushMethod();
                 String mName = MallConstant.PushMethod.getNameByCode(mCode);
@@ -92,23 +95,36 @@ public class BranchMallService {
                 }
             }
             // 存在相同商场，合并数据
-            boolean exist = false;
+            boolean existMall = false;
             for (MallService s : malls) {
-                if (s.getName().equals(mallService.getName())) {
-                    exist = true;
+                if (s.getName().equals(mallService.getName()) && s.getCity().equals(mallService.getCity())) {
+                    existMall = true;
                     s.setMark(s.getMark() + "、" + mallService.getMark());
                     s.getMethods().addAll(mallService.getMethods());
                     s.getTypes().addAll(mallService.getTypes());
-                    s.getBranchInfos().addAll(mallService.getBranchInfos());
+                    boolean existBranch;
+                    for (BranchInfo newBranch : mallService.getBranchInfos()) {
+                        existBranch = false;
+                        for (BranchInfo oldBranch : s.getBranchInfos()) {
+                            if (newBranch.getBranchName().equals(oldBranch.getBranchName())) {
+                                existBranch = true;
+                                break;
+                            }
+                        }
+                        if (!existBranch) {
+                            s.getBranchInfos().add(newBranch);
+                        }
+                    }
                     break;
                 }
             }
-            if (!exist) {
+            if (!existMall) {
                 malls.add(mallService);
             }
         }
-
-        malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName())); // 按商场名排序
+        // 商场名排序
+        malls.sort((m1, m2) -> CHINESE_COMPARATOR.compare(m1.getName(), m2.getName()));
+        // 城市名排序
         List<String> cityNames = cities.stream().distinct().sorted(CHINESE_COMPARATOR::compare).collect(Collectors.toList());
         MallConsoleInfo mallConsoleInfo = new MallConsoleInfo();
         mallConsoleInfo.setMalls(malls);
