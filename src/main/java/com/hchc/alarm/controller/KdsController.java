@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by wangrong 2020/5/12
+ *
  * @author wangrong
  */
 @RestController
@@ -40,14 +40,16 @@ public class KdsController {
     @Autowired
     private KdsOperationLogDao kdsOperationLogDao;
 
-    @GetMapping("/errKdsInfo")
-    public Output getErrorKdsInfo(int hqId, int branchId) {
-        log.info("[getErrorKdsInfo] recv request params hqId:{}, branchId:{}", hqId, branchId);
+    @GetMapping("/kdsInfo")
+    public Output getKdsInfo(int hqId, int branchId) {
+        log.info("[getKdsInfo] recv request params hqId:{}, branchId:{}", hqId, branchId);
         List<BranchKdsDO> kdsList = branchKdsDao.query(hqId, branchId);
-        List<KdsConsoleInfo> errKdsInfoList = new ArrayList<>();
+        List<KdsConsoleInfo> kdsConsoleInfos = new ArrayList<>();
         List<KdsConsoleInfo> offLineKds = new ArrayList<>();
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
-        List<String> kdsQueueOrders;
+        List<String[]> orderList;
+        Set<String> waitList;
+        Set<String> completedList;
         KdsConsoleInfo kdsConsoleInfo;
         BranchBO branchBO;
         Date start = DatetimeUtil.dayBegin(new Date());
@@ -56,24 +58,29 @@ public class KdsController {
             for (BranchKdsDO kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
+                if (kds.getHeartTime() != null) {
+                    kdsConsoleInfo.setHeartTime(kds.getHeartTime());
+                }
+                kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
                 end = DatetimeUtil.addSecond(new Date(), 20);
-                kdsQueueOrders = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end)
-                        .stream()
-                        // 去重
-                        .distinct()
-                        .collect(Collectors.toList());
-                log.info("[getErrorKdsInfo] branchId:{}, kdsQueueOrders:{}", kds.getBranchId(), kdsQueueOrders);
-                if (kdsQueueOrders.size() != kdsConsoleInfo.getWxCount()) {
-                    kdsConsoleInfo.setKdsCount(kdsQueueOrders.size());
+                orderList = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end);
+                waitList = new HashSet<>(orderList.size());
+                completedList = new HashSet<>(orderList.size());
+                for (String[] order : orderList) {
+                    if ("ORDER_NEW".equals(order[1]) || "ORDER_MAKE".equals(order[1]) || "ORDER_PRE".equals(order[1])) {
+                        waitList.add(order[0]);
+                    } else {
+                        completedList.add(order[0]);
+                    }
+                }
+                waitList.removeAll(completedList);
+                if (kdsConsoleInfo.isOffLine() || Math.abs(waitList.size() - kdsConsoleInfo.getWxCount()) > 5) {
+                    kdsConsoleInfo.setKdsCount(waitList.size());
                     kdsConsoleInfo.setUuid(kds.getUuid());
                     branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
                     kdsConsoleInfo.setBrandName(branchBO.getBrandName());
                     kdsConsoleInfo.setBranchName(branchBO.getBranchName());
                     kdsConsoleInfo.setVersionCode(kdsOperationLogDao.queryVersionCode(hqId, branchId, DatetimeUtil.format(start), DatetimeUtil.format(end)));
-                    if (kds.getHeartTime() != null) {
-                        kdsConsoleInfo.setHeartTime(kds.getHeartTime());
-                    }
-                    kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
                     if (kdsConsoleInfo.isOffLine()) {
                         offLineKds.add(kdsConsoleInfo);
                     } else {
@@ -81,20 +88,21 @@ public class KdsController {
                     }
                 }
             }
-            errKdsInfoList.addAll(offLineKds);
-            errKdsInfoList.addAll(onLineKds);
+            kdsConsoleInfos.addAll(offLineKds);
+            kdsConsoleInfos.addAll(onLineKds);
         } catch (Exception e) {
-            log.info("[getErrorKdsInfo] happen exception :{}", e.getMessage());
+            log.info("[getKdsInfo] happen exception :{}", e.getMessage());
             return Output.fail(e.getMessage());
         }
-        return Output.ok(errKdsInfoList);
+        return Output.ok(kdsConsoleInfos);
     }
 
     private boolean checkOffLine(String heartTime) throws ParseException {
         if (heartTime == null) {
-            return true;
+            return false;
         }
-        return System.currentTimeMillis() - DatetimeUtil.parse(heartTime).getTime() > 60000;
+        long offTime = System.currentTimeMillis() - DatetimeUtil.parse(heartTime).getTime();
+        return offTime > 1000 * 60 && offTime < 1000 * 60 * 60 * 24;
     }
 
 }

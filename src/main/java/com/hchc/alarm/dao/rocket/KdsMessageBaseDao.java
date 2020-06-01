@@ -10,18 +10,20 @@ import java.util.List;
 
 /**
  * Created by wangrong 2020/5/13
+ *
  * @author wangrong
  */
 @Repository
 public class KdsMessageBaseDao extends RocketBaseDao {
 
-    public List<String> queryAllPushed(int branchId, String uuid, Date start, Date end) {
-        String sql = "select f_order_no from t_kds_message where f_branchid=? and f_uuid=? and f_create_time between ? and ? and f_push_status=1 " +
-                "and f_order_no not in " +
-                "(select f_order_no from t_kds_message where f_branchid=? and f_uuid=? and f_create_time between ? and ? and f_push_status=1 " +
-                "and f_log_action in ('ORDER_CALL','ORDER_DELIVERYING','TAKE_COMPLETE','ORDER_REFUND'))";
-        Object[] params = new Object[]{branchId, uuid, start, end, branchId, uuid, start, end};
-        List<String> orderList = rJdbcTemplate.query(sql, (rs, i) -> rs.getString("f_order_no"), params);
+    public List<String[]> queryAllPushed(int branchId, String uuid, Date start, Date end) {
+        String sql = "select f_order_no, f_log_action from t_kds_message where f_branchid=? and f_uuid=? and f_create_time between ? and ? and f_push_status=1";
+        List<String[]> orderList = rJdbcTemplate.query(sql, (rs, i) -> {
+            String[] info = new String[2];
+            info[0] = rs.getString(1);
+            info[1] = rs.getString(2);
+            return info;
+        }, branchId, uuid, start, end);
         if (CollectionUtils.isEmpty(orderList)) {
             return Collections.emptyList();
         }

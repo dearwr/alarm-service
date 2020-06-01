@@ -72,7 +72,7 @@
     //初始化后加载数据
     var loadDataAfterInit = function () {
         queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 30000);
+        t = setInterval("queryErrKdsInfo()", 60000);
     };
 
     //按钮点击查询
@@ -91,7 +91,7 @@
     var scheduleQuery = function () {
         clearInterval(t);
         queryErrKdsInfo();
-        t = setInterval("queryErrKdsInfo()", 30000);
+        t = setInterval("queryErrKdsInfo()", 60000);
     };
 
     //判断输入是否为数字
@@ -126,7 +126,7 @@
     var queryErrKdsInfo = function () {
         console.log("query_hqId " + query_hqId);
         $.ajax({
-            url: "http://lab2.51hchc.com:7676/kdsConsole/errKdsInfo",
+            url: "http://lab2.51hchc.com:7676/kdsConsole/kdsInfo",
             type: "GET",
             contentType: "application/json; charset=UTF-8",
             data: {"hqId": query_hqId, "branchId": 0},
