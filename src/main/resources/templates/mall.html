@@ -23,17 +23,16 @@
         <!-- 城市列表下拉框 -->
         <div id="city_select" class="dropdown">
             <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="showCitySelect()">
                 所在城市
             </a>
             <div id="city-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
         </div>
         <div id="brand_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownBrandList"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="btn btn-secondary dropdown-toggle" id="branch_Btn" onclick="showBranchList()">
                 所属品牌
             </a>
-            <div id="brand-menu" class="dropdown-menu" aria-labelledby="dropdownBrandList"></div>
+            <div id="brand-menu"></div>
         </div>
         <!-- 行数 -->
         <b id="row_size" class="font_space">size:</b>
@@ -101,7 +100,7 @@
     const tips_head = $("#tips_head");
     const tips_msg = $("#tips_msg");
     const rowSize = $("#row_size");
-    const citySelect = $("#branch_select");
+    const citySelect = $("#city_select");
     const cities_menu = $("#city-menu");
     const brandSelect = $("#brand_select");
     const brand_menu = $("#brand-menu");
@@ -229,6 +228,7 @@
         }
         citySelect.children('a').eq(0).text(sCity);
         brandSelect.children('a').eq(0).text("所属品牌");
+        brand_menu.hide();
         displayMallsData(mallsArray);
     };
 
@@ -246,8 +246,22 @@
         }
         brandSelect.children('a').eq(0).text(brand);
         citySelect.children('a').eq(0).text("所在城市");
+        brand_menu.hide();
         displayMallsData(mallsArray);
     }
+
+    var showCitySelect = function () {
+        brand_menu.hide();
+    };
+
+    var showBranchList = function () {
+        if (brand_menu.css('display') === 'none') {
+            brand_menu.show();
+        }else {
+            brand_menu.hide();
+            brandSelect.children('a').eq(0).text("所属品牌");
+        }
+    };
 
 </script>
 </body>

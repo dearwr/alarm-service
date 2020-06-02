@@ -1,4 +1,4 @@
-#branch_select{
+#city_select{
     float: left;
     margin-bottom: 5px;
 }
@@ -7,6 +7,14 @@
     float: left;
     margin-left: 100px;
     margin-bottom: 5px;
+}
+
+#brand-menu {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    border: 1px solid gray;
+    background-color: white;
 }
 
 #branch_table{
