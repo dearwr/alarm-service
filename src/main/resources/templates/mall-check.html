@@ -5,8 +5,8 @@
 
     <title>商场数据排查</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/mall-check.css">
-    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/mall-check.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/common.css">
     <script src="/js/common.js"></script>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
@@ -17,49 +17,26 @@
 
 <body onload="loadDataAfterInit()">
 <h1>商场数据排查</h1>
-<div id="context">
-    <!-- header -->
-    <div id="search">
-        <!-- 城市列表下拉框 -->
-        <div id="brand_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownBrandList"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                品牌
-            </a>
-            <div id="brand-menu" class="dropdown-menu" aria-labelledby="dropdownBrandList"></div>
+<div id="context_body">
+    <div id="context_left">
+        <div>
+            <img class="icon_left" src="../static/image/left.png">
+            <button>2020</button>
+            <img class="icon_right" src="../static/image/right.png">
+            <a>年</a>
+            <img class="icon_left" src="../static/image/left.png">
+            <button>6</button>
+            <img class="icon_right" src="../static/image/right.png">
+            <a>月</a>
         </div>
-        <div id="branch_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                门店
-            </a>
-            <div id="branch-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
-        </div>
-        <button class="btn btn-primary">月份选择</button>
-        <button id="btn_query" class="btn btn-primary" onclick="btnQuery()">查询</button>
-        <button id="btn_downLoad" class="btn btn-primary" onclick="downLoadFile()">下载表格</button>
-        <!-- 行数 -->
-        <b id="row_size" class="font_space">size:</b>
     </div>
-
-    <!-- 数据表 -->
-    <table class="table">
-        <thead class="thead-dark">
-        <tr>
-            <th>日期</th>
-            <th>品牌</th>
-            <th>门店</th>
-            <th>状态</th>
-            <th>详情</th>
-        </tr>
-        </thead>
-        <tbody id="mall_body"></tbody>
-    </table>
-
+    <div id="context_right">
+        右边
+    </div>
 </div>
 
 <!--加载中-->
-<div id="loading" class="spinner-border" role="status">
+<div id="loading" style="left: 10%; height: 66px; width: 66px;" class="spinner-border" role="status">
     <span class="sr-only">Loading...</span>
 </div>
 
@@ -82,7 +59,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- 门店表 -->
+                <!--  -->
                 <table id="branch_table" class="table">
                     <thead class="btn-success">
                     <tr>
@@ -99,20 +76,6 @@
 </div>
 
 <script>
-    const tBody = $("#mall_body");
-    const bBody = $("#branch_body");
-    const tips = $("#tips");
-    const tips_head = $("#tips_head");
-    const tips_msg = $("#tips_msg");
-    const rowSize = $("#row_size");
-    const branchSelect = $("#branch_select");
-    const branch_menu = $("#branch-menu");
-    const brandSelect = $("#brand_select");
-    const brand_menu = $("#brand-menu");
-    const loading = $("#loading");
-    var citiesData;
-    var mallsData;
-    var brandData;
 
     //初始化后加载数据
     var loadDataAfterInit = function () {
@@ -121,9 +84,9 @@
 
     //异步查询数据
     var queryMallInfo = function () {
-        console.log("queryMallInfo");
+        console.log("queryMallCheckInfo");
         $.ajax({
-            url: "http://lab2.51hchc.com:7676/mallConsole/mallInfos",
+            url: "http://lab2.51hchc.com:7676/mallCheck/queryCheckInfos",
             type: "GET",
             contentType: "application/json; charset=UTF-8",
             data: {},
@@ -174,89 +137,6 @@
             }
         });
     };
-
-    // 填充数据，展示页面
-    var displayMallsData = function (malls) {
-        var mallsStr = '';
-        for (var e in malls) {
-            mallsStr += '<tr onclick="disPlayBranchMode(this)">\n' +
-                '<td>' + malls[e].city + '</td>\n' +
-                '<td>' + malls[e].name + '</td>\n' +
-                '<td>' + malls[e].types.join('、') + '</td>\n' +
-                '<td>' + malls[e].methods.join('、') + '</td>\n' +
-                '</tr>';
-        }
-        tBody.empty();
-        tBody.append(mallsStr);
-        rowSize.text("size :  " + malls.length);
-    };
-
-    //显示模态框
-    var disPlayBranchMode = function (mall) {
-        var mallRow = $(mall);
-        var mallName = mallRow.children('td').eq(1).text();
-        console.log("mallName:" + mallName);
-        var branches;
-        var branchesStr = '';
-        for (var i in mallsData) {
-            if (mallsData[i].name === mallName) {
-                branches = mallsData[i].mallBranches;
-                for (var e in branches) {
-                    branchesStr += '<tr>\n' +
-                        '<td>' + branches[e].brandName + '</td>\n' +
-                        '<td>' + branches[e].branchName + '</td>\n' +
-                        '<td>' + branches[e].address + '</td>\n' +
-                        '</tr>';
-                }
-                break;
-            }
-        }
-        bBody.empty();
-        bBody.append(branchesStr);
-        $("#exampleModalLabel").text(mallName);
-        $("#exampleModal").modal('show');
-    };
-
-    //通过城市名筛选
-    var displayByCity = function (city_select) {
-        var sCity = $(city_select).text();
-        console.log("queryByCity:" + sCity);
-        var mallsArray = [];
-        if ("所有" === sCity) {
-            mallsArray = mallsData;
-        } else {
-            for (var i in mallsData) {
-                if (mallsData[i].city === sCity) {
-                    mallsArray.push(mallsData[i]);
-                }
-            }
-        }
-        branchSelect.children('a').eq(0).text(sCity);
-        brandSelect.children('a').eq(0).text("所属品牌");
-        displayMallsData(mallsArray);
-    };
-
-    var displayByBrand = function (brand_select) {
-        var brand = $(brand_select).text();
-        console.log("queryByBrand:" + brand);
-        var mallsArray = [];
-        for (var key in brandData) {
-            if (key === brand) {
-                for (var i in brandData[key]) {
-                    mallsArray.push(brandData[key][i]);
-                }
-                break;
-            }
-        }
-        brandSelect.children('a').eq(0).text(brand);
-        branchSelect.children('a').eq(0).text("所在城市");
-        displayMallsData(mallsArray);
-    };
-
-    //下载文件
-    var downLoadFile = function () {
-
-    }
 
 </script>
 </body>

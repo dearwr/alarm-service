@@ -1,15 +1,39 @@
-#branch_select{
-    float: left;
-    margin-bottom: 5px;
+#context_body{
+    text-align: center;
 }
 
-#brand_select{
+#context_left {
+    padding-top: 5px;
+    margin-top: 25px;
     float: left;
-    margin-left: 100px;
-    margin-bottom: 5px;
+    width: 20%;
+    height: 600px;
+    border: 1px solid red;
 }
 
-#branch_table{
-    height: 10px;
-    font-size: 12px;
+#context_left a {
+    margin-left: 10px;
+    margin-right: 20px;
+}
+
+.icon_left {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+}
+
+.icon_right {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+}
+
+#context_right {
+    padding-top: 5px;
+    margin-top: 25px;
+    float: left;
+    margin-left: 150px;
+    width: 60%;
+    height: 600px;
+    border: 1px solid red;
 }
