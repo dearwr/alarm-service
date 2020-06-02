@@ -8,28 +8,27 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by wangrong 2020/5/18
+ *
  * @author wangrong
  */
 @Repository
 @Slf4j
 public class BranchMallDao extends HcHcBaseDao {
 
-    public List<MallBranchBO> queryBranchInfos(String pushType) {
+    public List<MallBranchBO> queryBranchInfos(List<String> types) {
         String sql = "SELECT h.id as hId, b.id as bId, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config " +
                 "from t_branch_mall m LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
                 " WHERE m.f_enable = 1 and f_config <> '' and f_hqid not in (199,4)";
-        List<Object> paramList = new ArrayList<>();
-        if (pushType != null) {
-            sql += " and f_type=? ";
-            paramList.add(pushType);
+        if (types != null) {
+            String typeStr = String.join("','", types);
+            sql += " and f_type in ('" + typeStr + "')";
         }
-        return hJdbcTemplate.query(sql, this::queryMapping, paramList.toArray());
+        return hJdbcTemplate.query(sql, this::queryMapping);
     }
 
     private MallBranchBO queryMapping(ResultSet set, int i) throws SQLException {

@@ -25,8 +25,7 @@ public class MallRecordDao extends HcHcBaseDao {
                 "SELECT f_orderno FROM t_mall_record WHERE f_branchid = ? AND f_mall = ? " +
                 "AND f_abbdate BETWEEN ? AND ? AND f_status IN ('suc' , 'skip' , 'exist') )";
         Object[] args = new Object[]{
-                b.getBranchId(), b.getStartTime(), b.getEndTime(),
-                b.getBranchId(), b.getMall(), b.getStartText(), b.getEndText()
+                b.getBranchId(), b.getStartTime(), b.getEndTime(), b.getBranchId(), b.getMall(), b.getStartText(), b.getEndText()
         };
         List<CheckOrderBO> pushFailOrders = hJdbcTemplate.query(sql, this::orderMapping, args);
         if (CollectionUtils.isEmpty(pushFailOrders)) {

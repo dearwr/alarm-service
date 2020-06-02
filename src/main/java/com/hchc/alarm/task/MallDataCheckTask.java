@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class MallDataCheckTask {
 
     @Scheduled(cron = " 0 05 05 * * ? ")
     public void checkMallData() {
-        List<MallBranchBO> immediateBranches = branchMallDao.queryBranchInfos("immediate");
+        List<String> types = Arrays.asList("immediate", "daily2");
+        List<MallBranchBO> immediateBranches = branchMallDao.queryBranchInfos(types);
         if (CollectionUtils.isEmpty(immediateBranches)) {
             log.info("[checkMallData] 未查询到商场");
             return;
@@ -54,6 +56,7 @@ public class MallDataCheckTask {
             branchCheckBO.setEndTime(endTime);
             branchCheckBO.setStartText(startText);
             branchCheckBO.setEndText(endText);
+            branchCheckBO.setMall(branchBO.getMark());
             log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
             mallCheckService.saveFile(branchCheckBO, mallRecordDao.queryPushFailOrders(branchCheckBO));
             log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());

@@ -12,6 +12,7 @@ import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,13 +58,16 @@ public class KdsController {
         try {
             for (BranchKdsDO kds : kdsList) {
                 kdsConsoleInfo = new KdsConsoleInfo();
-                kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                if (kds.getHeartTime() != null) {
-                    kdsConsoleInfo.setHeartTime(kds.getHeartTime());
+                if (kds.getHeartTime() == null) {
+                    continue;
                 }
+                kdsConsoleInfo.setHeartTime(kds.getHeartTime());
                 kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
-                end = DatetimeUtil.addSecond(new Date(), 20);
+                end = DatetimeUtil.addSecond(new Date(), 15);
                 orderList = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end);
+                if (CollectionUtils.isEmpty(orderList)) {
+                    continue;
+                }
                 waitList = new HashSet<>(orderList.size());
                 completedList = new HashSet<>(orderList.size());
                 for (String[] order : orderList) {
@@ -73,7 +77,10 @@ public class KdsController {
                         completedList.add(order[0]);
                     }
                 }
-                waitList.removeAll(completedList);
+                for (String completedNo : completedList) {
+                    waitList.remove(completedNo);
+                }
+                kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
                 if (kdsConsoleInfo.isOffLine() || Math.abs(waitList.size() - kdsConsoleInfo.getWxCount()) > 5) {
                     kdsConsoleInfo.setKdsCount(waitList.size());
                     kdsConsoleInfo.setUuid(kds.getUuid());
@@ -98,11 +105,8 @@ public class KdsController {
     }
 
     private boolean checkOffLine(String heartTime) throws ParseException {
-        if (heartTime == null) {
-            return false;
-        }
         long offTime = System.currentTimeMillis() - DatetimeUtil.parse(heartTime).getTime();
-        return offTime > 1000 * 60 && offTime < 1000 * 60 * 60 * 24;
+        return offTime > 1000 * 60 && offTime < 1000 * 60 * 60 * 24 * 2;
     }
 
 }

@@ -18,16 +18,12 @@ public class KdsMessageBaseDao extends RocketBaseDao {
 
     public List<String[]> queryAllPushed(int branchId, String uuid, Date start, Date end) {
         String sql = "select f_order_no, f_log_action from t_kds_message where f_branchid=? and f_uuid=? and f_create_time between ? and ? and f_push_status=1";
-        List<String[]> orderList = rJdbcTemplate.query(sql, (rs, i) -> {
+        return rJdbcTemplate.query(sql, (rs, i) -> {
             String[] info = new String[2];
             info[0] = rs.getString(1);
             info[1] = rs.getString(2);
             return info;
         }, branchId, uuid, start, end);
-        if (CollectionUtils.isEmpty(orderList)) {
-            return Collections.emptyList();
-        }
-        return orderList;
     }
 
 }
