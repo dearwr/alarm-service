@@ -56,4 +56,9 @@ public class MallProductCodeDao extends HcHcBaseDao {
         String sql = "select * from t_mall_product_code where f_hqid=? and f_branchid=? ";
         return hJdbcTemplate.query(sql, this::toMapping, mallProductCodeDO.getHqId(), mallProductCodeDO.getBranchId());
     }
+
+    public int updateSku(int branchId, String code, String sku) {
+        String sql = "update t_mall_product_code set f_sku=?, f_mall_id=? where f_branchid=? and f_code=?";
+        return hJdbcTemplate.update(sql, sku, sku, branchId, code);
+    }
 }

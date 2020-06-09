@@ -60,4 +60,14 @@ public class AirportFileController {
         mallProductCodeDao.deleteRecord(hqId, branchId, createTime);
         return MallResponse.ok();
     }
+
+    @GetMapping("/changeSku")
+    public MallResponse changeSku(int branchId, String code, String sku) {
+        int result = mallProductCodeDao.updateSku(branchId, code, sku);
+        if (result > 0) {
+            return MallResponse.ok();
+        }
+        return MallResponse.fail();
+    }
+
 }

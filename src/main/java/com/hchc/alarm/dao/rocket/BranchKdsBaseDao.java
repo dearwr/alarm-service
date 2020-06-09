@@ -20,7 +20,7 @@ public class BranchKdsBaseDao extends RocketBaseDao {
 
     public List<BranchKdsDO> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
-        StringBuilder sb = new StringBuilder("select * from t_branch_kds where f_open=1");
+        StringBuilder sb = new StringBuilder("select * from t_branch_kds where f_open=1 and f_version is not null");
         if (hqId != 0) {
             sb.append(" and f_hqid = ? ");
             params.add(hqId);
@@ -43,6 +43,7 @@ public class BranchKdsBaseDao extends RocketBaseDao {
         branchKdsTb.setName(rs.getString("f_name"));
         branchKdsTb.setUuid(rs.getString("f_uuid"));
         branchKdsTb.setHeartTime(rs.getString("f_heart_time"));
+        branchKdsTb.setVersion(rs.getString("f_version"));
         return branchKdsTb;
     }
 }

@@ -20,5 +20,6 @@ public class BranchKdsDO {
     private Date offLineTime;
     private Date onlineTime;
     private String heartTime;
+    private String version;
 
 }

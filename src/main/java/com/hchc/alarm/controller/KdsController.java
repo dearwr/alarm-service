@@ -1,7 +1,6 @@
 package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchDao;
-import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
 import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
 import com.hchc.alarm.entity.BranchKdsDO;
@@ -38,8 +37,6 @@ public class KdsController {
     private RemoteService remoteService;
     @Autowired
     private BranchDao branchDao;
-    @Autowired
-    private KdsOperationLogDao kdsOperationLogDao;
 
     @GetMapping("/kdsInfo")
     public Output getKdsInfo(int hqId, int branchId) {
@@ -81,18 +78,16 @@ public class KdsController {
                     waitList.remove(completedNo);
                 }
                 kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                if (kdsConsoleInfo.isOffLine() || Math.abs(waitList.size() - kdsConsoleInfo.getWxCount()) > 5) {
-                    kdsConsoleInfo.setKdsCount(waitList.size());
-                    kdsConsoleInfo.setUuid(kds.getUuid());
-                    branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
-                    kdsConsoleInfo.setBrandName(branchBO.getBrandName());
-                    kdsConsoleInfo.setBranchName(branchBO.getBranchName());
-                    kdsConsoleInfo.setVersionCode(kdsOperationLogDao.queryVersionCode(hqId, branchId, DatetimeUtil.format(start), DatetimeUtil.format(end)));
-                    if (kdsConsoleInfo.isOffLine()) {
-                        offLineKds.add(kdsConsoleInfo);
-                    } else {
-                        onLineKds.add(kdsConsoleInfo);
-                    }
+                kdsConsoleInfo.setKdsCount(waitList.size());
+                kdsConsoleInfo.setUuid(kds.getUuid());
+                branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
+                kdsConsoleInfo.setBrandName(branchBO.getBrandName());
+                kdsConsoleInfo.setBranchName(branchBO.getBranchName());
+                kdsConsoleInfo.setVersionCode(kds.getVersion());
+                if (kdsConsoleInfo.isOffLine()) {
+                    offLineKds.add(kdsConsoleInfo);
+                } else {
+                    onLineKds.add(kdsConsoleInfo);
                 }
             }
             kdsConsoleInfos.addAll(offLineKds);
