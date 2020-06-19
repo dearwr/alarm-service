@@ -4,6 +4,7 @@ import com.hchc.alarm.model.niceconsole.*;
 import com.hchc.alarm.pack.MallResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -85,13 +86,25 @@ public class FileController {
     private ModelBO parseSecondRowData(Sheet firstSheet) {
         ModelBO modelBO = new ModelBO();
         Row row = firstSheet.getRow(1);
-        String cValue;
+        String cValue = null;
+        Cell cell;
         Map<Integer, String> dataMap = new HashMap<>();
         for (int i = 1; i <= 10; i++) {
             if (row.getCell(i) == null) {
                 continue;
             }
-            cValue = row.getCell(i).getStringCellValue();
+            cell = row.getCell(i);
+            switch (cell.getCellType()){
+                case NUMERIC:
+                    cValue = String.valueOf(cell.getNumericCellValue());
+                    cValue = cValue.substring(0, cValue.indexOf("."));
+                    break;
+                case STRING:
+                    cValue = cell.getStringCellValue();
+                    break;
+                default:
+                    log.info("解析出错，类型为：{}", cell.getCellType());
+            }
             log.info("第二行，第{}列内容{}", i, cValue);
             if (StringUtils.isEmpty(cValue)) {
                 continue;
