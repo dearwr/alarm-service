@@ -45,12 +45,7 @@ public class MallRecordController {
         if (CollectionUtils.isEmpty(orderList)) {
             return Output.ok("no UnPush orderNos");
         }
-        PushOrder pushOrder = new PushOrder();
-        pushOrder.setHqId(hqId);
-        pushOrder.setBranchId(branchId);
-        pushOrder.setStartTime(start);
-        pushOrder.setEndTime(end);
-        pushOrder.setOrderList(orderList);
+        PushOrder pushOrder = new PushOrder(hqId, branchId, start, end, orderList);
         return remoteService.pushUnSuccessOrder(pushOrder);
     }
 

@@ -20,4 +20,11 @@ public class PushOrder {
     private Date endTime;
     private List<String> orderList;
 
+    public PushOrder(long hqId, long branchId, Date start, Date end, List<String> orderList) {
+        this.hqId = hqId;
+        this.branchId =  branchId;
+        this.startTime = start;
+        this.endTime = end;
+        this.orderList = orderList;
+    }
 }

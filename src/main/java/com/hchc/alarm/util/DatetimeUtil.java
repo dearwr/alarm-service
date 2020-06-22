@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- *
  * @author jwing
  * @date 10/03/2017
  */
@@ -37,7 +36,7 @@ public class DatetimeUtil {
         return format.parse(date);
     }
 
-    public static Date parse(String date , String pattern) throws ParseException {
+    public static Date parse(String date, String pattern) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         return format.parse(date);
     }
@@ -45,7 +44,7 @@ public class DatetimeUtil {
     public static Date addDay(Date date, int d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.add(Calendar.DATE,d);
+        cal.add(Calendar.DATE, d);
         return cal.getTime();
     }
 
@@ -76,6 +75,7 @@ public class DatetimeUtil {
 
     /**
      * 获取指定时间的那一天的开始时间(精确到毫秒)
+     *
      * @param date
      * @return
      */
@@ -94,5 +94,9 @@ public class DatetimeUtil {
         c.setTime(date);
         c.add(Calendar.SECOND, offset);
         return c.getTime();
+    }
+
+    public static String dayText(Date time) {
+        return format(time, "yyyyMMdd");
     }
 }
