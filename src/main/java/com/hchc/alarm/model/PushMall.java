@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class PushOrder {
+public class PushMall {
 
     private long hqId;
     private long branchId;
@@ -20,7 +20,7 @@ public class PushOrder {
     private Date endTime;
     private List<String> orderList;
 
-    public PushOrder(long hqId, long branchId, Date start, Date end, List<String> orderList) {
+    public PushMall(long hqId, long branchId, Date start, Date end, List<String> orderList) {
         this.hqId = hqId;
         this.branchId =  branchId;
         this.startTime = start;

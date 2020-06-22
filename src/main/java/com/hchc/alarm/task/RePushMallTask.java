@@ -2,7 +2,7 @@ package com.hchc.alarm.task;
 
 import com.hchc.alarm.constant.RePushMallConstant;
 import com.hchc.alarm.dao.hchc.MallRecordDao;
-import com.hchc.alarm.model.PushOrder;
+import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.model.RePushMallBO;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.RemoteService;
@@ -32,12 +32,12 @@ public class RePushMallTask {
     /**
      * 向mall旧服务器补传
      */
-    @Scheduled(cron = " 0 15 3-5  * * ? ")
+    @Scheduled(cron = " 0 45 3-5  * * ? ")
     public void oldServerPush() {
         Date start = DatetimeUtil.dayBegin(new Date());
         Date end = DatetimeUtil.dayEnd(new Date());
         String abbDate = DatetimeUtil.dayText(end);
-        pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.PUSH_TEST_MALL);
+        pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.MARKUP_TEST_URL);
     }
 
     public void pushMallList(List<RePushMallBO> rePushMallBOList, Date start, Date end, String abbDate, String url) {
@@ -49,8 +49,8 @@ public class RePushMallTask {
             }
             log.info("hqId={},branchId={},name={} 开始补传订单，orderNos={}", mall.getHqId(), mall.getBranchId(), mall.getMallName(), orderNos);
             try {
-                PushOrder pushOrder = new PushOrder(mall.getHqId(), mall.getBranchId(), start, end, orderNos);
-                Output output =  remoteService.pushUnSuccessOrder(pushOrder);
+                PushMall pushMall = new PushMall(mall.getHqId(), mall.getBranchId(), start, end, orderNos);
+                Output output = remoteService.pushUnSuccessOrder(pushMall, url);
                 if (output != null && "0".equals(output.getCode())) {
                     log.info("hqId={},branchId={},name={} 补传成功", mall.getHqId(), mall.getBranchId(), mall.getMallName());
                 } else {

@@ -2,7 +2,7 @@ package com.hchc.alarm.service;
 
 import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.model.MallBranchBO;
-import com.hchc.alarm.model.PushOrder;
+import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.QueueInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,6 @@ public class RemoteService {
 
     public static final String VIP_URL = "https://vip.51hchc.com";
     public static final String FLIP_TEST_SERVER_URL = "http://47.103.123.87:7676";
-    public static final String MARKUP_TEST_URL = "http://120.78.232.8:9501/pushOrderToMall/pushToTestMall";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -42,9 +41,9 @@ public class RemoteService {
         return JSON.parseArray(JSON.toJSONString(response.getData()), MallBranchBO.class);
     }
 
-    public Output pushUnSuccessOrder(PushOrder pushOrder) {
-        log.info("[pushUnSuccessOrder] req:{}", pushOrder);
-        Output output = restTemplate.postForEntity(MARKUP_TEST_URL, pushOrder, Output.class).getBody();
+    public Output pushUnSuccessOrder(PushMall pushMall, String url) {
+        log.info("[pushUnSuccessOrder] req:{}", pushMall);
+        Output output = restTemplate.postForEntity(url, pushMall, Output.class).getBody();
         log.info("[pushUnSuccessOrder] res :{}", JSON.toJSONString(output));
         return output;
     }

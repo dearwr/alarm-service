@@ -11,14 +11,7 @@ import java.util.List;
  */
 public class RePushMallConstant {
 
-    // mall老服务器地址
-    public static final String PUSH_DATA_URL = "https://mall.51hchc.com/order/push";
-    // mall新服务器地址
-    public static final String NEW_PUSH_DATA_URL = "http://localhost:8010/order/push";
-    // 74.44 服务器
-    public static final String PUSH_URL44_MALL = "http://120.25.74.44:8010/order/push";
-    // test
-    public static final String PUSH_TEST_MALL = "http://lab2.51hchc.com:8010/order/push";
+    public static final String MARKUP_TEST_URL = "http://120.78.232.8:9501/pushOrderToMall/pushToTestMall";
 
     // 补推商场
     public static List<RePushMallBO> rePushMalls = new ArrayList<>();

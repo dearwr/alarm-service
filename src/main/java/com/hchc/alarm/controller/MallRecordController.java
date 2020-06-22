@@ -1,7 +1,8 @@
 package com.hchc.alarm.controller;
 
+import com.hchc.alarm.constant.RePushMallConstant;
 import com.hchc.alarm.dao.hchc.MallRecordDao;
-import com.hchc.alarm.model.PushOrder;
+import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
@@ -45,8 +46,8 @@ public class MallRecordController {
         if (CollectionUtils.isEmpty(orderList)) {
             return Output.ok("no UnPush orderNos");
         }
-        PushOrder pushOrder = new PushOrder(hqId, branchId, start, end, orderList);
-        return remoteService.pushUnSuccessOrder(pushOrder);
+        PushMall pushMall = new PushMall(hqId, branchId, start, end, orderList);
+        return remoteService.pushUnSuccessOrder(pushMall, RePushMallConstant.MARKUP_TEST_URL);
     }
 
 }
