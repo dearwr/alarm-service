@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +73,26 @@ public class MallRecordDao extends HcHcBaseDao {
         checkOrderBO.setPushRemark(set.getString("f_remark"));
         checkOrderBO.setPushStatus(set.getString("f_status"));
         return checkOrderBO;
+    }
+
+    /**
+     * 查询所有未上传的订单（包含外卖订单）
+     * @param hqId
+     * @param branchId
+     * @param start
+     * @param end
+     * @param abbDate
+     * @return
+     */
+    public List<String> queryAllUnPushOrderNo(long hqId, long branchId, Date start, Date end, String abbDate, String mallName) {
+        String sql = "SELECT  DISTINCT o.bill  FROM t_order o " +
+                "WHERE o.hq_id = ? AND o.branch_id = ? AND o.`status` = 'COMPLETE' " +
+                "AND o.created_at BETWEEN ? AND ? and o.bill NOT IN(\n" +
+                "SELECT r.f_orderno FROM t_mall_record r " +
+                "WHERE r.f_hqid = ? AND r.f_branchid = ? AND r.f_abbdate = ? " +
+                "AND r.f_status IN('suc' , 'skip' , 'exist') AND r.f_mall = ? " +
+                ")";
+        return hJdbcTemplate.queryForList(sql, String.class, hqId, branchId, start, end, hqId, branchId, abbDate, mallName);
     }
 
 }

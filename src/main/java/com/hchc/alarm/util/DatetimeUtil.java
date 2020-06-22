@@ -37,6 +37,11 @@ public class DatetimeUtil {
         return format.parse(date);
     }
 
+    public static Date parse(String date , String pattern) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.parse(date);
+    }
+
     public static Date addDay(Date date, int d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

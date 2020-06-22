@@ -91,9 +91,9 @@ public class AlarmApplication {
 	public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
 		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 		//超时时间、单位为ms
-		factory.setReadTimeout(5000);
+		factory.setReadTimeout(1000 * 60 * 5);
 		//连接时间、单位为ms
-		factory.setConnectTimeout(5000);
+		factory.setConnectTimeout(1000 * 60 * 5);
 		return factory;
 	}
 }
