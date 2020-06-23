@@ -32,11 +32,11 @@ public class RePushMallTask {
     /**
      * 向mall旧服务器补传
      */
-    @Scheduled(cron = " 0 45 3-5  * * ? ")
+    @Scheduled(cron = " 0 55 5  * * ? ")
     public void oldServerPush() {
-        Date start = DatetimeUtil.dayBegin(new Date());
-        Date end = DatetimeUtil.dayEnd(new Date());
-        String abbDate = DatetimeUtil.dayText(end);
+        Date end = DatetimeUtil.getDayStart(new Date());
+        Date start = DatetimeUtil.addDay(end, -1);
+        String abbDate = DatetimeUtil.dayText(start);
         pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.MARKUP_TEST_URL);
     }
 
