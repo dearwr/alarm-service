@@ -31,10 +31,35 @@ public class VipPointDao extends HcHcBaseDao {
 
     }
 
-    public String[] mapping(ResultSet rs, int num) throws SQLException {
+    public String[] mapping(ResultSet rs, int i) throws SQLException {
         String[] obj = new String[2];
         obj[0] = rs.getString("f_id");
         obj[1] = rs.getString("f_templatenumber");
         return obj;
     }
+
+    public List<String[]> queryInvalidPointCardsByHqId(long hqId) {
+        String sql = "SELECT h.`name`, p.f_mrvipnumber, tp.f_name FROM t_mr_consume_point p " +
+                "LEFT JOIN t_tp_mr_consume_point tp ON p.f_templatenumber = tp.f_number " +
+                "LEFT JOIN t_headquarter h on tp.f_hqid = h.id " +
+                "WHERE p.f_status = 'invalid' and tp.f_hqid = ? ";
+        return hJdbcTemplate.query(sql, this::invalidMapping, hqId);
+    }
+
+    private String[] invalidMapping(ResultSet rs, int i) throws SQLException {
+        String[] obj = new String[3];
+        obj[0] = rs.getString("name");
+        obj[1] = rs.getString("f_mrvipnumber");
+        obj[2] = rs.getString("f_name");
+        return obj;
+    }
+
+    public List<Long> queryHqList() {
+        String sql = "SELECT DISTINCT h.id " +
+                "FROM t_mr_consume_point p " +
+                "LEFT JOIN t_tp_mr_consume_point tp ON p.f_templatenumber = tp.f_number " +
+                "LEFT JOIN t_headquarter h on tp.f_hqid = h.id WHERE p.f_status = 'invalid' and tp.f_hqid <> 199;";
+        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"));
+    }
+
 }

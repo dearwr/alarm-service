@@ -5,7 +5,6 @@
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.scheduling.annotation.Scheduled;
 //import org.springframework.stereotype.Service;
-//import org.springframework.util.StringUtils;
 //
 //import java.util.*;
 //
@@ -17,12 +16,12 @@
 //@Slf4j
 //public class CleanPointCardTask {
 //
-//    private static final int QUERY_SIZE = 10000;
+//    private static final int QUERY_SIZE = 100000;
 //
 //    @Autowired
 //    private VipPointDao vipPointDao;
 //
-//    @Scheduled(cron = " 0 21 18 * * ? ")
+//    @Scheduled(cron = " 0 15 16 * * ? ")
 //    public void cleanPointCard() throws InterruptedException {
 //        log.info("**************start clean Point Card*********");
 //        boolean hasNumber = true;
