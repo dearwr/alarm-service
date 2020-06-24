@@ -54,31 +54,33 @@ public class KdsController {
         Date end;
         try {
             for (BranchKdsDO kds : kdsList) {
-                kdsConsoleInfo = new KdsConsoleInfo();
-                if (kds.getHeartTime() == null) {
+                if (kds.getVersion() == null || kds.getHeartTime() == null) {
                     continue;
                 }
+                kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setHeartTime(kds.getHeartTime());
                 kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
                 end = DatetimeUtil.addSecond(new Date(), 15);
                 orderList = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end);
                 if (CollectionUtils.isEmpty(orderList)) {
-                    continue;
-                }
-                waitList = new HashSet<>(orderList.size());
-                completedList = new HashSet<>(orderList.size());
-                for (String[] order : orderList) {
-                    if ("ORDER_NEW".equals(order[1]) || "ORDER_MAKE".equals(order[1]) || "ORDER_PRE".equals(order[1])) {
-                        waitList.add(order[0]);
-                    } else {
-                        completedList.add(order[0]);
+                    kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
+                    kdsConsoleInfo.setKdsCount(0);
+                }else {
+                    waitList = new HashSet<>(orderList.size());
+                    completedList = new HashSet<>(orderList.size());
+                    for (String[] order : orderList) {
+                        if ("ORDER_NEW".equals(order[1]) || "ORDER_MAKE".equals(order[1]) || "ORDER_PRE".equals(order[1])) {
+                            waitList.add(order[0]);
+                        } else {
+                            completedList.add(order[0]);
+                        }
                     }
+                    for (String completedNo : completedList) {
+                        waitList.remove(completedNo);
+                    }
+                    kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
+                    kdsConsoleInfo.setKdsCount(waitList.size());
                 }
-                for (String completedNo : completedList) {
-                    waitList.remove(completedNo);
-                }
-                kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                kdsConsoleInfo.setKdsCount(waitList.size());
                 kdsConsoleInfo.setUuid(kds.getUuid());
                 branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
                 kdsConsoleInfo.setBrandName(branchBO.getBrandName());
