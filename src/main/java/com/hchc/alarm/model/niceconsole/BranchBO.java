@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 public class BranchBO {
 
+    private long id;
+
     private String name;
 
     private String businessHours;

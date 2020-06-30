@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -23,6 +24,7 @@ import javax.sql.DataSource;
 /**
  * @author wangrong
  */
+@EnableTransactionManagement
 @EnableScheduling
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class,
@@ -47,7 +49,7 @@ public class AlarmApplication {
 		return dataSourceProperties.initializeDataSourceBuilder().build();
 	}
 
-	@Bean
+	@Bean(name = "hTransactionManager")
 	@Resource
 	public PlatformTransactionManager hTransactionManager(DataSource hDataSource) {
 		return new DataSourceTransactionManager(hDataSource);
@@ -76,7 +78,7 @@ public class AlarmApplication {
 		return new JdbcTemplate(rDataSource());
 	}
 
-	@Bean
+	@Bean(name = "rTransactionManager")
 	@Resource
 	public PlatformTransactionManager rTransactionManager(DataSource rDataSource) {
 		return new DataSourceTransactionManager(rDataSource);
