@@ -33,8 +33,8 @@ public class PayProviderService {
         AccountBO account = payProvider.getAccount();
         account.setF_hqid(provider.getF_hq_id());
         long branchId;
-        boolean updateMch;
-        boolean updateAccount;
+        boolean isMchUpdate;
+        boolean isAccountUpdate;
         String providerNo;
         String flowNo;
         for (BranchBO branch : payProvider.getBranches()) {
@@ -43,20 +43,18 @@ public class PayProviderService {
                 provider.setF_branch_id(branchId);
                 provider.setF_pay_type(payType);
 
-                updateAccount = account.getF_flow() != null && account.getF_branchid() == provider.getF_branch_id();
+                isAccountUpdate = account.getF_flow() != null && account.getF_branchid() == provider.getF_branch_id();
                 account.setF_branchid(branchId);
                 account.setF_paytype("");
 
-                updateMch = mch.getF_no() != null && mch.getF_branchid() == provider.getF_branch_id() && mch.getF_paytype().equals(provider.getF_pay_type());
+                isMchUpdate = mch.getF_no() != null && mch.getF_branchid() == provider.getF_branch_id() && mch.getF_paytype().equals(provider.getF_pay_type());
                 mch.setF_branchid(branchId);
                 mch.setF_paytype(payType);
-
                 if (!"NICE_MP".equals(payType)){
                     mch.setF_subappid("");
                     mch.setSub_app_id("");
                 }
-
-                if (updateAccount) {
+                if (isAccountUpdate) {
                     flowNo = account.getF_flow();
                     settleAccountDao.update(account);
                 }else {
@@ -64,10 +62,9 @@ public class PayProviderService {
                     account.setF_flow(flowNo);
                     settleAccountDao.save(account);
                 }
-
                 mch.setAccount_flow(flowNo);
                 mch.setF_account_flow(flowNo);
-                if (updateMch) {
+                if (isMchUpdate) {
                     providerNo = mch.getF_no();
                     mchDao.update(provider.getF_provider(), mch);
                 }else {
@@ -75,10 +72,8 @@ public class PayProviderService {
                     mch.setF_no(providerNo);
                     mchDao.save(provider.getF_provider(), mch);
                 }
-
                 provider.setF_providerno(providerNo);
                 payProviderDao.save(provider);
-
             }
         }
     }
