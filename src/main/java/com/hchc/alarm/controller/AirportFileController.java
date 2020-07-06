@@ -28,7 +28,7 @@ public class AirportFileController {
     @Autowired
     private MallProductCodeDao mallProductCodeDao;
 
-    @PostMapping("/Upload")
+    @PostMapping("/upload")
     public MallResponse fileUpload(MultipartFile sourceFile, int hqId, int branchId) {
         if (hqId < 0 || branchId < 0) {
             log.info("hqId or branchId 小于0");
