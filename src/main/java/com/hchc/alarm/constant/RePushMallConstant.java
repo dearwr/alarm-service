@@ -35,6 +35,7 @@ public class RePushMallConstant {
         rePushMalls.add(new RePushMallBO(2581, 3759, "shgrandgetaway"));
         rePushMalls.add(new RePushMallBO(172, 4811, "dingxiang"));
         rePushMalls.add(new RePushMallBO(2765, 4045, "bubugao"));
+        rePushMalls.add(new RePushMallBO(1516, 3125, "starcocopark"));
     }
 
     // 检查数据商场
