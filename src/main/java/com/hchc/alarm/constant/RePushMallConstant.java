@@ -23,6 +23,7 @@ public class RePushMallConstant {
         rePushMalls.add(new RePushMallBO(633, 2165, "huarun"));
         rePushMalls.add(new RePushMallBO(1516, 4933, "huarun"));
         rePushMalls.add(new RePushMallBO(1721, 3958, "bfc"));
+        rePushMalls.add(new RePushMallBO(237, 2081, "bfc"));
         rePushMalls.add(new RePushMallBO(2439, 3417, "bofu"));
         rePushMalls.add(new RePushMallBO(1516, 4070, "guangzhoutianhuan"));
         rePushMalls.add(new RePushMallBO(1721, 4152, "jinyaoqiantan"));
@@ -30,9 +31,8 @@ public class RePushMallConstant {
         rePushMalls.add(new RePushMallBO(2439, 3447, "airport"));
         rePushMalls.add(new RePushMallBO(2248, 4059, "spk"));
         rePushMalls.add(new RePushMallBO(338, 577, "kerry"));
-        rePushMalls.add(new RePushMallBO(237, 2081, "bfc"));
         rePushMalls.add(new RePushMallBO(257, 554, "kerry"));
-        rePushMalls.add(new RePushMallBO(2581, 3759, "shgrandgetaway"));
+        rePushMalls.add(new RePushMallBO(1513, 3618, "kerry"));
         rePushMalls.add(new RePushMallBO(172, 4811, "dingxiang"));
         rePushMalls.add(new RePushMallBO(2765, 4045, "bubugao"));
         rePushMalls.add(new RePushMallBO(1516, 3125, "starcocopark"));
