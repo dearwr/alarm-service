@@ -47,7 +47,7 @@ public class MallRecordController {
             return Output.ok("no UnPush orderNos");
         }
         PushMall pushMall = new PushMall(hqId, branchId, start, end, orderList);
-        return remoteService.pushUnSuccessOrder(pushMall, RePushMallConstant.MARKUP_TEST_URL);
+        return remoteService.pushOrders(pushMall, RePushMallConstant.MARKUP_TEST_URL);
     }
 
 }
