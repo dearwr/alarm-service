@@ -1,8 +1,8 @@
 package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchDao;
-import com.hchc.alarm.dao.rocket.BranchKdsBaseDao;
-import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
+import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
+import com.hchc.alarm.dao.hchc.KdsMessageBaseDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import com.hchc.alarm.model.BranchBO;
 import com.hchc.alarm.pack.Output;

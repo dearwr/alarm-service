@@ -1,6 +1,6 @@
-package com.hchc.alarm.dao.rocket;
+package com.hchc.alarm.dao.hchc;
 
-import com.hchc.alarm.dao.RocketBaseDao;
+import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author wangrong
  */
 @Repository
-public class BranchKdsBaseDao extends RocketBaseDao {
+public class BranchKdsBaseDao extends HcHcBaseDao {
 
     public List<BranchKdsDO> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
@@ -29,7 +29,7 @@ public class BranchKdsBaseDao extends RocketBaseDao {
             sb.append(" and f_branchid = ? ");
             params.add(branchId);
         }
-        List<BranchKdsDO> kdsList = rJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
+        List<BranchKdsDO> kdsList = hJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
         if (CollectionUtils.isEmpty(kdsList)) {
             return Collections.emptyList();
         }

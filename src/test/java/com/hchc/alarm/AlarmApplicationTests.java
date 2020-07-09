@@ -1,13 +1,8 @@
 package com.hchc.alarm;
 
-import com.hchc.alarm.dao.rocket.KdsMessageBaseDao;
-import com.hchc.alarm.util.DatetimeUtil;
-import org.junit.jupiter.api.Test;
+import com.hchc.alarm.dao.hchc.KdsMessageBaseDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Date;
-import java.util.List;
 
 @SpringBootTest
 class AlarmApplicationTests {
