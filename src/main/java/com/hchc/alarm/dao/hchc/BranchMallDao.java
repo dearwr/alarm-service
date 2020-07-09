@@ -22,7 +22,7 @@ public class BranchMallDao extends HcHcBaseDao {
 
     public List<RePushMallBO> queryValidImmediateMall() {
         String sql = "select m.f_hqid, m.f_branchid, m.f_mall, m.f_transport_enable from t_branch_mall m " +
-                "where f_type = 'immediate' and f_enable = 1 and f_test = 1 and f_config is not null ";
+                "where f_type = 'immediate' and f_enable = 1 and f_test = 1 and f_config is not null and f_config != '' ";
         return hJdbcTemplate.query(sql, this::mapping);
     }
 
