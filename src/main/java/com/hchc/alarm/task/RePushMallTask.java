@@ -49,14 +49,14 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 10 9,11,15,17,20,22 * * ? ")
+    @Scheduled(cron = "0 0 9,11,15,17,20,22 * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
         log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));
         rePushMalls = rePushMalls.stream().filter(m -> {
             if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())) {
                 return false;
-            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) {
+            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L || m.getBranchId() == 1849L ||m.getBranchId() == 1913L) {
                 return false;
             } else {
                 return true;
