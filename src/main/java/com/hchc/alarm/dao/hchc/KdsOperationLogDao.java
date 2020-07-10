@@ -1,9 +1,13 @@
 package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
+import com.hchc.alarm.entity.BranchKdsDO;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,5 +24,26 @@ public class KdsOperationLogDao extends HcHcBaseDao {
             return "";
         }
         return versionList.get(0);
+    }
+
+    public List<Integer> queryAllBranchIdList() {
+        String sql = "SELECT DISTINCT f_branchid from t_kds_operation_log where f_branchid > 0 ";
+        return hJdbcTemplate.query(sql, (rs, i) -> rs.getInt("f_branchid"));
+    }
+
+    public BranchKdsDO queryOneRecord(int branchId, Date start) {
+        String sql = "SELECT f_hqid, f_branchid from t_kds_operation_log where  f_branchid = ? and f_option_time > ? LIMIT 1";
+        List<BranchKdsDO> kdsDOList =  hJdbcTemplate.query(sql, this::queryMapping, branchId, start);
+        if (CollectionUtils.isEmpty(kdsDOList)) {
+            return null;
+        }
+        return kdsDOList.get(0);
+    }
+
+    private BranchKdsDO queryMapping(ResultSet rs, int i) throws SQLException {
+        BranchKdsDO kds = new BranchKdsDO();
+        kds.setHqId(rs.getInt("f_hqid"));
+        kds.setBranchId(rs.getInt("f_branchid"));
+        return kds;
     }
 }
