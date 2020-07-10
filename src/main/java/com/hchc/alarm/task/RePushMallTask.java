@@ -54,9 +54,11 @@ public class RePushMallTask {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
         log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));
         rePushMalls = rePushMalls.stream().filter(m -> {
-            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())) {
+            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())) {  // 特殊商场
                 return false;
-            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L || m.getBranchId() == 1849L ||m.getBranchId() == 1913L) {
+            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
+                return false;
+            } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L) { // 配置优问题商场
                 return false;
             } else {
                 return true;
