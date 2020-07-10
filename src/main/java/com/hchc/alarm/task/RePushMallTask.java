@@ -49,7 +49,7 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 0 9,11,15,17,20,22 * * ? ")
+    @Scheduled(cron = "0 10 9,11,15,17,20,22 * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
         log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));

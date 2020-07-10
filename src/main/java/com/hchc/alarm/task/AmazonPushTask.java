@@ -26,16 +26,16 @@ public class AmazonPushTask {
 
     // amazon品牌号
     private final String AMAZON_HQID = "2382";
-    private Long[] branchIds = new Long[]{3127L, 4971L};
+    private Integer[] branchIds = new Integer[]{3127, 4971};
 
     /**
      * 每日凌晨1点钟定时推送有关前一天Amazon的交易数据
      */
-    @Scheduled(cron = " 0 15 2 * * ? ")
+    @Scheduled(cron = " 0 35 1 * * ? ")
     public void pushData() {
         log.info("##################### amazon push data ########################");
         Date end = DatetimeUtil.getDayStart(new Date());
-        Date start = DatetimeUtil.addDay(end,-1);
+        Date start = DatetimeUtil.addDay(end, -1);
         Msg msgList;
         for (int i = 0; i < branchIds.length; i++) {
             log.info("[amazon] start push branch :{}", branchIds[i]);
