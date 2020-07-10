@@ -14,6 +14,11 @@ import java.sql.SQLException;
 @Repository
 public class BranchDao extends HcHcBaseDao {
 
+    public int changeCode(int branchId, String code) {
+        String sql = "update t_branch set `code` = ? where id = ?";
+        return hJdbcTemplate.update(sql, code, branchId);
+    }
+
     public BranchBO query(int hqId, int branchId) {
         String sql = "select h.name as brandName, b.name as branchName from t_headquarter h " +
                 "left join t_branch b on h.id = b.hq_id " +
