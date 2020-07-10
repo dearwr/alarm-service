@@ -5,7 +5,6 @@ import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.util.DatetimeUtil;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,28 @@ public class CheckKdsController {
     private KdsOperationLogDao kdsOperationLogDao;
     @Autowired
     private BranchKdsBaseDao branchKdsBaseDao;
+
+    @GetMapping("/delete")
+    public Output delete(int branchId, String uuid) {
+        log.info("[delete] recv param branchId:{}, uuid:{}", branchId, uuid);
+        return Output.ok(branchKdsBaseDao.delete(branchId, uuid));
+    }
+
+    @GetMapping("/add")
+    public Output add(int branchId, int hqId) {
+        log.info("[add] recv param branchId:{}, hqId:{}", branchId, hqId);
+        BranchKdsDO kdsDO = new BranchKdsDO();
+        kdsDO.setHqId(hqId);
+        kdsDO.setBranchId(branchId);
+        String uuid = UUID.randomUUID().toString();
+        boolean uuidExit = branchKdsBaseDao.queryUUidExit(uuid);
+        while (uuidExit) {
+            uuid = UUID.randomUUID().toString();
+            uuidExit = branchKdsBaseDao.queryUUidExit(uuid);
+        }
+        kdsDO.setUuid(uuid);
+        return Output.ok(branchKdsBaseDao.saveOne(kdsDO));
+    }
 
     @GetMapping("/checkForUpdate")
     public Output checkForUpdate() {

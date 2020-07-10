@@ -71,4 +71,16 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         return hJdbcTemplate.update(sql, kdsDO.getHqId(), kdsDO.getBranchId(), kdsDO.getUuid(), "自动添加");
 
     }
+
+    public Object delete(int branchId, String uuid) {
+        String sql = "delete from t_branch_kds where f_branchid = ? ";
+        List<Object> params = new ArrayList<>();
+        params.add(branchId);
+        if (uuid != null) {
+            sql += "and f_uuid = ?";
+            params.add(uuid);
+        }
+        return hJdbcTemplate.update(sql, params.toArray());
+    }
+
 }
