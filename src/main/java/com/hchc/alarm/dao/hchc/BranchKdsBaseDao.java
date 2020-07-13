@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by wangrong 2020/5/12
+ *
  * @author wangrong
  */
 @Repository
@@ -46,4 +47,40 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         branchKdsTb.setVersion(rs.getString("f_version"));
         return branchKdsTb;
     }
+
+    public boolean queryExist(Integer branchId) {
+        String sql = "select f_id from t_branch_kds where f_branchid = ?";
+        List<Long> idList = hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("f_id"), branchId);
+        if (CollectionUtils.isEmpty(idList)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean queryUUidExit(String uuid) {
+        String sql = "select f_uuid from t_branch_kds where f_uuid = ?";
+        List<Long> idList = hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("f_uuid"), uuid);
+        if (CollectionUtils.isEmpty(idList)) {
+            return false;
+        }
+        return true;
+    }
+
+    public int saveOne(BranchKdsDO kdsDO) {
+        String sql = "insert into t_branch_kds (f_hqid, f_branchid, f_uuid, f_create_time, f_name) values (?, ?, ?, now(), ?)";
+        return hJdbcTemplate.update(sql, kdsDO.getHqId(), kdsDO.getBranchId(), kdsDO.getUuid(), "自动添加");
+
+    }
+
+    public int delete(int branchId, String uuid) {
+        String sql = "delete from t_branch_kds where f_branchid = ? ";
+        List<Object> params = new ArrayList<>();
+        params.add(branchId);
+        if (uuid != null) {
+            sql += "and f_uuid = ?";
+            params.add(uuid);
+        }
+        return hJdbcTemplate.update(sql, params.toArray());
+    }
+
 }
