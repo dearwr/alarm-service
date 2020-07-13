@@ -104,7 +104,7 @@ public class BranchMallService {
             cities.add(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallServiceBO = new MallServiceBO();
             mallServiceBO.setMark(mark);
-            mallServiceBO.setName(MARK_FULL_NAME_MAP.get(mark).substring(2));
+            mallServiceBO.setName(MARK_FULL_NAME_MAP.get(mark));
             mallServiceBO.setCity(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
             mallServiceBO.setMallBranches(mallBranches.get(mark));
             for (MallBranchBO info : mallBranches.get(mark)) {
