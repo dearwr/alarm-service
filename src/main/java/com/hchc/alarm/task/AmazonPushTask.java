@@ -27,7 +27,7 @@ public class AmazonPushTask {
     // amazon品牌号
     private final String AMAZON_HQID = "2382";
     //    private Integer[] branchIds = new Integer[]{3127, 4971};
-    private Integer[] branchIds = new Integer[]{3127};
+    private Integer[] branchIds = new Integer[]{3127, 4971};
 
     /**
      * 每日凌晨1点钟定时推送有关前一天Amazon的交易数据
