@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class RePushMallConstant {
 
-    public static final String MARKUP_TEST_URL = "http://120.78.232.8:9501/pushOrderToMall/pushToTestMall";
+    public static final String MARKUP_TEST_URL = "http://47.115.30.87:9501/pushOrderToMall/pushToTestMall";
 
     // 补推商场
     public static List<RePushMallBO> rePushMalls = new ArrayList<>();
