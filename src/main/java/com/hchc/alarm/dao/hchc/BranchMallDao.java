@@ -30,7 +30,7 @@ public class BranchMallDao extends HcHcBaseDao {
         String sql = "SELECT h.id as hId, b.id as bId, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config " +
                 "from t_branch_mall m LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
-                " WHERE m.f_enable = 1 and f_config <> '' and f_hqid not in (199,4)";
+                " WHERE f_config is not null and f_config <> '' and f_hqid not in (199,4)";
         if (types != null) {
             String typeStr = String.join("','", types);
             sql += " and f_type in ('" + typeStr + "')";
