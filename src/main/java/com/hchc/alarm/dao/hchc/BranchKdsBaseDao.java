@@ -19,6 +19,11 @@ import java.util.List;
 @Repository
 public class BranchKdsBaseDao extends HcHcBaseDao {
 
+    public List<Integer> queryAllBranchIds() {
+        String sql = "select f_branchid from t_branch_kds ";
+        return hJdbcTemplate.query(sql,(rs,num)-> rs.getInt("f_branchid"));
+    }
+
     public List<BranchKdsDO> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
         StringBuilder sb = new StringBuilder("select * from t_branch_kds where f_open=1 and f_version is not null");

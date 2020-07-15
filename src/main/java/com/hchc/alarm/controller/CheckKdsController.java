@@ -88,6 +88,22 @@ public class CheckKdsController {
         return Output.ok(kds);
     }
 
+    @GetMapping("/checkForDelete")
+    public Output checkForDelete() {
+        List<Integer> branchIdList = branchKdsBaseDao.queryAllBranchIds();
+        List<Integer> noLogList = new ArrayList<>();
+        BranchKdsDO kdsDO;
+        Date start = DatetimeUtil.addDay(new Date(), -1);
+        for (Integer branchId : branchIdList) {
+            kdsDO = kdsOperationLogDao.queryOneRecord(branchId, start);
+            if (kdsDO == null) {
+                noLogList.add(branchId);
+                branchKdsBaseDao.delete(branchId, null);
+            }
+        }
+        return Output.ok(noLogList);
+    }
+
     @Getter
     @Setter
     private static class Kds {
