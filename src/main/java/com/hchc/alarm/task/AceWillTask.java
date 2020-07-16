@@ -21,7 +21,7 @@ public class AceWillTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    public static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={}&type=dishkind,dishunit,dish,menudish";
+    public static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={1}&type=dishkind,dishunit,dish,menudish";
     public static final String AceWill_DISH_LOSS_URL = "http://120.78.232.8:9500/sync/dishLoss";
     public static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={1}&branches={2}&startDay={3}&endDay={4}";
 
