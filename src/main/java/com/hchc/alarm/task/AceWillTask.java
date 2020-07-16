@@ -21,8 +21,8 @@ public class AceWillTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String AceWill_DISH_URL = "http://120.25.75.153:9500/sync/basic?hqId={}&type=dishkind,dishunit,dish,menudish";
-    private static final String AceWill_DONE_URL = "http://120.25.75.153:9500/sync/rePushAndDone?hqId={}&branches={}&startDay={}&endDay={}";
+    private static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={}&type=dishkind,dishunit,dish,menudish";
+    private static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={}&branches={}&startDay={}&endDay={}";
 
 
     @Scheduled(cron = "0 50 23 * * ?")
