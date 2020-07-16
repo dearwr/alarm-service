@@ -16,4 +16,10 @@ public class MaterialGroupDao extends HcHcBaseDao {
         String sql = "select id from t_product_material_group where code = ?";
         return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), code);
     }
+
+    public List<Long> querySuitProductIdBySku(String sku) {
+        String sql = "select `id` from  t_product  where `code` = ? and product_type = 'SUITE'";
+        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), sku);
+    }
+
 }

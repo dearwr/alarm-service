@@ -1,16 +1,14 @@
 package com.hchc.alarm.controller;
 
-import com.hchc.alarm.model.niceconsole.*;
+import com.hchc.alarm.dao.hchc.MaterialBarCodeDao;
+import com.hchc.alarm.model.niceconsole.ModelBO;
 import com.hchc.alarm.pack.MallResponse;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.BarCodeService;
 import com.hchc.alarm.service.HqFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,6 +27,8 @@ public class FileController {
     private HqFileService hqFileService;
     @Autowired
     private BarCodeService barCodeService;
+    @Autowired
+    private MaterialBarCodeDao materialBarCodeDao;
 
     @PostMapping("/parseHqFile")
     public MallResponse parseHqFile(MultipartFile hqFile) throws IOException {
@@ -49,19 +49,25 @@ public class FileController {
     }
 
     @PostMapping("/parseBarCodeFile")
-    public Output parseBarCodeFile(MultipartFile file){
+    public Output parseBarCodeFile(MultipartFile file) {
         log.info("[parseBarCodeFile] recv fileName:{}", file.getOriginalFilename());
         if (file.isEmpty()) {
             log.info("上传文件为空");
             return Output.fail("上传文件为空");
         }
         try {
-            barCodeService.parseFile(file);
+            return Output.ok(barCodeService.parseFile(file));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[parseBarCodeFile] happen err:{}", e.getMessage());
             return Output.fail(e.getMessage());
         }
+    }
+
+    @GetMapping("delete")
+    public Output deleteMoreRecord() {
+        log.info("[deleteMoreRecord]");
+        materialBarCodeDao.delete(32885);
         return Output.ok();
     }
 }

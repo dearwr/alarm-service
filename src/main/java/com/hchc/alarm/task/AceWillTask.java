@@ -21,8 +21,9 @@ public class AceWillTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={}&type=dishkind,dishunit,dish,menudish";
-    private static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={}&branches={}&startDay={}&endDay={}";
+    public static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={}&type=dishkind,dishunit,dish,menudish";
+    public static final String AceWill_DISH_LOSS_URL = "http://120.78.232.8:9500/sync/dishLoss";
+    public static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={1}&branches={2}&startDay={3}&endDay={4}";
 
 
     @Scheduled(cron = "0 50 23 * * ?")
@@ -40,7 +41,7 @@ public class AceWillTask {
         Output result = restTemplate.getForObject(AceWill_DISH_URL, Output.class, hqId);
         if (result != null && "0".equals(result.getCode())) {
             log.info("{} push dish success", hqName);
-        }else {
+        } else {
             log.info("{} push dish fail, result :{}", hqName, result);
             return;
         }
@@ -48,7 +49,7 @@ public class AceWillTask {
         String response = restTemplate.getForObject(AceWill_DONE_URL, String.class, hqId, branches, startDay, endDay);
         if (response != null && "ok".equals(response)) {
             log.info("{} push order and done success", hqName);
-        }else {
+        } else {
             log.info("{} push order and done fail, result:{}", hqName, response);
         }
     }

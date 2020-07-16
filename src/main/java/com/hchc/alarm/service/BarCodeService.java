@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,21 +34,19 @@ public class BarCodeService {
     @Autowired
     private MaterialBarCodeDao materialBarCodeDao;
 
-    public void parseFile(MultipartFile file) throws IOException {
+    public List<String> parseFile(MultipartFile file) throws IOException {
         Workbook workbook = null;
         FileInputStream fis = null;
+        List<String> result = new ArrayList<>();
         try {
             fis = (FileInputStream) file.getInputStream();
             if (file.getOriginalFilename().contains(".xlsx")) {
                 workbook = new XSSFWorkbook(fis);
-            }else {
+            } else {
                 workbook = new HSSFWorkbook(fis);
             }
-            Sheet sheet;
-            while (workbook.sheetIterator().hasNext()) {
-                sheet = workbook.sheetIterator().next();
-                parseSheet(sheet);
-            }
+            Sheet sheet = workbook.getSheetAt(0);
+            result.addAll(parseSheet(sheet));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("解析文件报错：" + e.getMessage());
@@ -59,14 +58,17 @@ public class BarCodeService {
                 workbook.close();
             }
         }
+        return result;
     }
 
-    private void parseSheet(Sheet sheet) {
+    private List<String> parseSheet(Sheet sheet) {
+        List<String> result = new ArrayList<>();
         Map<String, Integer> placeMap = new HashMap<>();
         String cValue;
         // 解析第一行表头
         String BAR_CODE = "条码";
         String SKU = "商家编码";
+        String SUITE = "是否套装";
         Row row = sheet.getRow(0);
         for (int i = 0; i < row.getLastCellNum(); i++) {
             if (row.getCell(i) == null) {
@@ -77,38 +79,66 @@ public class BarCodeService {
             if (cValue == null) {
                 continue;
             }
-            if (SKU.equals(cValue) || BAR_CODE.equals(cValue)) {
+            if (SKU.equals(cValue) || BAR_CODE.equals(cValue) || SUITE.equals(cValue)) {
                 placeMap.put(cValue, i);
             }
         }
         // 解析第二行开始的数据行
         int skuIndex = placeMap.get(SKU);
         int barIndex = placeMap.get(BAR_CODE);
+        int suiteIndex = placeMap.get(SUITE);
         List<Long> idList;
+        String sku;
         for (int i = 1; i < sheet.getLastRowNum(); i++) {
             try {
                 row = sheet.getRow(i);
-                // 解析sku
                 log.info("sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), skuIndex);
+                // 解析sku
                 cValue = parseCellValue(row.getCell(skuIndex));
                 if (cValue == null) {
                     log.info("parse sku cell is null");
+                    result.add("parse sku cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                // 查询sku的id
-                idList = materialGroupDao.queryIdByCode(cValue);
-                if (CollectionUtils.isEmpty(idList)) {
-                    log.info("find sku is empty from db, sku:{}", cValue);
+                sku = cValue;
+                // 解析suite
+                cValue = parseCellValue(row.getCell(suiteIndex));
+                if ("是".equals(cValue)) {
                     continue;
-                }
-                if (idList.size() > 1) {
-                    log.info("find sku size more then 1 from db , sku:{}", cValue);
-                    continue;
+//                    idList = materialGroupDao.querySuitProductIdBySku(sku);
+//                    if (CollectionUtils.isEmpty(idList)) {
+//                        log.info("find productId is empty for sku:{}", sku);
+//                        result.add("find productId is empty for sku" + sku);
+//                        continue;
+//                    }
+//                    if (idList.size() > 1) {
+//                        log.info("find productId size more then 1 from db , sku:{}", sku);
+//                        result.add("find productId size more then 1 from db , sku:" + sku);
+//                        continue;
+//                    }
+//                    suite = "SUITE";
+                } else {
+                    // 查询sku的id
+                    idList = materialGroupDao.queryIdByCode(sku);
+                    if (CollectionUtils.isEmpty(idList)) {
+                        log.info("find skuId is empty from db, sku:{}", sku);
+                        result.add("find skuId is empty for sku:" + sku);
+                        continue;
+                    }
+                    if (idList.size() > 1) {
+                        log.info("find skuId size more then 1 from db , sku:{}", sku);
+                        result.add("find skuId size more then 1 from db , sku:" + sku);
+                        continue;
+                    }
                 }
                 // 解析barcode
                 cValue = parseCellValue(row.getCell(barIndex));
                 if (cValue == null) {
                     log.info("parse barCode cell is null");
+                    result.add("parse barCode cell is null, row:" + row.getRowNum());
+                    continue;
+                }
+                if (materialBarCodeDao.queryExist(cValue)) {
                     continue;
                 }
                 // 保存记录
@@ -119,8 +149,8 @@ public class BarCodeService {
                 e.printStackTrace();
                 log.info("error sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), skuIndex);
             }
-
         }
+        return result;
     }
 
     private String parseCellValue(Cell cell) {
