@@ -43,7 +43,7 @@ public class RePushMallTask {
         Date end = DatetimeUtil.getDayStart(new Date());
         Date start = DatetimeUtil.addDay(end, -1);
         String abbDate = DatetimeUtil.dayText(start);
-        pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.MARKUP_TEST_URL);
+        pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
     }
 
     /**
@@ -67,7 +67,7 @@ public class RePushMallTask {
         log.info("after filter rePushMalls => {}", JSON.toJSONString(rePushMalls));
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);
-        pushMallList(rePushMalls, start, new Date(), abbDate, RePushMallConstant.MARKUP_TEST_URL);
+        pushMallList(rePushMalls, start, new Date(), abbDate, RePushMallConstant.MALL_ORDER_URL);
     }
 
     public void pushMallList(List<RePushMallBO> rePushMallBOList, Date start, Date end, String abbDate, String url) {
