@@ -42,7 +42,6 @@ public class RemoteService {
     }
 
     public Output pushOrders(PushMall pushMall, String url) {
-        log.info("[pushUnSuccessOrder] req:{}", pushMall);
         Output output = restTemplate.postForEntity(url, pushMall, Output.class).getBody();
         log.info("[pushUnSuccessOrder] res :{}", JSON.toJSONString(output));
         return output;
