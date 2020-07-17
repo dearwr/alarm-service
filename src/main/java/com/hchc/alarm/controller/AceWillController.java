@@ -32,8 +32,8 @@ public class AceWillController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @GetMapping("rePushAndDone")
-    public String rePushAndDone(long hqId, String branches, String startDay, String endDay) throws ParseException {
+    @GetMapping("zhuye")
+    public String pushZhuYe(long hqId, String branches, String startDay, String endDay) throws ParseException {
         String methodName = "rePushAndDone";
         log.info("[{}] recv param hqId:{}, branches:{}, startDay:{}, endDay:{}", methodName, hqId, branches, startDay, endDay);
         List<String> branchIdList = Arrays.asList(branches.split(","));
