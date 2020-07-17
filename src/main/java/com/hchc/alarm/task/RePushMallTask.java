@@ -37,7 +37,7 @@ public class RePushMallTask {
     /**
      * 晚上定时补传
      */
-    @Scheduled(cron = " 0 25 7  * * ? ")
+    @Scheduled(cron = " 0 25 5  * * ? ")
     public void rePushOnNight() {
         log.info("[rePushOnNight] start");
         Date end = DatetimeUtil.getDayStart(new Date());
