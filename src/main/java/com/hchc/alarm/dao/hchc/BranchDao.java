@@ -26,6 +26,12 @@ public class BranchDao extends HcHcBaseDao {
         return hJdbcTemplate.query(sql, this::mapping, hqId, branchId).get(0);
     }
 
+    public int updateFeatureData(long hqId, long branchId, String feature, String data) {
+        String sql = "update t_branch_feature set data = ? " +
+                "where hq_id = ? and branch_id =? and feature = ?";
+        return hJdbcTemplate.update(sql, data, hqId, branchId, feature);
+    }
+
     private BranchBO mapping(ResultSet rs, int i) throws SQLException {
         BranchBO branchBO = new BranchBO();
         branchBO.setBrandName(rs.getString("brandName"));
