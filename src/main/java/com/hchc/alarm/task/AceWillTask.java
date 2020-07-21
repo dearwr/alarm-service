@@ -1,6 +1,8 @@
 package com.hchc.alarm.task;
 
+import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.pack.SyncDishLossReqPack;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -26,8 +29,8 @@ public class AceWillTask {
     public static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={1}&branches={2}&startDay={3}&endDay={4}";
 
 
-    @Scheduled(cron = "0 50 23 * * ?")
-    public void scientist() {
+    @Scheduled(cron = "0 15 23 * * ?")
+    public void scientist() throws ParseException {
         long hqId = 1932L;
         String branches = "2480,2481,2482,2483,2484,2485,4907,5059";
         String hqName = "scientist";
@@ -36,7 +39,7 @@ public class AceWillTask {
         doSync(hqId, branches, hqName, startDay, endDay);
     }
 
-    private void doSync(long hqId, String branches, String hqName, String startDay, String endDay) {
+    private void doSync(long hqId, String branches, String hqName, String startDay, String endDay) throws ParseException {
         log.info("{} start push dish", hqName);
         Output result = restTemplate.getForObject(AceWill_DISH_URL, Output.class, hqId);
         if (result != null && "0".equals(result.getCode())) {
@@ -44,6 +47,18 @@ public class AceWillTask {
         } else {
             log.info("{} push dish fail, result :{}", hqName, result);
             return;
+        }
+        String[] branchList = branches.split(",");
+        SyncDishLossReqPack syncPack;
+        Date startDate = DatetimeUtil.parseDayText(startDay);
+        for (String branchId : branchList) {
+            syncPack = new SyncDishLossReqPack(hqId, branchId, DatetimeUtil.format(startDate), DatetimeUtil.format(DatetimeUtil.dayEnd(startDate)));
+            result = restTemplate.postForEntity(AceWill_DISH_LOSS_URL, syncPack, Output.class).getBody();
+            if (result == null || !"0".equals(result.getCode())) {
+                log.info("branchId:{} push dishLoss fail, result:{}", branchId, JSON.toJSON(result));
+            }else {
+                log.info("branchId:{} push dishLoss success, result:{}", branchId, JSON.toJSON(result));
+            }
         }
         log.info("{} start push order and done", hqName);
         String response = restTemplate.getForObject(AceWill_DONE_URL, String.class, hqId, branches, startDay, endDay);
