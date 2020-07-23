@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,7 +31,9 @@ public class CheckKdsController {
     private KdsOrderDao kdsOrderDao;
 
     @GetMapping("/delete")
-    public Output delete(int hqId, int branchId, String uuid) {
+    public Output delete(@RequestParam(required = false, defaultValue = "0") int hqId,
+                         @RequestParam(required = false, defaultValue = "0") int branchId,
+                         @RequestParam(required = false) String uuid) {
         log.info("[delete] recv param hqId:{}, branchId:{}, uuid:{}", hqId, branchId, uuid);
         if (hqId <= 0 && branchId <= 0 && StringUtils.isEmpty(uuid)) {
             return Output.fail("param is empty");
