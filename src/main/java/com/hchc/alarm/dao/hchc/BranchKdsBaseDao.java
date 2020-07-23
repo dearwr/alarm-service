@@ -77,10 +77,18 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
 
     }
 
-    public int delete(int branchId, String uuid) {
-        String sql = "delete from t_branch_kds where f_branchid = ? ";
+    public int delete(int hqId, int branchId, String uuid) {
+        String sql = "delete from t_branch_kds where 1=1 ";
         List<Object> params = new ArrayList<>();
         params.add(branchId);
+        if (hqId > 0) {
+            sql += "and f_hqid = ?";
+            params.add(hqId);
+        }
+        if (branchId > 0) {
+            sql += "and f_branchid = ?";
+            params.add(branchId);
+        }
         if (uuid != null) {
             sql += "and f_uuid = ?";
             params.add(uuid);

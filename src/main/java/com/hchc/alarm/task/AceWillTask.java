@@ -24,10 +24,13 @@ public class AceWillTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    public static final String AceWill_DISH_URL = "http://120.78.232.8:9500/sync/basic?hqId={1}&type=dishkind,dishunit,dish,menudish";
     public static final String AceWill_DISH_LOSS_URL = "http://120.78.232.8:9500/sync/dishLoss";
-    public static final String AceWill_DONE_URL = "http://120.78.232.8:9500/sync/rePushAndDone?hqId={1}&branches={2}&startDay={3}&endDay={4}";
+    public static final String AceWill_PUSH_URL = "http://120.78.232.8:9500/sync/push?hqId={1}&branchId={2}&date={3}";
+    public static final String AceWill_DAY_DONE_URL = "http://120.78.232.8:9500/sync/done?hqId={1}&branchId={2}&date={3}";
 
+//    public static final String AceWill_DISH_LOSS_URL = "http://localhost:9500/sync/dishLoss";
+//    public static final String AceWill_PUSH_URL = "http://localhost:9500/sync/push?hqId={1}&branchId={2}&date={3}";
+//    public static final String AceWill_DAY_DONE_URL = "http://localhost:9500/sync/done?hqId={1}&branchId={2}&date={3}";
 
     @Scheduled(cron = "0 55 22 * * ?")
     public void scientist() throws ParseException {
@@ -40,14 +43,6 @@ public class AceWillTask {
     }
 
     private void doSync(long hqId, String branches, String hqName, String startDay, String endDay) throws ParseException {
-//        log.info("{} start push dish", hqName);
-//        Output result = restTemplate.getForObject(AceWill_DISH_URL, Output.class, hqId);
-//        if (result != null && "0".equals(result.getCode())) {
-//            log.info("{} push dish success", hqName);
-//        } else {
-//            log.info("{} push dish fail, result :{}", hqName, result);
-//            return;
-//        }
         String[] branchList = branches.split(",");
         SyncDishLossReqPack syncPack;
         Date startDate = DatetimeUtil.parseDayText(startDay);
@@ -61,13 +56,6 @@ public class AceWillTask {
                 log.info("branchId:{} push dishLoss success, result:{}", branchId, JSON.toJSON(result));
             }
         }
-//        log.info("{} start push order and done", hqName);
-//        String response = restTemplate.getForObject(AceWill_DONE_URL, String.class, hqId, branches, startDay, endDay);
-//        if (response != null && "ok".equals(response)) {
-//            log.info("{} push order and done success", hqName);
-//        } else {
-//            log.info("{} push order and done fail, result:{}", hqName, response);
-//        }
     }
 
 }

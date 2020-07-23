@@ -2,12 +2,14 @@ package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
+import com.hchc.alarm.dao.hchc.KdsOrderDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import com.hchc.alarm.pack.Output;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,11 +26,16 @@ public class CheckKdsController {
     private KdsOperationLogDao kdsOperationLogDao;
     @Autowired
     private BranchKdsBaseDao branchKdsBaseDao;
+    @Autowired
+    private KdsOrderDao kdsOrderDao;
 
     @GetMapping("/delete")
-    public Output delete(int branchId, String uuid) {
-        log.info("[delete] recv param branchId:{}, uuid:{}", branchId, uuid);
-        return Output.ok(branchKdsBaseDao.delete(branchId, uuid));
+    public Output delete(int hqId, int branchId, String uuid) {
+        log.info("[delete] recv param hqId:{}, branchId:{}, uuid:{}", hqId, branchId, uuid);
+        if (hqId <= 0 && branchId <= 0 && StringUtils.isEmpty(uuid)) {
+            return Output.fail("param is empty");
+        }
+        return Output.ok(branchKdsBaseDao.delete(hqId, branchId, uuid));
     }
 
     @GetMapping("/add")
@@ -100,6 +107,12 @@ public class CheckKdsController {
 //        }
 //        return Output.ok(noLogList);
 //    }
+
+    @GetMapping("/order/complete")
+    public Output orderComplete(int branchId, String startTime, String endTime) {
+        log.info("[orderComplete] recv param branchId:{}, startTime:{}, endTime:{}", branchId, startTime, endTime);
+        return Output.ok(kdsOrderDao.orderComplete(branchId, startTime, endTime));
+    }
 
     @Getter
     @Setter
