@@ -89,7 +89,9 @@ public class BarCodeService {
         int suiteIndex = placeMap.get(SUITE);
         List<Long> idList;
         String sku;
+        boolean isSuit;
         for (int i = 1; i < sheet.getLastRowNum(); i++) {
+            isSuit = false;
             try {
                 row = sheet.getRow(i);
                 log.info("sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), skuIndex);
@@ -104,19 +106,18 @@ public class BarCodeService {
                 // 解析suite
                 cValue = parseCellValue(row.getCell(suiteIndex));
                 if ("是".equals(cValue)) {
-                    continue;
-//                    idList = materialGroupDao.querySuitProductIdBySku(sku);
-//                    if (CollectionUtils.isEmpty(idList)) {
-//                        log.info("find productId is empty for sku:{}", sku);
-//                        result.add("find productId is empty for sku" + sku);
-//                        continue;
-//                    }
-//                    if (idList.size() > 1) {
-//                        log.info("find productId size more then 1 from db , sku:{}", sku);
-//                        result.add("find productId size more then 1 from db , sku:" + sku);
-//                        continue;
-//                    }
-//                    suite = "SUITE";
+                    isSuit = true;
+                    idList = materialGroupDao.querySuitProductIdBySku(sku);
+                    if (CollectionUtils.isEmpty(idList)) {
+                        log.info("find productId is empty for sku:{}", sku);
+                        result.add("find productId is empty for sku:" + sku);
+                        continue;
+                    }
+                    if (idList.size() > 1) {
+                        log.info("find productId size more then 1 from db , sku:{}", sku);
+                        result.add("find productId size more then 1 from db , sku:" + sku);
+                        continue;
+                    }
                 } else {
                     // 查询sku的id
                     idList = materialGroupDao.queryIdByCode(sku);
@@ -138,12 +139,11 @@ public class BarCodeService {
                     result.add("parse barCode cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                if (materialBarCodeDao.queryExist(cValue)) {
-                    continue;
-                }
                 // 保存记录
-                if (materialBarCodeDao.save(idList.get(0), cValue) != 1) {
-                    log.info("save record fail, groupId:{}, barCode:{}", idList.get(0), cValue);
+                if (isSuit) {
+                    materialBarCodeDao.save(idList.get(0), cValue, "SUITE");
+                }else {
+                    materialBarCodeDao.save(idList.get(0), cValue);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
