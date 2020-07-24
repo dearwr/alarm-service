@@ -20,7 +20,7 @@ import java.util.List;
 public class BranchKdsBaseDao extends HcHcBaseDao {
 
     public List<Integer[]> queryCheckInfos() {
-        String sql = "select f_id, f_hqid, f_branchid from t_branch_kds ";
+        String sql = "select f_id, f_hqid, f_branchid, f_open from t_branch_kds ";
         return hJdbcTemplate.query(sql,(rs,num)-> {
             Integer[] arr = new Integer[4];
             arr[0] = rs.getInt("f_id");
