@@ -15,6 +15,6 @@ public class KdsConsoleInfo {
     private String versionCode;
     private String heartTime = "";
     private int wxCount;
-    private int kdsCount;
+    private String openState;
     private boolean offLine;
 }

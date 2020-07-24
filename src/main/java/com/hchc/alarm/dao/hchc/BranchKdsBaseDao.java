@@ -19,9 +19,16 @@ import java.util.List;
 @Repository
 public class BranchKdsBaseDao extends HcHcBaseDao {
 
-    public List<Integer> queryAllBranchIds() {
-        String sql = "select f_branchid from t_branch_kds ";
-        return hJdbcTemplate.query(sql,(rs,num)-> rs.getInt("f_branchid"));
+    public List<Integer[]> queryCheckInfos() {
+        String sql = "select f_id, f_hqid, f_branchid from t_branch_kds ";
+        return hJdbcTemplate.query(sql,(rs,num)-> {
+            Integer[] arr = new Integer[4];
+            arr[0] = rs.getInt("f_id");
+            arr[1] = rs.getInt("f_hqid");
+            arr[2] = rs.getInt("f_branchid");
+            arr[3] = rs.getInt("f_open");
+            return arr;
+        });
     }
 
     public List<BranchKdsDO> query(int hqId, int branchId) {
@@ -50,6 +57,7 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         branchKdsTb.setUuid(rs.getString("f_uuid"));
         branchKdsTb.setHeartTime(rs.getString("f_heart_time"));
         branchKdsTb.setVersion(rs.getString("f_version"));
+        branchKdsTb.setOpen(rs.getBoolean("f_open"));
         return branchKdsTb;
     }
 
@@ -95,4 +103,8 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         return hJdbcTemplate.update(sql, params.toArray());
     }
 
+    public void updateOpenState(Integer id, int state) {
+        String sql = "update t_branch_kds set f_open = ? where f_id = ?";
+        hJdbcTemplate.update(sql, state, id);
+    }
 }

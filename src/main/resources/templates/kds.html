@@ -37,7 +37,7 @@
             <th>kds版本</th>
             <th>最近心跳时间</th>
             <th>小程序排队订单数</th>
-            <th>kds未完成订单数</th>
+            <th>排队功能开启状态</th>
         </tr>
         </thead>
         <tbody id="t_body"></tbody>
@@ -155,7 +155,7 @@
                                     '<td>' + kdsInfo.versionCode + '</td>\n' +
                                     '<td>' + kdsInfo.heartTime + '</td>\n' +
                                     '<td>' + kdsInfo.wxCount + '</td>\n' +
-                                    '<td>' + kdsInfo.kdsCount + '</td>\n' +
+                                    '<td>' + kdsInfo.openState + '</td>\n' +
                                     '</tr>';
                             }
                             loading.hide();

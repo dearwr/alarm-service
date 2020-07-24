@@ -2,7 +2,6 @@ package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
-import com.hchc.alarm.dao.hchc.KdsMessageBaseDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import com.hchc.alarm.model.BranchBO;
 import com.hchc.alarm.pack.Output;
@@ -11,7 +10,6 @@ import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,8 +30,6 @@ public class KdsController {
     @Autowired
     private BranchKdsBaseDao branchKdsDao;
     @Autowired
-    private KdsMessageBaseDao kdsMessageDao;
-    @Autowired
     private RemoteService remoteService;
     @Autowired
     private BranchDao branchDao;
@@ -50,8 +46,6 @@ public class KdsController {
         Set<String> completedList;
         KdsConsoleInfo kdsConsoleInfo;
         BranchBO branchBO;
-        Date start = DatetimeUtil.dayBegin(new Date());
-        Date end;
         try {
             for (BranchKdsDO kds : kdsList) {
                 if (kds.getVersion() == null || kds.getHeartTime() == null) {
@@ -60,26 +54,12 @@ public class KdsController {
                 kdsConsoleInfo = new KdsConsoleInfo();
                 kdsConsoleInfo.setHeartTime(kds.getHeartTime());
                 kdsConsoleInfo.setOffLine(checkOffLine(kds.getHeartTime()));
-                end = DatetimeUtil.addSecond(new Date(), 15);
-                orderList = kdsMessageDao.queryAllPushed(kds.getBranchId(), kds.getUuid(), start, end);
-                if (CollectionUtils.isEmpty(orderList)) {
+                if (kds.isOpen()) {
                     kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                    kdsConsoleInfo.setKdsCount(0);
+                    kdsConsoleInfo.setOpenState("开启");
                 }else {
-                    waitList = new HashSet<>(orderList.size());
-                    completedList = new HashSet<>(orderList.size());
-                    for (String[] order : orderList) {
-                        if ("ORDER_NEW".equals(order[1]) || "ORDER_MAKE".equals(order[1]) || "ORDER_PRE".equals(order[1])) {
-                            waitList.add(order[0]);
-                        } else {
-                            completedList.add(order[0]);
-                        }
-                    }
-                    for (String completedNo : completedList) {
-                        waitList.remove(completedNo);
-                    }
-                    kdsConsoleInfo.setWxCount(remoteService.getWxQueueCount(kds.getHqId(), kds.getBranchId()));
-                    kdsConsoleInfo.setKdsCount(waitList.size());
+                    kdsConsoleInfo.setWxCount(0);
+                    kdsConsoleInfo.setOpenState("禁用");
                 }
                 kdsConsoleInfo.setUuid(kds.getUuid());
                 branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());
@@ -103,7 +83,7 @@ public class KdsController {
 
     private boolean checkOffLine(String heartTime) throws ParseException {
         long offTime = System.currentTimeMillis() - DatetimeUtil.parse(heartTime).getTime();
-        return offTime > 1000 * 60 && offTime < 1000 * 60 * 60 * 24 * 2;
+        return offTime > 1000 * 60 ;
     }
 
 }
