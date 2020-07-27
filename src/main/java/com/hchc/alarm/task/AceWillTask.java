@@ -32,10 +32,10 @@ public class AceWillTask {
 //    public static final String AceWill_PUSH_URL = "http://localhost:9500/sync/push?hqId={1}&branchId={2}&date={3}";
 //    public static final String AceWill_DAY_DONE_URL = "http://localhost:9500/sync/done?hqId={1}&branchId={2}&date={3}";
 
-    @Scheduled(cron = "0 55 22 * * ?")
+    @Scheduled(cron = "0 50 22 * * ?")
     public void scientist() throws ParseException {
         long hqId = 1932L;
-        String branches = "2480,2481,2482,2483,2484,2485,4907,5059";
+        String branches = "2480,2481,2482,2483,2484,2485,4907,5059,5450,5451";
         String hqName = "scientist";
         String startDay = DatetimeUtil.dayText(new Date());
         String endDay = startDay;
