@@ -49,7 +49,7 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 0 10,15,21 * * ? ")
+    @Scheduled(cron = "0 0 10,15,21,23 * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
         log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));
@@ -58,7 +58,8 @@ public class RePushMallTask {
                 return false;
             } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
                 return false;
-            } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L ||m.getBranchId() == 2485L) { // 配置有问题商场
+            } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L
+                    || m.getBranchId() == 2485L || m.getBranchId() == 3205L || m.getBranchId() == 1787L) { // 配置有问题商场
                 return false;
             } else {
                 return true;
@@ -97,4 +98,31 @@ public class RePushMallTask {
             }
         }
     }
+
+//    /**
+//     * 数据补传
+//     */
+//    @Scheduled(cron = "0 27 11 * * ? ")
+//    public void rePushBefore() {
+//        List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
+//        log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));
+//        rePushMalls = rePushMalls.stream().filter(m -> {
+//            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())) {  // 特殊商场
+//                return false;
+//            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
+//                return false;
+//            } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L
+//                    || m.getBranchId() == 2485L || m.getBranchId() == 3205L || m.getBranchId() == 1787L) { // 配置有问题商场
+//                return false;
+//            } else {
+//                return true;
+//            }
+//        }).collect(Collectors.toList());
+//        log.info("after filter rePushMalls => {}", JSON.toJSONString(rePushMalls));
+//        Date start = DatetimeUtil.dayBegin(DatetimeUtil.addDay(new Date(), -1));
+//        Date end = DatetimeUtil.dayEnd(start);
+//        String abbDate = DatetimeUtil.dayText(start);
+//        pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+//    }
+
 }
