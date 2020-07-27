@@ -1,11 +1,13 @@
 package com.hchc.alarm.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.hchc.alarm.dao.hchc.SqlDao;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.SyncDishLossReqPack;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,22 @@ public class AceWillController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private SqlDao sqlDao;
+
+    @GetMapping("sql/execute")
+    public String ChangeAceWillUrl(String sql) {
+        if (StringUtils.isEmpty(sql)) {
+            return "sql is empty";
+        }
+        try {
+            sqlDao.execute(sql);
+            return "ok";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
 
     @GetMapping("pushData")
     public String pushData(long hqId, String branches, String startDay, String endDay) throws ParseException {
@@ -41,7 +59,6 @@ public class AceWillController {
         String dayText;
         SyncDishLossReqPack syncPack;
         Output output;
-        String response;
         while (startDate.getTime() <= endDate.getTime()) {
             dayText = DatetimeUtil.format(startDate, pattern);
             log.info("[{}] day->{} start push", methodName, dayText);
