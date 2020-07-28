@@ -9,12 +9,19 @@
     margin-bottom: 5px;
 }
 
+#city-menu {
+    height: 450px;
+    overflow: scroll;
+}
+
 #brand-menu {
     display: none;
     position: absolute;
     z-index: 10;
     border: 1px solid gray;
     background-color: white;
+    height: 450px;
+    overflow: scroll;
 }
 
 #branch_table{
