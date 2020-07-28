@@ -109,8 +109,8 @@ public class BarCodeService {
                     isSuit = true;
                     idList = materialGroupDao.querySuitProductIdBySku(sku);
                     if (CollectionUtils.isEmpty(idList)) {
-                        log.info("find productId is empty for sku:{}", sku);
-                        result.add("find productId is empty for sku:" + sku);
+                        log.info("find productId is empty for spu:{}", sku);
+                        result.add("find productId is empty for spu:" + sku);
                         continue;
                     }
                     if (idList.size() > 1) {
@@ -137,6 +137,10 @@ public class BarCodeService {
                 if (cValue == null) {
                     log.info("parse barCode cell is null");
                     result.add("parse barCode cell is null, row:" + row.getRowNum());
+                    continue;
+                }
+                if (materialBarCodeDao.queryExist(cValue)) {
+                    log.info("barCode:{} is exist ", cValue);
                     continue;
                 }
                 // 保存记录
