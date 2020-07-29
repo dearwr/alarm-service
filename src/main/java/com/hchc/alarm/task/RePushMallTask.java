@@ -59,7 +59,7 @@ public class RePushMallTask {
             } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
                 return false;
             } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L
-                    || m.getBranchId() == 2485L || m.getBranchId() == 3205L || m.getBranchId() == 1787L) { // 配置有问题商场
+                    || m.getBranchId() == 2485L || m.getBranchId() == 1787L) { // 配置有问题商场
                 return false;
             } else {
                 return true;
@@ -112,7 +112,7 @@ public class RePushMallTask {
 //            } else if (m.getBranchId() == 4070L || m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
 //                return false;
 //            } else if (m.getBranchId() == 4071L || m.getBranchId() == 1849L || m.getBranchId() == 1913L
-//                    || m.getBranchId() == 2485L || m.getBranchId() == 3205L || m.getBranchId() == 1787L) { // 配置有问题商场
+//                    || m.getBranchId() == 2485L || m.getBranchId() == 1787L) { // 配置有问题商场
 //                return false;
 //            } else {
 //                return true;
