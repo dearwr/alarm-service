@@ -4,8 +4,8 @@ import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
 import com.hchc.alarm.entity.BranchKdsDO;
 import com.hchc.alarm.model.BranchBO;
-import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.KdsConsoleInfo;
+import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wangrong 2020/5/12
@@ -41,14 +42,11 @@ public class KdsController {
         List<KdsConsoleInfo> kdsConsoleInfos = new ArrayList<>();
         List<KdsConsoleInfo> offLineKds = new ArrayList<>();
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
-        List<String[]> orderList;
-        Set<String> waitList;
-        Set<String> completedList;
         KdsConsoleInfo kdsConsoleInfo;
         BranchBO branchBO;
         try {
             for (BranchKdsDO kds : kdsList) {
-                if (kds.getVersion() == null || kds.getHeartTime() == null) {
+                if (kds.getHeartTime() == null) {
                     continue;
                 }
                 kdsConsoleInfo = new KdsConsoleInfo();

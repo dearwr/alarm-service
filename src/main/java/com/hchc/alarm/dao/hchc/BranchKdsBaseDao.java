@@ -33,7 +33,7 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
 
     public List<BranchKdsDO> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
-        StringBuilder sb = new StringBuilder("select * from t_branch_kds where f_open=1 and f_version is not null");
+        StringBuilder sb = new StringBuilder("select * from t_branch_kds where 1=1 ");
         if (hqId != 0) {
             sb.append(" and f_hqid = ? ");
             params.add(hqId);
