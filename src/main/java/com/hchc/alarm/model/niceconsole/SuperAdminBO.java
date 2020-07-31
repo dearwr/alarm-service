@@ -1,12 +1,14 @@
 package com.hchc.alarm.model.niceconsole;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author wangrong
  * @date 2020-06-18
  */
-@Data
+@Getter
+@Setter
 public class SuperAdminBO {
 
     private String mobile;

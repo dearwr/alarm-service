@@ -9,7 +9,6 @@ import com.hchc.alarm.pack.MallConsoleInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,19 +26,9 @@ public class BranchMallService {
     private BranchMallDao branchMallDao;
 
     public MallConsoleInfo queryMallConsoleInfos() {
-        List<MallBranchBO> branchInfos = new ArrayList<>();
-        List<MallBranchBO> mallBranchInfos1 = branchMallDao.queryBranchInfos(null);
-        // flip服务器对接商场数据
-        List<MallBranchBO> mallBranchInfos2 = FLIP_MALL_BRANCH_DATA;
-        if (!CollectionUtils.isEmpty(mallBranchInfos1)) {
-            branchInfos.addAll(mallBranchInfos1);
-        }
-        if (!CollectionUtils.isEmpty(mallBranchInfos2)) {
-            branchInfos.addAll(mallBranchInfos2);
-        }
-
+        List<MallBranchBO> branchInfos = branchMallDao.queryBranchInfos(null);
         Map<String, List<MallBranchBO>> mallBranches = branchInfos.stream()
-                // 过滤mark名称存在的
+                // 过滤mark名称不存在的
                 .filter(b -> {
                     if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
                         log.info("[queryMallConsoleInfos] not find mapping for mark:{}, branchId:{}", b.getMark(), b.getBranchId());

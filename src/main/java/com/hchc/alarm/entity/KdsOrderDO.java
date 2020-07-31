@@ -1,6 +1,7 @@
 package com.hchc.alarm.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,7 +9,8 @@ import java.util.Date;
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class KdsOrderDO implements Serializable {
 
     private int id;

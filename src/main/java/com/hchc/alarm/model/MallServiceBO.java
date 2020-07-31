@@ -1,13 +1,15 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class MallServiceBO {
 
     private String mark;

@@ -1,12 +1,14 @@
 package com.hchc.alarm.model.niceconsole;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author wangrong
  * @date 2020-06-29
  */
-@Data
+@Getter
+@Setter
 public class    ProviderBO {
 
     private long f_hq_id;

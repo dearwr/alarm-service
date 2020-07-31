@@ -1,7 +1,8 @@
 package com.hchc.alarm.pack;
 
 import com.hchc.alarm.model.MallServiceBO;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,8 @@ import java.util.Map;
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class MallConsoleInfo {
 
     private List<String> cities;

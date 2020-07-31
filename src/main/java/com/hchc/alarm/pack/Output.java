@@ -1,14 +1,16 @@
 package com.hchc.alarm.pack;
 
 import com.hchc.alarm.util.DatetimeUtil;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class Output {
     private String code;
     private String message;

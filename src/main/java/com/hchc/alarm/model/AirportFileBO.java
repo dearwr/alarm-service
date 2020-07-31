@@ -1,6 +1,7 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,8 @@ import java.util.Map;
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class AirportFileBO {
 
     /**

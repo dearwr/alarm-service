@@ -1,7 +1,5 @@
 package com.hchc.alarm.constant;
 
-import com.hchc.alarm.model.MallBranchBO;
-
 import java.text.Collator;
 import java.util.*;
 
@@ -14,11 +12,6 @@ public class MallConstant {
      * 中文比较器
      */
     public static final Collator CHINESE_COMPARATOR = Collator.getInstance(java.util.Locale.CHINA);
-
-    /**
-     * flip 服务器商场门店数据
-     */
-    public static List<MallBranchBO> FLIP_MALL_BRANCH_DATA;
 
     public static final Map<String, String> MARK_FULL_NAME_MAP = new HashMap<>();
 

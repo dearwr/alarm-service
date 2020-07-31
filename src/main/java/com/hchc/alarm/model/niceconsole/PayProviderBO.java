@@ -1,6 +1,7 @@
 package com.hchc.alarm.model.niceconsole;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -8,7 +9,8 @@ import java.util.List;
  * @author wangrong
  * @date 2020-06-29
  */
-@Data
+@Getter
+@Setter
 public class PayProviderBO {
 
     private List<BranchBO> branches;

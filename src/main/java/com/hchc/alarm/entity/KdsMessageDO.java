@@ -1,13 +1,15 @@
 package com.hchc.alarm.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 /**
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class KdsMessageDO {
 
     private int id;

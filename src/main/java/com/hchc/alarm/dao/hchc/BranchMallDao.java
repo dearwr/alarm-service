@@ -27,7 +27,7 @@ public class BranchMallDao extends HcHcBaseDao {
     }
 
     public List<MallBranchBO> queryBranchInfos(List<String> types) {
-        String sql = "SELECT h.id as hId, b.id as bId, IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_mall, m.f_type, m.f_config " +
+        String sql = "SELECT IFNULL(h.`name`,h.`code`) hName, b.`name` as bName, b.address, m.f_config " +
                 "from t_branch_mall m LEFT JOIN t_headquarter h on m.f_hqid = h.id" +
                 " LEFT JOIN t_branch b on m.f_branchid = b.id" +
                 " WHERE f_config is not null and f_config <> '' and f_hqid not in (199,4)";
@@ -48,6 +48,7 @@ public class BranchMallDao extends HcHcBaseDao {
 
     private MallBranchBO queryMapping(ResultSet set, int i) throws SQLException {
         MallBranchBO bInfo = JSON.parseObject(set.getString("f_config"), MallBranchBO.class);
+
         bInfo.setHqId(set.getLong("hId"));
         bInfo.setBranchId(set.getLong("bId"));
         bInfo.setBrandName(set.getString("hName"));

@@ -1,12 +1,14 @@
 package com.hchc.alarm.pack;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by wangrong 2020/5/12
  * @author wangrong
  */
-@Data
+@Setter
+@Getter
 public class KdsConsoleInfo {
 
     private String brandName;

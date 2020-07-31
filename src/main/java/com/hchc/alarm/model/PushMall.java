@@ -1,6 +1,7 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
@@ -10,7 +11,8 @@ import java.util.List;
  * @author wangrong
  * @date 2020-06-22
  */
-@Data
+@Getter
+@Setter
 @ToString
 public class PushMall {
 

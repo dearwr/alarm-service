@@ -1,13 +1,15 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by wangrong 2020/4/27
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class MallBranchBO extends BranchBO {
 

@@ -1,12 +1,14 @@
 package com.hchc.alarm.pack;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by wangrong 2020/5/13
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 public class QueueInfo {
 
     /**

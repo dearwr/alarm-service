@@ -1,13 +1,15 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Created 2020/5/13
  * @author wangrong
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class BranchBO {
 

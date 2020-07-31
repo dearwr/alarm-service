@@ -1,7 +1,8 @@
 package com.hchc.alarm.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -9,7 +10,8 @@ import java.util.Date;
  * @author wangrong
  * @date 2020-05-28
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class CheckOrderBO extends BranchBO{
 
