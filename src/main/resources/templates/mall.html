@@ -81,6 +81,7 @@
             </div>
             <div class="modal-body">
                 <div class="modal-title" id="url"></div>
+                <br>
                 <div class="modal-title" id="testUrl"></div>
             </div>
             <div class="modal-body">
@@ -288,7 +289,7 @@
         var url = document.getElementById("mall_url").value;
         var mallsArray = [];
         var mallBranch;
-        var reg = new RegExp(url.sub(0, url.indexOf('?') === -1 ? url.length - 1 : url.indexOf('?')));
+        var reg = new RegExp(url.substr(0, url.indexOf('?') === -1 ? url.length - 1 : url.indexOf('?')));
         if (url !== '') {
             for (var i in mallsData) {
                 mallBranch = mallsData[i].mallBranches[0];
