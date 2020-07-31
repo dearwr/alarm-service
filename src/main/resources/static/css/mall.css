@@ -28,3 +28,20 @@
     height: 10px;
     font-size: 12px;
 }
+
+#searchMall {
+    width: 600px;
+    display: inline;
+    float: left;
+}
+
+#mall_url {
+    margin-left: 10px;
+    width: 350px;
+    text-indent: 5px;
+}
+
+#model-content{
+    width: 660px;
+    margin-left: -60px;
+}

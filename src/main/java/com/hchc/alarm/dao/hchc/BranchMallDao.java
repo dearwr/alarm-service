@@ -48,14 +48,9 @@ public class BranchMallDao extends HcHcBaseDao {
 
     private MallBranchBO queryMapping(ResultSet set, int i) throws SQLException {
         MallBranchBO bInfo = JSON.parseObject(set.getString("f_config"), MallBranchBO.class);
-
-        bInfo.setHqId(set.getLong("hId"));
-        bInfo.setBranchId(set.getLong("bId"));
         bInfo.setBrandName(set.getString("hName"));
         bInfo.setBranchName(set.getString("bName"));
         bInfo.setAddress(set.getString("address"));
-        bInfo.setMark(set.getString("f_mall"));
-        bInfo.setPushMethod(set.getString("f_type"));
         return bInfo;
     }
 }

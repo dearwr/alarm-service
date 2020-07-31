@@ -10,10 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.hchc.alarm.constant.MallConstant.*;
+import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
+import static com.hchc.alarm.constant.MallConstant.MARK_FULL_NAME_MAP;
 
 /**
  * @author wangrong
@@ -28,16 +32,16 @@ public class BranchMallService {
     public MallConsoleInfo queryMallConsoleInfos() {
         List<MallBranchBO> branchInfos = branchMallDao.queryBranchInfos(null);
         Map<String, List<MallBranchBO>> mallBranches = branchInfos.stream()
-                // 过滤mark名称不存在的
+                // 过滤mall不存在的
                 .filter(b -> {
-                    if (MARK_FULL_NAME_MAP.get(b.getMark()) == null) {
-                        log.info("[queryMallConsoleInfos] not find mapping for mark:{}, branchId:{}", b.getMark(), b.getBranchId());
+                    if (MARK_FULL_NAME_MAP.get(b.getMallName()) == null) {
+                        log.info("[queryMallConsoleInfos] not find mapping for mall:{}, branchId:{}", b.getMallName(), b.getBranchId());
                         return false;
                     }
                     return true;
                 })
                 // 按mark分组
-                .collect(Collectors.groupingBy(MallBranchBO::getMark));
+                .collect(Collectors.groupingBy(MallBranchBO::getMallName));
 
         List<MallServiceBO> malls = new ArrayList<>();
         List<String> cities = new ArrayList<>();
@@ -87,24 +91,22 @@ public class BranchMallService {
         String pCode;
         String pName;
         String pType;
-        boolean existMall;
-        boolean existBranch;
-        for (String mark : mallBranches.keySet()) {
-            cities.add(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
+        for (String mall : mallBranches.keySet()) {
+            cities.add(MARK_FULL_NAME_MAP.get(mall).substring(0, 2));
             mallServiceBO = new MallServiceBO();
-            mallServiceBO.setMark(mark);
-            mallServiceBO.setName(MARK_FULL_NAME_MAP.get(mark));
-            mallServiceBO.setCity(MARK_FULL_NAME_MAP.get(mark).substring(0, 2));
-            mallServiceBO.setMallBranches(mallBranches.get(mark));
-            for (MallBranchBO info : mallBranches.get(mark)) {
-                pCode = info.getPushMethod();
+            mallServiceBO.setMall(mall);
+            mallServiceBO.setName(MARK_FULL_NAME_MAP.get(mall));
+            mallServiceBO.setCity(MARK_FULL_NAME_MAP.get(mall).substring(0, 2));
+            mallServiceBO.setMallBranches(mallBranches.get(mall));
+            for (MallBranchBO info : mallBranches.get(mall)) {
+                pCode = info.getType();
                 pName = PushMethodEm.getNameByCode(pCode);
                 if (pName != null) {
-                    mallServiceBO.setMethods(new ArrayList<>(Collections.singletonList(pName)));
+                    mallServiceBO.setMethod(pName);
                     break;
                 }
             }
-            for (MallBranchBO info : mallBranches.get(mark)) {
+            for (MallBranchBO info : mallBranches.get(mall)) {
                 pType = null;
                 if (info.getUrl() != null) {
                     pType = PushTypeEm.webservice.name();
@@ -114,36 +116,11 @@ public class BranchMallService {
                     pType = PushTypeEm.http.name();
                 }
                 if (pType != null) {
-                    mallServiceBO.setTypes(new ArrayList<>(Collections.singletonList(pType)));
+                    mallServiceBO.setType(pType);
                     break;
                 }
             }
-            // 存在相同商场，合并数据
-            existMall = false;
-            for (MallServiceBO s : malls) {
-                if (s.getName().equals(mallServiceBO.getName()) && s.getCity().equals(mallServiceBO.getCity())) {
-                    existMall = true;
-                    s.setMark(s.getMark() + "、" + mallServiceBO.getMark());
-                    s.getMethods().addAll(mallServiceBO.getMethods());
-                    s.getTypes().addAll(mallServiceBO.getTypes());
-                    for (MallBranchBO newBranch : mallServiceBO.getMallBranches()) {
-                        existBranch = false;
-                        for (MallBranchBO oldBranch : s.getMallBranches()) {
-                            if (newBranch.getBranchName().equals(oldBranch.getBranchName())) {
-                                existBranch = true;
-                                break;
-                            }
-                        }
-                        if (!existBranch) {
-                            s.getMallBranches().add(newBranch);
-                        }
-                    }
-                    break;
-                }
-            }
-            if (!existMall) {
-                malls.add(mallServiceBO);
-            }
+            malls.add(mallServiceBO);
         }
     }
 }

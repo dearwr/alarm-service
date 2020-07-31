@@ -12,15 +12,15 @@ import java.util.List;
 @Setter
 public class MallServiceBO {
 
-    private String mark;
+    private String mall;
 
     private String name;
 
     private String city;
 
-    private List<String> types;
+    private String type;
 
-    private List<String> methods;
+    private String method;
 
     private List<MallBranchBO> mallBranches;
 

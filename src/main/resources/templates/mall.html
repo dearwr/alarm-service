@@ -21,6 +21,11 @@
     <!-- header -->
     <div id="search">
         <!-- 城市列表下拉框 -->
+        <!--搜索栏-->
+        <div id="searchMall" class="dropdown">
+            <a class="font_space">地址:</a><input id="mall_url" type="text" placeholder="上传地址" >
+            <button id="btn_searchMall" class="btn btn-primary" onclick="searchMall()">查询</button>
+        </div>
         <div id="city_select" class="dropdown">
             <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownCityList"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="showCitySelect()">
@@ -29,10 +34,11 @@
             <div id="city-menu" class="dropdown-menu" aria-labelledby="dropdownCityList"></div>
         </div>
         <div id="brand_select" class="dropdown">
-            <a class="btn btn-secondary dropdown-toggle" id="branch_Btn" onclick="showBranchList()">
+            <a class="btn btn-secondary dropdown-toggle" role="button" id="branch_Btn"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="showBranchList()">
                 所属品牌
             </a>
-            <div id="brand-menu"></div>
+            <div id="brand-menu" class="dropdown-menu" aria-labelledby="branch_Btn"></div>
         </div>
         <!-- 行数 -->
         <b id="row_size" class="font_space">size:</b>
@@ -69,12 +75,13 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" style="width: auto" role="document">
-        <div class="modal-content">
+        <div class="modal-content" id="model-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-title" id="url"></div>
+                <div class="modal-title" id="testUrl"></div>
             </div>
             <div class="modal-body">
                 <!-- 门店表 -->
@@ -177,8 +184,8 @@
             mallsStr += '<tr onclick="disPlayBranchMode(this)">\n' +
                 '<td>' + malls[e].city + '</td>\n' +
                 '<td>' + malls[e].name + '</td>\n' +
-                '<td>' + malls[e].types.join('、') + '</td>\n' +
-                '<td>' + malls[e].methods.join('、') + '</td>\n' +
+                '<td>' + malls[e].type + '</td>\n' +
+                '<td>' + malls[e].method + '</td>\n' +
                 '</tr>';
         }
         tBody.empty();
@@ -193,9 +200,21 @@
         console.log("mallName:" + mallName);
         var branches;
         var branchesStr = '';
+        var url;
+        var testUrl;
         for (var i in mallsData) {
             if (mallsData[i].name === mallName) {
                 branches = mallsData[i].mallBranches;
+                if (mallsData[i].type === 'webservice') {
+                    url = branches[0].url;
+                    testUrl = branches[0].testUrl;
+                } else if (mallsData[i].type === 'ftp') {
+                    url = branches[0].ftpHost;
+                    testUrl = branches[0].testFtpHost;
+                } else if (mallsData[i].type === 'http') {
+                    url = branches[0].urlHost;
+                    testUrl = branches[0].testUrlHost;
+                }
                 for (var e in branches) {
                     branchesStr += '<tr>\n' +
                         '<td>' + branches[e].brandName + '</td>\n' +
@@ -209,6 +228,8 @@
         bBody.empty();
         bBody.append(branchesStr);
         $("#exampleModalLabel").text(mallName);
+        $("#url").text('正式地址：' + url);
+        $("#testUrl").text('测试地址：' + testUrl);
         $("#exampleModal").modal('show');
     };
 
@@ -261,6 +282,26 @@
             brand_menu.hide();
             brandSelect.children('a').eq(0).text("所属品牌");
         }
+    };
+
+    var searchMall = function () {
+        var url = document.getElementById("mall_url").value;
+        var mallsArray = [];
+        var mallBranch;
+        var reg = new RegExp(url.sub(0, url.indexOf('?') === -1 ? url.length - 1 : url.indexOf('?')));
+        if (url !== '') {
+            for (var i in mallsData) {
+                mallBranch = mallsData[i].mallBranches[0];
+                if (mallsData[i].type === 'webservice' && (reg.test(mallBranch.url) || reg.test(mallBranch.testUrl))) {
+                    mallsArray.push(mallsData[i]);
+                } else if (mallsData[i].type === 'ftp' && (reg.test(mallBranch.ftpHost) || reg.test(mallBranch.testFtpHost))) {
+                    mallsArray.push(mallsData[i]);
+                } else if (mallsData[i].type === 'http' && (reg.test(mallBranch.urlHost) || reg.test(mallBranch.testUrlHost))) {
+                    mallsArray.push(mallsData[i]);
+                }
+            }
+        }
+        displayMallsData(mallsArray);
     };
 
 </script>

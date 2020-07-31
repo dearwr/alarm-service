@@ -13,12 +13,15 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class MallBranchBO extends BranchBO {
 
-    private String mark;
+    private String mallName;
 
-    private String url;
+    private String url;     // 正式地址
+    private String testUrl; // 测试地址
     private String urlHost;
-    private String ftpHost;
+    private String testUrlHost;
+    private String ftpHost;    // ftp.host
+    private String testFtpHost;
 
-    private String pushMethod;
+    private String type;
 
 }
