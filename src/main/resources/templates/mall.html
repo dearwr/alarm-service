@@ -50,6 +50,7 @@
         <tr>
             <th>所在城市</th>
             <th>商场名</th>
+            <th>编码</th>
             <th>对接方式</th>
             <th>上传方式</th>
         </tr>
@@ -185,6 +186,7 @@
             mallsStr += '<tr onclick="disPlayBranchMode(this)">\n' +
                 '<td>' + malls[e].city + '</td>\n' +
                 '<td>' + malls[e].name + '</td>\n' +
+                '<td>' + malls[e].mall + '</td>\n' +
                 '<td>' + malls[e].type + '</td>\n' +
                 '<td>' + malls[e].method + '</td>\n' +
                 '</tr>';
@@ -203,11 +205,9 @@
         var branchesStr = '';
         var url;
         var testUrl;
-        var mallMark;
         for (var i in mallsData) {
             if (mallsData[i].name === mallName) {
                 branches = mallsData[i].mallBranches;
-                mallMark = mallsData[i].mall;
                 if (mallsData[i].type === 'webservice') {
                     url = branches[0].url;
                     testUrl = branches[0].testUrl;
@@ -230,7 +230,7 @@
         }
         bBody.empty();
         bBody.append(branchesStr);
-        $("#exampleModalLabel").text(mallName + '(' + mallMark + ')');
+        $("#exampleModalLabel").text(mallName);
         $("#url").text('正式地址：' + url);
         $("#testUrl").text('测试地址：' + testUrl);
         $("#exampleModal").modal('show');
