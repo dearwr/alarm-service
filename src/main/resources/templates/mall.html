@@ -203,9 +203,11 @@
         var branchesStr = '';
         var url;
         var testUrl;
+        var mallMark;
         for (var i in mallsData) {
             if (mallsData[i].name === mallName) {
                 branches = mallsData[i].mallBranches;
+                mallMark = mallsData[i].mall;
                 if (mallsData[i].type === 'webservice') {
                     url = branches[0].url;
                     testUrl = branches[0].testUrl;
@@ -228,7 +230,7 @@
         }
         bBody.empty();
         bBody.append(branchesStr);
-        $("#exampleModalLabel").text(mallName);
+        $("#exampleModalLabel").text(mallName + '(' + mallMark + ')');
         $("#url").text('正式地址：' + url);
         $("#testUrl").text('测试地址：' + testUrl);
         $("#exampleModal").modal('show');
