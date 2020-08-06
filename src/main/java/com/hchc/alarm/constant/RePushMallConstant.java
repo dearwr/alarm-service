@@ -29,6 +29,7 @@ public class RePushMallConstant {
         rePushMalls.add(new RePushMallBO(1721, 4152, "jinyaoqiantan"));
         rePushMalls.add(new RePushMallBO(633, 3544, "jinyaoqiantan"));
         rePushMalls.add(new RePushMallBO(2439, 3447, "airport"));
+        rePushMalls.add(new RePushMallBO(2439, 4885, "airport"));
         rePushMalls.add(new RePushMallBO(2248, 4059, "spk"));
         rePushMalls.add(new RePushMallBO(338, 577, "kerry"));
         rePushMalls.add(new RePushMallBO(257, 554, "kerry"));
