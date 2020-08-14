@@ -126,7 +126,7 @@
     var queryErrKdsInfo = function () {
         console.log("query_hqId " + query_hqId);
         $.ajax({
-            url: "http://lab2.51hchc.com:7676/kdsConsole/kdsInfo",
+            url: alarm_service_url + "kdsConsole/kdsInfo",
             type: "GET",
             contentType: "application/json; charset=UTF-8",
             data: {"hqId": query_hqId, "branchId": 0},
