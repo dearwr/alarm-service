@@ -91,7 +91,7 @@ public class Test {
                 "\t\t\t\t\"lng\": 120.30013740062714\n" +
                 "\t\t\t}]\n" +
                 "\t\t},\n" +
-                "\t\t\"deliveryFee\": \"3\",\n" +
+                "\t\t\"deliveryFee\": \"3.5\",\n" +
                 "\t\t\"area\": \"11891.61\"\n" +
                 "\t}";
         PolygonArea area = JSON.parseObject(json, PolygonArea.class);
