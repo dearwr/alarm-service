@@ -29,9 +29,9 @@ public class MaterialBarCodeDao extends HcHcBaseDao {
 
     }
 
-    public boolean queryExist(String cValue) {
-        String sql = "select f_id from t_product_material_group_barcode where f_bar_code = ?";
-        List<Integer> idList = hJdbcTemplate.query(sql, (rs, i) -> rs.getInt("f_id"), cValue);
+    public boolean queryExist(long groupId, String cValue) {
+        String sql = "select f_id from t_product_material_group_barcode where f_bar_code = ? and f_group_id = ?";
+        List<Integer> idList = hJdbcTemplate.query(sql, (rs, i) -> rs.getInt("f_id"), cValue, groupId);
         if (CollectionUtils.isEmpty(idList)) {
             return false;
         }

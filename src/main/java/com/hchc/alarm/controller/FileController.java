@@ -49,14 +49,14 @@ public class FileController {
     }
 
     @PostMapping("/parseBarCodeFile")
-    public Output parseBarCodeFile(MultipartFile file) {
-        log.info("[parseBarCodeFile] recv fileName:{}", file.getOriginalFilename());
+    public Output parseBarCodeFile(MultipartFile file, int hqId) {
+        log.info("[parseBarCodeFile] recv fileName:{}, hqId:{}", file.getOriginalFilename(), hqId);
         if (file.isEmpty()) {
             log.info("上传文件为空");
             return Output.fail("上传文件为空");
         }
         try {
-            return Output.ok(barCodeService.parseFile(file));
+            return Output.ok(barCodeService.parseFile(file, hqId));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[parseBarCodeFile] happen err:{}", e.getMessage());

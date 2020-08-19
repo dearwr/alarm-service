@@ -12,14 +12,14 @@ import java.util.List;
 @Repository
 public class MaterialGroupDao extends HcHcBaseDao {
 
-    public List<Long> queryIdByCode(String code) {
-        String sql = "select id from t_product_material_group where code = ?";
-        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), code);
+    public List<Long> queryIdByCode(String code, int hqId) {
+        String sql = "select id from t_product_material_group where code = ? and hq_id = ?";
+        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), code, hqId);
     }
 
-    public List<Long> querySuitProductIdBySku(String sku) {
-        String sql = "select `id` from  t_product  where `spu` = ? and product_type = 'SUITE'";
-        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), sku);
+    public List<Long> querySuitProductIdBySku(String sku, int hqId) {
+        String sql = "select `id` from  t_product  where `spu` = ? and product_type = 'SUITE' and hq_id = ?";
+        return hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), sku, hqId);
     }
 
 }
