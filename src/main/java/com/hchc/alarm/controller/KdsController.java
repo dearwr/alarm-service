@@ -2,7 +2,7 @@ package com.hchc.alarm.controller;
 
 import com.hchc.alarm.dao.hchc.BranchDao;
 import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
-import com.hchc.alarm.entity.BranchKdsDO;
+import com.hchc.alarm.entity.BranchKds;
 import com.hchc.alarm.model.BranchBO;
 import com.hchc.alarm.pack.KdsConsoleInfo;
 import com.hchc.alarm.pack.Output;
@@ -38,14 +38,14 @@ public class KdsController {
     @GetMapping("/kdsInfo")
     public Output getKdsInfo(int hqId, int branchId) {
         log.info("[getKdsInfo] recv request params hqId:{}, branchId:{}", hqId, branchId);
-        List<BranchKdsDO> kdsList = branchKdsDao.query(hqId, branchId);
+        List<BranchKds> kdsList = branchKdsDao.query(hqId, branchId);
         List<KdsConsoleInfo> kdsConsoleInfos = new ArrayList<>();
         List<KdsConsoleInfo> offLineKds = new ArrayList<>();
         List<KdsConsoleInfo> onLineKds = new ArrayList<>();
         KdsConsoleInfo kdsConsoleInfo;
         BranchBO branchBO;
         try {
-            for (BranchKdsDO kds : kdsList) {
+            for (BranchKds kds : kdsList) {
                 if (kds.getHeartTime() == null) {
                     continue;
                 }

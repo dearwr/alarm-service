@@ -1,7 +1,7 @@
 package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
-import com.hchc.alarm.entity.BranchKdsDO;
+import com.hchc.alarm.entity.BranchKds;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -31,17 +31,17 @@ public class KdsOperationLogDao extends HcHcBaseDao {
         return hJdbcTemplate.query(sql, (rs, i) -> rs.getInt("f_branchid"));
     }
 
-    public BranchKdsDO queryOneRecord(int branchId, Date start) {
+    public BranchKds queryOneRecord(int branchId, Date start) {
         String sql = "SELECT f_hqid, f_branchid from t_kds_operation_log where  f_branchid = ? and f_option_time > ? LIMIT 1";
-        List<BranchKdsDO> kdsDOList =  hJdbcTemplate.query(sql, this::queryMapping, branchId, start);
+        List<BranchKds> kdsDOList =  hJdbcTemplate.query(sql, this::queryMapping, branchId, start);
         if (CollectionUtils.isEmpty(kdsDOList)) {
             return null;
         }
         return kdsDOList.get(0);
     }
 
-    private BranchKdsDO queryMapping(ResultSet rs, int i) throws SQLException {
-        BranchKdsDO kds = new BranchKdsDO();
+    private BranchKds queryMapping(ResultSet rs, int i) throws SQLException {
+        BranchKds kds = new BranchKds();
         kds.setHqId(rs.getInt("f_hqid"));
         kds.setBranchId(rs.getInt("f_branchid"));
         return kds;

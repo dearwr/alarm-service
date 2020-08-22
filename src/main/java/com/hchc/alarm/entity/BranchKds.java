@@ -10,21 +10,18 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class MallProductCodeDO {
+public class BranchKds {
 
     private int id;
     private int hqId;
     private int branchId;
-    private String mall;
-    /**
-     * 关联我们系统的商品sku
-     */
-    private String sku;
-    /**
-     * 第三方系统商品编码code
-     */
-    private String code;
-    private String mallId;
+    private String name;
+    private String uuid;
+    private boolean open;
     private Date createTime;
+    private Date offLineTime;
+    private Date onlineTime;
+    private String heartTime;
+    private String version;
 
 }

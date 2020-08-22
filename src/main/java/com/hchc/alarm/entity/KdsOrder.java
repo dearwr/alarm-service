@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class KdsOrderDO implements Serializable {
+public class KdsOrder implements Serializable {
 
     private int id;
     private int hqId;

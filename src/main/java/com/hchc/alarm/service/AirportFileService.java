@@ -1,7 +1,7 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.dao.hchc.MallProductCodeDao;
-import com.hchc.alarm.entity.MallProductCodeDO;
+import com.hchc.alarm.entity.MallProductCode;
 import com.hchc.alarm.model.AirportFileBO;
 import com.hchc.alarm.pack.MallResponse;
 import com.hchc.alarm.util.DatetimeUtil;
@@ -61,9 +61,9 @@ public class AirportFileService {
             // 从第二行开始读取数据
             List<Map<String, String>> dataList = parseDataRows(firstSheet, indexToNameMap);
             // 将解析的数据转化为数据对象
-            List<MallProductCodeDO> mallProductCodeDOList = buildData(dataList, hqId, branchId);
+            List<MallProductCode> mallProductCodeList = buildData(dataList, hqId, branchId);
             // 保存到数据库
-            boolean isSaved = persistData(mallProductCodeDOList);
+            boolean isSaved = persistData(mallProductCodeList);
             if (isSaved) {
                 // 保存上传的文件
                 if (saveSourceFile(sourceFile, hqId, branchId)) {
@@ -156,41 +156,41 @@ public class AirportFileService {
      * @param dataList
      * @return
      */
-    private List<MallProductCodeDO> buildData(List<Map<String, String>> dataList, int hqId, int branchId) {
-        List<MallProductCodeDO> mallProductCodeDOList = new ArrayList<>();
-        MallProductCodeDO mallProductCodeDO;
+    private List<MallProductCode> buildData(List<Map<String, String>> dataList, int hqId, int branchId) {
+        List<MallProductCode> mallProductCodeList = new ArrayList<>();
+        MallProductCode mallProductCode;
         for (Map<String, String> rowDataMap : dataList) {
             AirportFileBO airportFileBO = ObjectUtils.getInstanceFromMap(rowDataMap, AirportFileBO.class);
-            mallProductCodeDO = new MallProductCodeDO();
-            mallProductCodeDO.setHqId(hqId);
-            mallProductCodeDO.setBranchId(branchId);
-            mallProductCodeDO.setMall(airportFileBO.getShopName());
+            mallProductCode = new MallProductCode();
+            mallProductCode.setHqId(hqId);
+            mallProductCode.setBranchId(branchId);
+            mallProductCode.setMall(airportFileBO.getShopName());
             String code = airportFileBO.getCode();
-            mallProductCodeDO.setCode(code.contains(".") ? code.substring(0, code.indexOf('.')) : code);
-            mallProductCodeDO.setMallId(airportFileBO.getSku());
-            mallProductCodeDO.setSku(airportFileBO.getSku());
-            mallProductCodeDOList.add(mallProductCodeDO);
+            mallProductCode.setCode(code.contains(".") ? code.substring(0, code.indexOf('.')) : code);
+            mallProductCode.setMallId(airportFileBO.getSku());
+            mallProductCode.setSku(airportFileBO.getSku());
+            mallProductCodeList.add(mallProductCode);
         }
-        return mallProductCodeDOList;
+        return mallProductCodeList;
     }
 
     /**
      * 保存数据到数据库
      *
-     * @param mallProductCodeDOList
+     * @param mallProductCodeList
      * @return
      */
-    private boolean persistData(List<MallProductCodeDO> mallProductCodeDOList) {
-        MallProductCodeDO mallProductCodeDO = mallProductCodeDOList.get(0);
-        List<MallProductCodeDO> existList = mallProductCodeDao.queryExist(mallProductCodeDO);
-        List<MallProductCodeDO> needSaveList = new ArrayList<>();
+    private boolean persistData(List<MallProductCode> mallProductCodeList) {
+        MallProductCode mallProductCode = mallProductCodeList.get(0);
+        List<MallProductCode> existList = mallProductCodeDao.queryExist(mallProductCode);
+        List<MallProductCode> needSaveList = new ArrayList<>();
         if (!existList.isEmpty()) {
             String exitSku;
             String existCode;
             boolean isExist;
-            for (MallProductCodeDO productCode : mallProductCodeDOList) {
+            for (MallProductCode productCode : mallProductCodeList) {
                 isExist = false;
-                for (MallProductCodeDO existProductCode : existList) {
+                for (MallProductCode existProductCode : existList) {
                     exitSku = existProductCode.getSku();
                     existCode = existProductCode.getCode().startsWith("0") ? existProductCode.getCode().substring(1) : existProductCode.getCode();
                     if (existCode.equals(productCode.getCode()) && exitSku.equals(productCode.getSku())) {
@@ -203,10 +203,10 @@ public class AirportFileService {
                 }
             }
         } else {
-            needSaveList = mallProductCodeDOList;
+            needSaveList = mallProductCodeList;
         }
         try {
-            List<String> codeList = needSaveList.stream().map(MallProductCodeDO::getCode).collect(Collectors.toList());
+            List<String> codeList = needSaveList.stream().map(MallProductCode::getCode).collect(Collectors.toList());
             log.info("保存 count:{}, codeList：{}", codeList.size(), codeList.toArray());
             return mallProductCodeDao.batchSave(needSaveList);
         } catch (Exception e) {

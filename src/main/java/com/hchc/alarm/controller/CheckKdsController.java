@@ -3,7 +3,7 @@ package com.hchc.alarm.controller;
 import com.hchc.alarm.dao.hchc.BranchKdsBaseDao;
 import com.hchc.alarm.dao.hchc.KdsOperationLogDao;
 import com.hchc.alarm.dao.hchc.KdsOrderDao;
-import com.hchc.alarm.entity.BranchKdsDO;
+import com.hchc.alarm.entity.BranchKds;
 import com.hchc.alarm.pack.Output;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,7 +44,7 @@ public class CheckKdsController {
     @GetMapping("/add")
     public Output add(int branchId, int hqId) {
         log.info("[add] recv param branchId:{}, hqId:{}", branchId, hqId);
-        BranchKdsDO kdsDO = new BranchKdsDO();
+        BranchKds kdsDO = new BranchKds();
         kdsDO.setHqId(hqId);
         kdsDO.setBranchId(branchId);
         String uuid = UUID.randomUUID().toString();

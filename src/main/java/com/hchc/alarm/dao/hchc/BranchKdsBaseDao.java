@@ -1,7 +1,7 @@
 package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
-import com.hchc.alarm.entity.BranchKdsDO;
+import com.hchc.alarm.entity.BranchKds;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -31,7 +31,7 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         });
     }
 
-    public List<BranchKdsDO> query(int hqId, int branchId) {
+    public List<BranchKds> query(int hqId, int branchId) {
         List<Object> params = new ArrayList<>();
         StringBuilder sb = new StringBuilder("select * from t_branch_kds where 1=1 ");
         if (hqId != 0) {
@@ -42,15 +42,15 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
             sb.append(" and f_branchid = ? ");
             params.add(branchId);
         }
-        List<BranchKdsDO> kdsList = hJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
+        List<BranchKds> kdsList = hJdbcTemplate.query(sb.toString(), this::mapping, params.toArray());
         if (CollectionUtils.isEmpty(kdsList)) {
             return Collections.emptyList();
         }
         return kdsList;
     }
 
-    private BranchKdsDO mapping(ResultSet rs, int i) throws SQLException {
-        BranchKdsDO branchKdsTb = new BranchKdsDO();
+    private BranchKds mapping(ResultSet rs, int i) throws SQLException {
+        BranchKds branchKdsTb = new BranchKds();
         branchKdsTb.setHqId(rs.getInt("f_hqid"));
         branchKdsTb.setBranchId(rs.getInt("f_branchid"));
         branchKdsTb.setName(rs.getString("f_name"));
@@ -79,7 +79,7 @@ public class BranchKdsBaseDao extends HcHcBaseDao {
         return true;
     }
 
-    public int saveOne(BranchKdsDO kdsDO) {
+    public int saveOne(BranchKds kdsDO) {
         String sql = "insert into t_branch_kds (f_hqid, f_branchid, f_uuid, f_create_time, f_name) values (?, ?, ?, now(), ?)";
         return hJdbcTemplate.update(sql, kdsDO.getHqId(), kdsDO.getBranchId(), kdsDO.getUuid(), "自动添加");
 
