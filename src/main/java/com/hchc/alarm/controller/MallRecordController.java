@@ -3,7 +3,9 @@ package com.hchc.alarm.controller;
 import com.hchc.alarm.constant.RePushMallConstant;
 import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.PushMall;
+import com.hchc.alarm.model.RePushMallBO;
 import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.service.RePushMallService;
 import com.hchc.alarm.service.RemoteService;
 import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +31,10 @@ public class MallRecordController {
 
     @Autowired
     private MallRecordDao mallRecordDao;
-
     @Autowired
     private RemoteService remoteService;
+    @Autowired
+    private RePushMallService rePushMallService;
 
     @GetMapping("/pushUnSuccess")
     public Output pushUnSuccess(long hqId, long branchId, String mallName, String abbDate) throws ParseException {
@@ -42,6 +45,10 @@ public class MallRecordController {
         Date date  = DatetimeUtil.parse(abbDate ,"yyyyMMdd");
         Date start = DatetimeUtil.dayBegin(date);
         Date end = DatetimeUtil.dayEnd(date);
+        if (hqId == 0 || branchId == 0) {
+            List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
+            rePushMallService.pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+        }
         List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);
         if (CollectionUtils.isEmpty(orderList)) {
             return Output.ok("no UnPush orderNos");
