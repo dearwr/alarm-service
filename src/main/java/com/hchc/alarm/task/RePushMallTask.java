@@ -102,8 +102,9 @@ public class RePushMallTask {
 //    /**
 //     * 数据补传
 //     */
-//    @Scheduled(cron = "0 27 11 * * ? ")
+//    @Scheduled(cron = "0 50 10 * * ? ")
 //    public void rePushBefore() {
+//        log.info("*****数据补传******");
 //        List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
 //        log.info("query rePushMalls => {}", JSON.toJSONString(rePushMalls));
 //        rePushMalls = rePushMalls.stream().filter(m -> {
@@ -119,7 +120,7 @@ public class RePushMallTask {
 //            }
 //        }).collect(Collectors.toList());
 //        log.info("after filter rePushMalls => {}", JSON.toJSONString(rePushMalls));
-//        Date start = DatetimeUtil.dayBegin(DatetimeUtil.addDay(new Date(), -1));
+//        Date start = DatetimeUtil.dayBegin(DatetimeUtil.addDay(new Date(), -2));
 //        Date end = DatetimeUtil.dayEnd(start);
 //        String abbDate = DatetimeUtil.dayText(start);
 //        pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);

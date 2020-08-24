@@ -7,6 +7,7 @@ import com.hchc.alarm.pack.Output;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,12 +23,16 @@ public class ShangWeiController {
     @Autowired
     private ShangWeiMchDao shangWeiMchDao;
 
-    @PostMapping("updat")
-    public Output updateConfig(ShangWeiMch mch) {
-        log.info("[updateConfig] recv mch:{}", JSON.toJSONString(mch));
+    @PostMapping("update")
+    public Output updateConfig(@RequestBody ShangWeiMch mch) {
         try {
-            shangWeiMchDao.update(mch.getHqId(), JSON.toJSONString(mch));
-            return Output.ok();
+            String data = JSON.toJSONString(mch);
+            log.info("[updateConfig] recv mch:{}", data);
+            if (shangWeiMchDao.update(mch.getHqId(), data)) {
+                return Output.ok();
+            }else {
+                return Output.fail("update fail");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             log.info("updateConfig happen error:{}", e.getMessage());
