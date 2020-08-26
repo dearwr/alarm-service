@@ -26,13 +26,14 @@ public class RePushMallTask {
     /**
      * 晚上定时补传
      */
-    @Scheduled(cron = " 0 25 5  * * ? ")
+    @Scheduled(cron = " 0 25 3,5  * * ? ")
     public void rePushOnNight() {
         log.info("[rePushOnNight] start");
+        List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date end = DatetimeUtil.getDayStart(new Date());
         Date start = DatetimeUtil.addDay(end, -1);
         String abbDate = DatetimeUtil.dayText(start);
-        rePushMallService.pushMallList(RePushMallConstant.rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+        rePushMallService.pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
     }
 
     /**
