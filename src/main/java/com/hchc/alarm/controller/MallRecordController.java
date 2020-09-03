@@ -42,19 +42,21 @@ public class MallRecordController {
         if (StringUtils.isEmpty(mallName) || StringUtils.isEmpty(abbDate)) {
             return Output.fail("param exit empty");
         }
-        Date date  = DatetimeUtil.parse(abbDate ,"yyyyMMdd");
+        Date date = DatetimeUtil.parse(abbDate, "yyyyMMdd");
         Date start = DatetimeUtil.dayBegin(date);
         Date end = DatetimeUtil.dayEnd(date);
         if (hqId == 0 || branchId == 0) {
             List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
             rePushMallService.pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+            return Output.ok();
+        } else {
+            List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);
+            if (CollectionUtils.isEmpty(orderList)) {
+                return Output.ok("no UnPush orderNos");
+            }
+            PushMall pushMall = new PushMall(hqId, branchId, start, end, orderList);
+            return remoteService.pushOrders(pushMall, RePushMallConstant.MALL_ORDER_URL);
         }
-        List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);
-        if (CollectionUtils.isEmpty(orderList)) {
-            return Output.ok("no UnPush orderNos");
-        }
-        PushMall pushMall = new PushMall(hqId, branchId, start, end, orderList);
-        return remoteService.pushOrders(pushMall, RePushMallConstant.MALL_ORDER_URL);
     }
 
 }
