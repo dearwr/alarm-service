@@ -31,7 +31,7 @@ public class RePushMallService {
     private RemoteService remoteService;
 
     public List<RePushMallBO> queryValidMalls() {
-        List<RePushMallBO> rePushMalls = branchMallDao.queryValidImmediateMall();
+        List<RePushMallBO> rePushMalls = branchMallDao.queryValidMalls();
         log.info("[queryValidMalls] malls => {}", JSON.toJSONString(rePushMalls));
         return rePushMalls.stream().filter(m -> {
             if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())) {  // 特殊商场
