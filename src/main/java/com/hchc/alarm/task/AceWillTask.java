@@ -42,6 +42,16 @@ public class AceWillTask {
         doSync(hqId, branches, hqName, startDay, endDay);
     }
 
+    @Scheduled(cron = "0 20 1 * * ?")
+    public void zhuYe() throws ParseException {
+        long hqId = 3558L;
+        String branches = "5376,5377,5378,5379,5380,5381,5382,5383,5384,5385,5386,5387";
+        String hqName = "zhuye";
+        String startDay = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
+        String endDay = startDay;
+        doSync(hqId, branches, hqName, startDay, endDay);
+    }
+
     private void doSync(long hqId, String branches, String hqName, String startDay, String endDay) throws ParseException {
         String[] branchList = branches.split(",");
         SyncDishLossReqPack syncPack;
@@ -51,9 +61,9 @@ public class AceWillTask {
             syncPack = new SyncDishLossReqPack(hqId, branchId, DatetimeUtil.format(startDate), DatetimeUtil.format(DatetimeUtil.dayEnd(startDate)));
             result = restTemplate.postForEntity(AceWill_DISH_LOSS_URL, syncPack, Output.class).getBody();
             if (result == null || !"0".equals(result.getCode())) {
-                log.info("branchId:{} push dishLoss fail, result:{}", branchId, JSON.toJSON(result));
-            }else {
-                log.info("branchId:{} push dishLoss success, result:{}", branchId, JSON.toJSON(result));
+                log.info("{} {} push dishLoss fail, result:{}", hqName, branchId, JSON.toJSON(result));
+            } else {
+                log.info("{} {} push dishLoss success, result:{}", hqName, branchId, JSON.toJSON(result));
             }
         }
     }
