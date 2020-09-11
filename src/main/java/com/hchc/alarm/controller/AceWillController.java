@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.hchc.alarm.task.AceWillTask.AceWill_DISH_LOSS_URL;
+import static com.hchc.alarm.task.AceWillTask.*;
 
 /**
  * @author wangrong
@@ -72,20 +72,20 @@ public class AceWillController {
                     }else {
                         log.info("[{}] day->{}, branchId:{} push dishLoss success, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
                     }
-//                    output = restTemplate.getForObject(AceWill_PUSH_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
-//                    if (output == null || !"0".equals(output.getCode())) {
-//                        log.info("[{}] day->{}, branchId:{} push order fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
-//                        return "day->" + dayText + ", branchId:" + branchId + " push order fail, result:" + JSON.toJSONString(output);
-//                    }else {
-//                        log.info("[{}] day->{}, branchId:{} push order success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
-//                    }
-//                    output = restTemplate.getForObject(AceWill_DAY_DONE_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
-//                    if (output == null || !"0".equals(output.getCode())) {
-//                        log.info("[{}] day->{}, branchId:{} push day done fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
-//                        return "day->" + dayText + ", branchId:" + branchId + " push day done fail, result:" + JSON.toJSONString(output);
-//                    }else {
-//                        log.info("[{}] day->{}, branchId:{} push day done success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
-//                    }
+                    output = restTemplate.getForObject(AceWill_PUSH_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
+                    if (output == null || !"0".equals(output.getCode())) {
+                        log.info("[{}] day->{}, branchId:{} push order fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        return "day->" + dayText + ", branchId:" + branchId + " push order fail, result:" + JSON.toJSONString(output);
+                    }else {
+                        log.info("[{}] day->{}, branchId:{} push order success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
+                    }
+                    output = restTemplate.getForObject(AceWill_DAY_DONE_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
+                    if (output == null || !"0".equals(output.getCode())) {
+                        log.info("[{}] day->{}, branchId:{} push day done fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        return "day->" + dayText + ", branchId:" + branchId + " push day done fail, result:" + JSON.toJSONString(output);
+                    }else {
+                        log.info("[{}] day->{}, branchId:{} push day done success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
+                    }
                 } catch (Exception e) {
                     log.info("[{}] day->{}, branchId:{} push fail, error:{}", methodName, dayText, branchId, e.getMessage());
                     return "day->" + dayText + ", branchId:" + branchId + ", push happen error:" + e.getMessage();

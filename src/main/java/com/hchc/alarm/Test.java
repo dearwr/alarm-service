@@ -101,10 +101,14 @@ public class Test {
 //        System.out.println(fee);
 //    }
     public static void main(String[] args) {
+        writeData();
+    }
+
+    private static void writeData() {
         File file = new File("E:/XSJL.DB");
         byte[] buffer = new byte[1024];
         StringBuilder sb = new StringBuilder();
-        try(FileInputStream ins = new FileInputStream(file)) {
+        try (FileInputStream ins = new FileInputStream(file)) {
             while (ins.read(buffer) != -1) {
                 sb.append(new String(buffer, StandardCharsets.UTF_8));
             }
@@ -112,7 +116,6 @@ public class Test {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static Double fetchPolygonFee(List<PolygonArea> polygonAreas, Double lat, Double lng) {
