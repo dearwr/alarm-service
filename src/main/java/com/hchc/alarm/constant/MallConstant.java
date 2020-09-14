@@ -1,7 +1,8 @@
 package com.hchc.alarm.constant;
 
 import java.text.Collator;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wangrong
@@ -72,6 +73,17 @@ public class MallConstant {
         MARK_FULL_NAME_MAP.put("huarun", "上海华润时代广场");
         MARK_FULL_NAME_MAP.put("beijinguomao", "北京国贸");
         MARK_FULL_NAME_MAP.put("wujiang", "苏州吴江万象汇");
+
+        MARK_FULL_NAME_MAP.put("huanzhibuilding", "上海环智国际大厦");
+        MARK_FULL_NAME_MAP.put("shdabangsquare", "上海达邦协作广成");
+        MARK_FULL_NAME_MAP.put("shzhengdasquare", "上海正大乐城");
+        MARK_FULL_NAME_MAP.put("hzkerrycenter", "杭州嘉里中心");
+        MARK_FULL_NAME_MAP.put("shenzhenbay", "深圳深圳湾");
+        MARK_FULL_NAME_MAP.put("szzhuoyuecenter", "深圳卓悦中心");
+        MARK_FULL_NAME_MAP.put("sunmoonlight", "上海日月光");
+        MARK_FULL_NAME_MAP.put("shbigbell", "上海大自鸣钟");
+        MARK_FULL_NAME_MAP.put("wxharbourcity", "无锡海港城");
+
     }
 
 }
