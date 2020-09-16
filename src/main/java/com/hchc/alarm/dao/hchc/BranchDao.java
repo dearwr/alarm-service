@@ -3,9 +3,12 @@ package com.hchc.alarm.dao.hchc;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.model.BranchBO;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by wangrong 2020/5/13
@@ -37,5 +40,14 @@ public class BranchDao extends HcHcBaseDao {
         branchBO.setBrandName(rs.getString("brandName"));
         branchBO.setBranchName(rs.getString("branchName"));
         return branchBO;
+    }
+
+    public List<Long> queryBranchIds(long hqId) {
+        String sql = "select id from t_branch where hq_id = ?";
+        List<Long> branchIds =  hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), hqId);
+        if (CollectionUtils.isEmpty(branchIds)) {
+            return Collections.emptyList();
+        }
+        return branchIds;
     }
 }

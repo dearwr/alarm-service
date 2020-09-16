@@ -1,20 +1,28 @@
 package com.hchc.alarm.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hchc.alarm.dao.hchc.BranchDao;
+import com.hchc.alarm.dao.hchc.ErpConfigDao;
 import com.hchc.alarm.dao.hchc.SqlDao;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.SyncDishLossReqPack;
 import com.hchc.alarm.util.DatetimeUtil;
+import com.hchc.alarm.util.JsonUtils;
+import com.hchc.alarm.util.StringUtil;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +42,10 @@ public class AceWillController {
     private RestTemplate restTemplate;
     @Autowired
     private SqlDao sqlDao;
+    @Autowired
+    private BranchDao branchDao;
+    @Autowired
+    private ErpConfigDao erpConfigDao;
 
     @PostMapping("sql/execute")
     public String ChangeAceWillUrl(String sql) {
@@ -95,6 +107,101 @@ public class AceWillController {
             startDate = DatetimeUtil.addDay(startDate, 1);
         }
         return "ok";
+    }
+
+    @PostMapping("addErpShopConfig")
+    public Output addErpShopConfig(@RequestBody WagasErpConfig erpConfig) {
+        log.info("[addErpShopConfig] rec erpConfig:{}", JsonUtils.toJson(erpConfig));
+        long hqId = Long.parseLong(erpConfig.getHqId());
+        String erpName = erpConfig.getErpName();
+        List<Long> branchIds = new ArrayList<>();
+        if (StringUtil.isBlank(erpConfig.getBranches())) {
+            branchIds = branchDao.queryBranchIds(hqId);
+        }else {
+            List<String> branches = Arrays.asList(erpConfig.getBranches().split(","));
+            for (String id : branches) {
+                branchIds.add(Long.valueOf(id));
+            }
+        }
+        erpConfig.setHqId(null);
+        erpConfig.setErpName(null);
+        String config = JsonUtils.toJson(erpConfig);
+        log.info("[addErpShopConfig] config is :{}", config);
+        try {
+            for (Long bId : branchIds) {
+                if (erpConfigDao.queryExist(hqId, bId, erpName)) {
+                    continue;
+                }
+                erpConfigDao.add(hqId, bId, erpName, config);
+            }
+            return Output.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Output.fail(e.getMessage());
+        }
+    }
+
+    @Setter
+    @Getter
+    private static class WagasErpConfig {
+
+        /**
+         * 门店编号
+         */
+        private String url;
+        private Service service;
+        private DataKey dataKey;
+
+        private String hqId;
+        private String erpName;
+        private String branches;
+
+    }
+
+    @Setter
+    @Getter
+    private static class Service {
+
+        /**
+         * 固定值
+         */
+        private String prod = "T100";
+
+        /**
+         * 服务名
+         */
+        private String name;
+
+        /**
+         * 服务名
+         */
+        private String ip;
+
+        /**
+         * 环境名
+         */
+        private String id;
+
+    }
+
+    @Data
+    @JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE)
+    private static class DataKey {
+
+        /**
+         * 企业编号
+         */
+        @JSONField(name = "EntId")
+        @JsonProperty(value = "EntId", required = true)
+        private String EntId;
+
+        /**
+         * 公司
+         */
+        @JSONField(name = "CompanyId")
+        @JsonProperty(value = "CompanyId", required = true)
+        private String CompanyId;
+
     }
 
 }
