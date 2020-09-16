@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
-import static com.hchc.alarm.constant.MallConstant.MARK_FULL_NAME_MAP;
+import static com.hchc.alarm.constant.MallConstant.MARK_NAME_MAP;
 
 /**
  * @author wangrong
@@ -34,7 +34,7 @@ public class BranchMallService {
         Map<String, List<MallBranchBO>> mallBranches = branchInfos.stream()
                 // 过滤mall不存在的
                 .filter(b -> {
-                    if (MARK_FULL_NAME_MAP.get(b.getMallName()) == null) {
+                    if (MARK_NAME_MAP.get(b.getMallName()) == null) {
                         log.info("[queryMallConsoleInfos] not find mapping for mall:{}, branchId:{}", b.getMallName(), b.getBranchId());
                         return false;
                     }
@@ -92,11 +92,11 @@ public class BranchMallService {
         String pName;
         String pType;
         for (String mall : mallBranches.keySet()) {
-            cities.add(MARK_FULL_NAME_MAP.get(mall).substring(0, 2));
+            cities.add(MARK_NAME_MAP.get(mall).substring(0, 2));
             mallServiceBO = new MallServiceBO();
             mallServiceBO.setMall(mall);
-            mallServiceBO.setName(MARK_FULL_NAME_MAP.get(mall));
-            mallServiceBO.setCity(MARK_FULL_NAME_MAP.get(mall).substring(0, 2));
+            mallServiceBO.setName(MARK_NAME_MAP.get(mall));
+            mallServiceBO.setCity(MARK_NAME_MAP.get(mall).substring(0, 2));
             mallServiceBO.setMallBranches(mallBranches.get(mall));
             for (MallBranchBO info : mallBranches.get(mall)) {
                 pCode = info.getType();

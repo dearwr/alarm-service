@@ -23,7 +23,7 @@ public class AmazonPushTask {
     private RestTemplate restTemplate;
 
     private final String PUSH_DATA_URL = "http://120.78.232.8:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
-    private final String TEST_PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
+//    private final String PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
 
     // amazon品牌号
     private final String AMAZON_HQID = "2382";
@@ -51,7 +51,7 @@ public class AmazonPushTask {
         Msg msgList;
         for (int i = 0; i < branchIds.length; i++) {
             log.info("[amazon] start push branch :{}", branchIds[i]);
-            msgList = restTemplate.getForObject(TEST_PUSH_DATA_URL, Msg.class, AMAZON_HQID, branchIds[i], DatetimeUtil.format(start), DatetimeUtil.format(end));
+            msgList = restTemplate.getForObject(PUSH_DATA_URL, Msg.class, AMAZON_HQID, branchIds[i], DatetimeUtil.format(start), DatetimeUtil.format(end));
             log.info("[amazon] end push branch :{}, result => {}", branchIds[i], JSON.toJSONString(msgList));
         }
     }
