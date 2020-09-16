@@ -104,4 +104,9 @@ public class DatetimeUtil {
     public static String dayText(Date time) {
         return format(time, "yyyyMMdd");
     }
+
+    public static String simpleNow(){
+        String pattern = "yyMMddHHmmssSSS";
+        return new SimpleDateFormat(pattern).format(new Date());
+    }
 }
