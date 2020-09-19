@@ -3,20 +3,21 @@ package com.hchc.alarm.dao.hchc;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.model.PricePolicy;
 import com.hchc.alarm.model.PricePolicyProduct;
+import com.hchc.alarm.util.DatetimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author wangrong
  * @date 2020-09-16
  */
 @Repository
+@Slf4j
 public class PricePolicyDao extends HcHcBaseDao {
 
     public List<Long> queryBranchIds(long policyId) {
@@ -75,42 +76,62 @@ public class PricePolicyDao extends HcHcBaseDao {
         String sql = "SELECT * FROM t_price_policy WHERE hq_id = ? AND status = 'ENABLE'";
         List<PricePolicy> policies = hJdbcTemplate.query(sql, this::mappingAll, hqId);
         List<PricePolicy> validPolicies = new ArrayList<>();
+        List<Character> dayLimit;
         for (PricePolicy p : policies) {
-            // 过滤适用的门店
-            if (p.getBranchId() == 0) {
-                p.setBranches(new ArrayList<>());
-            } else if (p.getBranchId() == -1) {
-                p.setBranches(queryBranchIds(p.getId()));
-                if (!p.getBranches().contains(branchId)) {
+            // 判断适用日期
+            Date now = new Date();
+            Date dayBegin = DatetimeUtil.getDayStart(p.getBeginDate());
+            Date dayEnd = DatetimeUtil.dayEnd(p.getEndDate());
+            if (now.getTime() <= dayBegin.getTime() || now.getTime() >= dayEnd.getTime()) {
+                continue;
+            }
+            // 判断适用星期
+            dayLimit = toBinaryList(p.getWeek(), 7);
+            if (!fitDayOfWeek(dayLimit, now)) {
+                continue;
+            }
+            // 判断适用门店
+            if (p.getBranchId() == -1) {
+                List<Long> branches = queryBranchIds(p.getId());
+                if (!branches.contains(branchId)) {
                     continue;
                 }
-            } else {
+            } else if (p.getBranchId() > 0) {
                 if (p.getBranchId() != branchId) {
                     continue;
                 }
-                p.setBranches(new ArrayList<>());
             }
             p.setLevels(queryLevels(p.getId()));
             p.setProducts(queryProducts(p.getId()));
-
-            p.setPlatformLimit(new ArrayList<>());
-            fillCharacter(p.getPlatform(), 4, p.getPlatformLimit());
-            p.setDayLimit(new ArrayList<>());
-            fillCharacter(p.getWeek(), 7, p.getDayLimit());
+            p.setPlatformLimit(toBinaryList(p.getPlatform(), 4));
             validPolicies.add(p);
         }
         return validPolicies;
     }
 
-
-    private static void fillCharacter(int bInt, int length, List<Character> list) {
+    private static List<Character> toBinaryList(int bInt, int length) {
+        List<Character> list = new ArrayList<>();
         char[] chars = Integer.toBinaryString(bInt).toCharArray();
+        int len = chars.length;
         for (int i = 0; i < length; i++) {
-            if (i < chars.length) {
-                list.add(i, chars[i]);
+            if (i < len) {
+                list.add(i, chars[len - 1 - i]);
             } else {
                 list.add(i, '0');
             }
         }
+        return list;
     }
+
+    private boolean fitDayOfWeek(List<Character> dayLimit, Date date) {
+        int dayOfWeek = DatetimeUtil.getField(date, Calendar.DAY_OF_WEEK);
+        if (dayOfWeek == 1 && dayLimit.get(6) == '0') {
+            return false;
+        }
+        if (dayOfWeek != 1 && dayLimit.get(dayOfWeek - 2) == '0') {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -109,4 +109,10 @@ public class DatetimeUtil {
         String pattern = "yyMMddHHmmssSSS";
         return new SimpleDateFormat(pattern).format(new Date());
     }
+
+    public static int getField(Date date, int field) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(field);
+    }
 }
