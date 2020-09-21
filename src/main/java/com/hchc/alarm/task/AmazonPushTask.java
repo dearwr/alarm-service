@@ -22,8 +22,8 @@ public class AmazonPushTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String PUSH_DATA_URL = "http://120.78.232.8:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
-//    private final String PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
+//    private final String PUSH_DATA_URL = "http://120.78.232.8:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
+    private final String PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
 
     // amazon品牌号
     private final String AMAZON_HQID = "2382";
