@@ -30,22 +30,9 @@ public class AmazonPushTask {
     //  门店
     private Integer[] branchIds = new Integer[]{3127, 4971};
 
-//    @Scheduled(cron = " 0 35 1 * * ? ")
-//    public void pushData() {
-//        log.info("##################### amazon push data ########################");
-//        Date end = DatetimeUtil.getDayStart(new Date());
-//        Date start = DatetimeUtil.addDay(end, -1);
-//        Msg msgList;
-//        for (int i = 0; i < branchIds.length; i++) {
-//            log.info("[amazon] start push branch :{}", branchIds[i]);
-//            msgList = restTemplate.getForObject(PUSH_DATA_URL, Msg.class, AMAZON_HQID, branchIds[i], DatetimeUtil.format(start), DatetimeUtil.format(end));
-//            log.info("[amazon] end push branch :{}, result => {}", branchIds[i], JSON.toJSONString(msgList));
-//        }
-//    }
-
     @Scheduled(cron = " 0 45 1 * * ? ")
-    public void pushToTestService() {
-        log.info("##################### amazon push data to test ########################");
+    public void pushData() {
+        log.info("##################### amazon push data ########################");
         Date end = DatetimeUtil.getDayStart(new Date());
         Date start = DatetimeUtil.addDay(end, -1);
         Msg msgList;

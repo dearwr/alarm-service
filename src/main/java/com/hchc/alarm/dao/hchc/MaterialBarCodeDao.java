@@ -37,4 +37,10 @@ public class MaterialBarCodeDao extends HcHcBaseDao {
         }
         return true;
     }
+
+    public int save(String number, String cardId, int needPush) {
+        String sql = "insert into t_shangwei_prepaid_card_mapping (f_number, f_card_id, f_need_push) values(?, ?, ?)";
+        return hJdbcTemplate.update(sql, number, cardId, needPush);
+    }
+
 }
