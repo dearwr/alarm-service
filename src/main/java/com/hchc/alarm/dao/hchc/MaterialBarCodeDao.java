@@ -4,6 +4,7 @@ import com.hchc.alarm.dao.HcHcBaseDao;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -41,6 +42,16 @@ public class MaterialBarCodeDao extends HcHcBaseDao {
     public int save(String number, String cardId, int needPush) {
         String sql = "insert into t_shangwei_prepaid_card_mapping (f_number, f_card_id, f_need_push) values(?, ?, ?)";
         return hJdbcTemplate.update(sql, number, cardId, needPush);
+    }
+
+    public int save(String cardId, BigDecimal balance) {
+        String sql = "insert into t_shangwei_prepaid_history_card (f_card_no, f_balance) values(?, ?)";
+        return hJdbcTemplate.update(sql, cardId, balance);
+    }
+
+    public int save(String name, String sku) {
+        String sql = "update t_product set code = ? where hq_id = 3880 and platform in ('ELEME','MEITUAN') and  name like '" + name + "%'";
+        return hJdbcTemplate.update(sql, sku);
     }
 
 }

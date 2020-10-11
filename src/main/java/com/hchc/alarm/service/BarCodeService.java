@@ -65,9 +65,8 @@ public class BarCodeService {
         Map<String, Integer> placeMap = new HashMap<>();
         String cValue;
         // 解析第一行表头
-        String f_number = "f_number";
-        String f_card_id = "f_card_id";
-        String f_need_push = "f_need_push";
+        String name = "商品";
+        String sku = "SKU";
         Row row = sheet.getRow(0);
         for (int i = 0; i < row.getLastCellNum(); i++) {
             if (row.getCell(i) == null) {
@@ -78,48 +77,44 @@ public class BarCodeService {
             if (cValue == null) {
                 continue;
             }
-            if (f_card_id.equals(cValue) || f_number.equals(cValue) || f_need_push.equals(cValue)) {
+            if (name.equals(cValue)  || sku.equals(cValue)) {
                 placeMap.put(cValue, i);
             }
         }
         // 解析第二行开始的数据行
-        int cardIdIndex = placeMap.get(f_card_id);
-        int numberIndex = placeMap.get(f_number);
-        int needPushIndex = placeMap.get(f_need_push);
-        List<Long> idList;
-        String number;
-        String cardId;
-        int needPush = 0;
+        int nameIndex = placeMap.get(name);
+        int skuIndex = placeMap.get(sku);
+        String pName;
+        String pSku;
+        String currName = null;
         for (int i = 1; i < sheet.getLastRowNum(); i++) {
             try {
                 row = sheet.getRow(i);
                 log.info("sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
                 // 解析sku
-                cValue = parseCellValue(row.getCell(cardIdIndex));
+                cValue = parseCellValue(row.getCell(nameIndex));
+                if (cValue.equals(currName)) {
+                    log.info("重复名称跳过：{}", cValue);
+                }
+                currName = cValue;
                 if (cValue == null) {
                     log.info("parse sku cell is null");
                     result.add("parse sku cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                cardId = cValue;
-                // 解析suite
-                cValue = parseCellValue(row.getCell(needPushIndex));
-                if ("1".equals(cValue)) {
-                    needPush = 1;
-                }
-                // 解析barcode
-                cValue = parseCellValue(row.getCell(numberIndex));
+                pName = cValue;
+                cValue = parseCellValue(row.getCell(skuIndex));
                 if (cValue == null) {
-                    log.info("parse barCode cell is null");
-                    result.add("parse barCode cell is null, row:" + row.getRowNum());
+                    log.info("parse balance cell is null");
+                    result.add("parse balance cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                number = cValue;
+                pSku = cValue;
                 // 保存记录
-                materialBarCodeDao.save(number, cardId, needPush);
+                materialBarCodeDao.save(pName, pSku);
             } catch (Exception e) {
                 e.printStackTrace();
-                log.info("error sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), cardIdIndex);
+                log.info("error sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), nameIndex);
             }
         }
         return result;
@@ -130,7 +125,7 @@ public class BarCodeService {
         switch (cell.getCellType()) {
             case NUMERIC:
                 cValue = String.valueOf(cell.getNumericCellValue());
-                cValue = cValue.substring(0, cValue.indexOf("."));
+//                cValue = cValue.substring(0, cValue.indexOf("."));
                 break;
             case STRING:
                 cValue = cell.getStringCellValue();

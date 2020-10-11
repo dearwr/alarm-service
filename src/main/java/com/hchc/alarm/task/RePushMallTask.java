@@ -39,7 +39,7 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 0 10,15,21,23 * * ? ")
+    @Scheduled(cron = "0 0 9,10,11,14,15,16,21,22,23 * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date start = DatetimeUtil.dayBegin(new Date());
