@@ -15,10 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author wangrong
@@ -45,7 +44,8 @@ public class BarCodeService {
                 workbook = new HSSFWorkbook(fis);
             }
             Sheet sheet = workbook.getSheetAt(0);
-            result.addAll(parseSheet(sheet, hqId));
+//            result.addAll(parseCardMapping(sheet, hqId));
+            result.addAll(parseNewCard(sheet, hqId));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("解析文件报错：" + e.getMessage());
@@ -60,68 +60,125 @@ public class BarCodeService {
         return result;
     }
 
-    private List<String> parseSheet(Sheet sheet, int hqId) {
+    private List<String> parseNewCard(Sheet sheet, int hqId) {
         List<String> result = new ArrayList<>();
         Map<String, Integer> placeMap = new HashMap<>();
         String cValue;
         // 解析第一行表头
-        String name = "商品";
-        String sku = "SKU";
+        String kId = "卡号";
+        String cId = "券码";
         Row row = sheet.getRow(0);
         for (int i = 0; i < row.getLastCellNum(); i++) {
             if (row.getCell(i) == null) {
                 log.info("cell is empty, sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), i);
                 continue;
             }
-            cValue = parseCellValue(row.getCell(i));
+            cValue = parseCellValue(row.getCell(i), false);
             if (cValue == null) {
                 continue;
             }
-            if (name.equals(cValue)  || sku.equals(cValue)) {
+            if (kId.equals(cValue) || cId.equals(cValue)) {
                 placeMap.put(cValue, i);
             }
         }
         // 解析第二行开始的数据行
-        int nameIndex = placeMap.get(name);
-        int skuIndex = placeMap.get(sku);
-        String pName;
-        String pSku;
-        String currName = null;
-        for (int i = 1; i < sheet.getLastRowNum(); i++) {
+        int kidIndex = placeMap.get(kId);
+        int cIdIndex = placeMap.get(cId);
+        String kidStr;
+        String cidStr;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             try {
                 row = sheet.getRow(i);
                 log.info("sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
-                // 解析sku
-                cValue = parseCellValue(row.getCell(nameIndex));
-                if (cValue.equals(currName)) {
-                    log.info("重复名称跳过：{}", cValue);
-                }
-                currName = cValue;
+                // 解析kid
+                cValue = parseCellValue(row.getCell(kidIndex), false);
                 if (cValue == null) {
                     log.info("parse sku cell is null");
                     result.add("parse sku cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                pName = cValue;
-                cValue = parseCellValue(row.getCell(skuIndex));
+                kidStr = cValue;
+                cValue = parseCellValue(row.getCell(cIdIndex), false);
                 if (cValue == null) {
                     log.info("parse balance cell is null");
                     result.add("parse balance cell is null, row:" + row.getRowNum());
                     continue;
                 }
-                pSku = cValue;
+                cidStr = cValue;
                 // 保存记录
-                materialBarCodeDao.save(pName, pSku);
+                materialBarCodeDao.save(kidStr, cidStr);
             } catch (Exception e) {
                 e.printStackTrace();
-                log.info("error sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), nameIndex);
+                log.info("error sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
             }
         }
         return result;
     }
 
-    private String parseCellValue(Cell cell) {
+    private List<String> parseCardMapping(Sheet sheet, int hqId) {
+        List<String> result = new ArrayList<>();
+        Map<String, Integer> placeMap = new HashMap<>();
         String cValue;
+        // 解析第一行表头
+        String kId = "卡号";
+        String cId = "券码";
+        Row row = sheet.getRow(0);
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            if (row.getCell(i) == null) {
+                log.info("cell is empty, sheet:{}, row:{}, col:{}", sheet.getSheetName(), row.getRowNum(), i);
+                continue;
+            }
+            cValue = parseCellValue(row.getCell(i), false);
+            if (cValue == null) {
+                continue;
+            }
+            if (kId.equals(cValue) || cId.equals(cValue)) {
+                placeMap.put(cValue, i);
+            }
+        }
+        // 解析第二行开始的数据行
+        int kidIndex = placeMap.get(kId);
+        int cIdIndex = placeMap.get(cId);
+        String kidStr;
+        String cidStr;
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            try {
+                row = sheet.getRow(i);
+                log.info("sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
+                // 解析kid
+                cValue = parseCellValue(row.getCell(kidIndex), false);
+                if (cValue == null) {
+                    log.info("parse sku cell is null");
+                    result.add("parse sku cell is null, row:" + row.getRowNum());
+                    continue;
+                }
+                kidStr = cValue;
+                cValue = parseCellValue(row.getCell(cIdIndex), false);
+                if (cValue == null) {
+                    log.info("parse balance cell is null");
+                    result.add("parse balance cell is null, row:" + row.getRowNum());
+                    continue;
+                }
+                cidStr = cValue;
+                // 保存记录
+                materialBarCodeDao.save(kidStr, cidStr, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.info("error sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
+            }
+        }
+        return result;
+    }
+
+    private String parseCellValue(Cell cell, boolean isTime) {
+        String cValue;
+        if (isTime) {
+            //用于转化为日期格式
+            Date d = cell.getDateCellValue();
+            DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return formater.format(d);
+
+        }
         switch (cell.getCellType()) {
             case NUMERIC:
                 cValue = String.valueOf(cell.getNumericCellValue());
