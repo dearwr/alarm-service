@@ -42,8 +42,8 @@ public class BranchDao extends HcHcBaseDao {
         return branchBO;
     }
 
-    public List<Long> queryBranchIds(long hqId) {
-        String sql = "select id from t_branch where hq_id = ?";
+    public List<Long> queryErpBranchIds(long hqId) {
+        String sql = "select id from t_branch where hq_id = ? and code <> ''";
         List<Long> branchIds =  hJdbcTemplate.query(sql, (rs, i) -> rs.getLong("id"), hqId);
         if (CollectionUtils.isEmpty(branchIds)) {
             return Collections.emptyList();

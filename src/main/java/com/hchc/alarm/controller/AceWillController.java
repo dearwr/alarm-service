@@ -116,7 +116,7 @@ public class AceWillController {
         String erpName = erpConfig.getErpName();
         List<Long> branchIds = new ArrayList<>();
         if (StringUtil.isBlank(erpConfig.getBranches())) {
-            branchIds = branchDao.queryBranchIds(hqId);
+            branchIds = branchDao.queryErpBranchIds(hqId);
         }else {
             List<String> branches = Arrays.asList(erpConfig.getBranches().split(","));
             for (String id : branches) {
