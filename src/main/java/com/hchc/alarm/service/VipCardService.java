@@ -248,8 +248,10 @@ public class VipCardService {
 
                 if ("是".equals(newCardStr)) {
                     mergeDao.saveNewCard(kidStr, cidStr, balanceStr);
+                    mergeDao.saveCardMapping(kidStr, cidStr, 0);
+                } else {
+                    mergeDao.saveCardMapping(kidStr, cidStr, "是".equals(needPushStr) ? 1 : 0);
                 }
-                mergeDao.saveCardMapping(kidStr, cidStr, "是".equals(needPushStr) ? 1 : 0);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("error sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());

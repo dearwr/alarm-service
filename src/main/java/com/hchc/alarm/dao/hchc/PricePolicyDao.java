@@ -69,6 +69,7 @@ public class PricePolicyDao extends HcHcBaseDao {
         policy.setStatus(set.getString("status"));
         policy.setCreateTime(set.getString("create_time"));
         policy.setUpdateTime(set.getString("update_time"));
+        policy.setTitle(set.getString("title"));
         return policy;
     }
 

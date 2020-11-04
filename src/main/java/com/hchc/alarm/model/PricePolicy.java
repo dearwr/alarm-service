@@ -21,6 +21,10 @@ public class PricePolicy {
      */
     private long branchId;
     private String name;
+    /**
+     * 显示标签
+     */
+    private String title;
     private String desc;
     private Date beginDate;
     private Date endDate;
