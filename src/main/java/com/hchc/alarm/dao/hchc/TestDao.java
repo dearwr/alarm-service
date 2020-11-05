@@ -70,4 +70,18 @@ public class TestDao extends HcHcBaseDao {
         String sql = "update t_shangwei_prepaid_order set f_abbdate = ? where f_id = ?";
         hJdbcTemplate.update(sql, abbDate, id);
     }
+
+    public List<Object[]> queryFengNiaoShopInfo(long hqId) {
+        String sql = "SELECT s.f_hq_id, s.f_branch_id, b.`name`, h.`code` from t_delivery_fn_shop s " +
+                "LEFT JOIN t_branch b on s.f_branch_id = b.id " +
+                "LEFT JOIN t_headquarter h on b.sub_hq_id = h.id where s.f_hq_id = ? ORDER BY h.`name`";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            Object[] obj = new Object[4];
+            obj[0] = r.getLong("f_hq_id");
+            obj[1] = r.getLong("f_branch_id");
+            obj[2] = r.getString("name");
+            obj[3] = r.getString("code");
+            return obj;
+        }, hqId);
+    }
 }

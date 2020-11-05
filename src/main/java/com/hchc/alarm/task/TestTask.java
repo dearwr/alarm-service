@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -19,6 +20,50 @@ public class TestTask {
 
     @Autowired
     private TestDao testDao;
+    @Autowired
+    private RestTemplate restTemplate;
+
+//    @Scheduled(cron = "0 24 17 * * ?")
+//    public void scientist() {
+//        String baseUrl = "http://47.112.150.247:8080/fengniao/updateStore";
+//        log.info("schedule start");
+//        List<Object[]> shopInfo = testDao.queryFengNiaoShopInfo(3880L);
+//        UpdateStoreInfo info;
+//        String name;
+//        String code;
+//        for (Object[] obj : shopInfo) {
+//            info = new UpdateStoreInfo();
+//            name = (String) obj[2];
+//            code = (String) obj[3];
+//            switch (code) {
+//                case "BAKER":
+//                    info.setChain_store_name("Bs[" + name + "]");
+//                    break;
+//                case "FUNKKALE":
+//                    info.setChain_store_name("Funk[" + name + "]");
+//                    break;
+//                case "LOKAL":
+//                    info.setChain_store_name("Lokal[" + name + "]");
+//                    break;
+//                case "UNO":
+//                    info.setChain_store_name("Uno[" + name + "]");
+//                    break;
+//                case "Wagas":
+//                    info.setChain_store_name("Wagas[" + name + "]");
+//                    break;
+//                default:
+//                    log.info("unexpect code :{}", code);
+//                    break;
+//            }
+//            String url = baseUrl + "?hqId=" + obj[0] + "&branchId=" + obj[1];
+//            log.info("url = {}", url);
+//            Output output = restTemplate.postForEntity(url, info, Output.class).getBody();
+//            log.info("更新门店返回结果：{}", JsonUtils.toJson(output));
+//
+//        }
+//        log.info("schedule end");
+//    }
+
 
 //    @Scheduled(cron = "0 22 15 * * ?")
 //    public void scientist() {
@@ -109,6 +154,12 @@ public class TestTask {
         private int id;
         private Timestamp dealTime;
         private BigDecimal money;
+    }
+
+    @Data
+    public static class UpdateStoreInfo {
+        private String service_code = "HHSJC0001";
+        private String chain_store_name;
     }
 
 }
