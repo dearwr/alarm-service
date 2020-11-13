@@ -2,6 +2,8 @@ package com.hchc.alarm.task;
 
 import com.hchc.alarm.dao.hchc.TestDao;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import java.sql.Timestamp;
 @Slf4j
 @Service
 public class TestTask {
+
+    public static final String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
+            "?pageNo=1&pageSize=10&isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
 
     @Autowired
     private TestDao testDao;
@@ -142,6 +147,91 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
+//    @Scheduled(cron = "0 50 15 * * ?")
+//    public void scientist() {
+//        log.info("schedule start");
+//        BigDecimal beforeBalance;
+//        BigDecimal afterBalance;
+//        String cardNo;
+//        // vipcard
+//        List<Object[]> vipOrderData = testDao.queryVipOrderData();
+//        for (Object[] obj : vipOrderData) {
+//            cardNo = (String) obj[0];
+//            beforeBalance = testDao.queryVipBalance("20201108", cardNo);
+//            if (beforeBalance == null) {
+//                beforeBalance = BigDecimal.ZERO;
+//            }
+//            afterBalance = testDao.queryVipBalance("20201109", cardNo);
+//            if (afterBalance == null) {
+//                afterBalance = BigDecimal.ZERO;
+//            }
+//            if (beforeBalance.add((BigDecimal) obj[1]).compareTo(afterBalance) != 0) {
+//                log.info("找到余额变动有问题的vip卡：{}",obj[0]);
+//            }
+//        }
+//        // giftcard
+//        List<Object[]> giftOrderData = testDao.queryGiftOrderData();
+//        for (Object[] obj : giftOrderData) {
+//            cardNo = (String) obj[0];
+//            beforeBalance = testDao.queryGiftBalance("20201108", cardNo);
+//            if (beforeBalance == null) {
+//                beforeBalance = BigDecimal.ZERO;
+//            }
+//            afterBalance = testDao.queryGiftBalance("20201109", cardNo);
+//            if (afterBalance == null) {
+//                afterBalance = BigDecimal.ZERO;
+//            }
+//            if (beforeBalance.add((BigDecimal) obj[1]).compareTo(afterBalance) != 0) {
+//                log.info("找到余额变动有问题的gift卡：{}",obj[0]);
+//            }
+//        }
+//        log.info("schedule end");
+//    }
+
+//    @Scheduled(cron = "0 18 21 * * ?")
+//    public void queryAllCardBalance() {
+//        log.info("schedule start");
+//        String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
+//                "?isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
+//        SWResponse response;
+//        List<String> unKnowCards = new ArrayList<>();
+//        String reqUrl;
+//        int pageNo = 1;
+//        int pageSize = 10000;
+//        while (true) {
+//            reqUrl = URL + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
+//            response = restTemplate.postForObject(reqUrl, null, SWResponse.class);
+//            log.info("pageNo:{}, resultSize:{}", pageNo, response.getBody().getOrCardList().size());
+//            for (SWResponse.CardList c : response.getBody().getOrCardList()) {
+//                boolean isFlipCard = testDao.isFlipCard(c.getCardNo());
+//                if (!isFlipCard) {
+//                    unKnowCards.add(c.getCardNo());
+//                }
+//            }
+//            if (response.getBody().getOrCardList().size() < pageSize) {
+//                break;
+//            }
+//            pageNo++;
+//        }
+//        testDao.markUnKnowCard(unKnowCards);
+//        log.info("schedule end");
+//    }
+
+//    @Scheduled(cron = "0 41 22 * * ?")
+//    public void checkCard() {
+//        log.info("schedule start");
+//        List<Card> totalCards = testDao.queryAllSWCard();
+//        for (Card c : totalCards) {
+//            if (testDao.hasRecord(c.getNo())) {
+//                c.setReason("flipos最开始上传的有问题");
+//            } else {
+//                c.setReason("迁移给过来的余额就和预付卡协会不一致");
+//            }
+//        }
+//        testDao.updateProblemCard(totalCards);
+//        log.info("schedule end");
+//    }
+
     @Data
     public static class POrder {
         private String bill;
@@ -160,6 +250,16 @@ public class TestTask {
     public static class UpdateStoreInfo {
         private String service_code = "HHSJC0001";
         private String chain_store_name;
+    }
+
+    @Getter
+    @Setter
+    public static class Card {
+        private String no;
+        private BigDecimal flipBalance;
+        private BigDecimal swBalance;
+        private boolean hasProblem;
+        private String reason;
     }
 
 }
