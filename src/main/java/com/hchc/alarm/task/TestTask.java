@@ -188,33 +188,42 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-//    @Scheduled(cron = "0 18 21 * * ?")
+//    @Scheduled(cron = "0 51 18 * * ?")
 //    public void queryAllCardBalance() {
 //        log.info("schedule start");
 //        String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
 //                "?isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
-//        SWResponse response;
-//        List<String> unKnowCards = new ArrayList<>();
-//        String reqUrl;
-//        int pageNo = 1;
-//        int pageSize = 10000;
-//        while (true) {
-//            reqUrl = URL + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
-//            response = restTemplate.postForObject(reqUrl, null, SWResponse.class);
-//            log.info("pageNo:{}, resultSize:{}", pageNo, response.getBody().getOrCardList().size());
-//            for (SWResponse.CardList c : response.getBody().getOrCardList()) {
-//                boolean isFlipCard = testDao.isFlipCard(c.getCardNo());
-//                if (!isFlipCard) {
-//                    unKnowCards.add(c.getCardNo());
-//                }
-//            }
-//            if (response.getBody().getOrCardList().size() < pageSize) {
-//                break;
-//            }
-//            pageNo++;
-//        }
-//        testDao.markUnKnowCard(unKnowCards);
+//
+//        List<Card> cards = testDao.queryGiftCardBalance();
+//        check(cards);
+//
+//        cards = testDao.queryVipCardBalance1();
+//        check(cards);
+//
+//        cards = testDao.queryVipCardBalance2();
+//        check(cards);
+//
 //        log.info("schedule end");
+//    }
+//
+//    private void check(List<Card> cards) {
+//        SWResponse response;
+//        String reqUrl;
+//        BigDecimal swBalance;
+//        BigDecimal flipTotal = BigDecimal.ZERO;
+//        BigDecimal swTotal = BigDecimal.ZERO;
+//        for (Card c : cards) {
+//            reqUrl = URL + "&cardNo=" + c.getNo();
+//            response = restTemplate.postForObject(reqUrl, null, SWResponse.class);
+//            swBalance = new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon());
+//            if (c.getFlipBalance().compareTo(swBalance) != 0) {
+//                flipTotal.add(c.getFlipBalance());
+//                swTotal.add(swBalance);
+//                log.info("{}  {}  {}", c.getNo(), c.getFlipBalance(), swBalance);
+//            }
+//        }
+//        log.info("flipTotal:{}", flipTotal);
+//        log.info("wsTotal:{}", swTotal);
 //    }
 
 //    @Scheduled(cron = "0 41 22 * * ?")
