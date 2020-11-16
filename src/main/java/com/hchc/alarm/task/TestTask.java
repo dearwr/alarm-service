@@ -147,48 +147,7 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-//    @Scheduled(cron = "0 50 15 * * ?")
-//    public void scientist() {
-//        log.info("schedule start");
-//        BigDecimal beforeBalance;
-//        BigDecimal afterBalance;
-//        String cardNo;
-//        // vipcard
-//        List<Object[]> vipOrderData = testDao.queryVipOrderData();
-//        for (Object[] obj : vipOrderData) {
-//            cardNo = (String) obj[0];
-//            beforeBalance = testDao.queryVipBalance("20201108", cardNo);
-//            if (beforeBalance == null) {
-//                beforeBalance = BigDecimal.ZERO;
-//            }
-//            afterBalance = testDao.queryVipBalance("20201109", cardNo);
-//            if (afterBalance == null) {
-//                afterBalance = BigDecimal.ZERO;
-//            }
-//            if (beforeBalance.add((BigDecimal) obj[1]).compareTo(afterBalance) != 0) {
-//                log.info("找到余额变动有问题的vip卡：{}",obj[0]);
-//            }
-//        }
-//        // giftcard
-//        List<Object[]> giftOrderData = testDao.queryGiftOrderData();
-//        for (Object[] obj : giftOrderData) {
-//            cardNo = (String) obj[0];
-//            beforeBalance = testDao.queryGiftBalance("20201108", cardNo);
-//            if (beforeBalance == null) {
-//                beforeBalance = BigDecimal.ZERO;
-//            }
-//            afterBalance = testDao.queryGiftBalance("20201109", cardNo);
-//            if (afterBalance == null) {
-//                afterBalance = BigDecimal.ZERO;
-//            }
-//            if (beforeBalance.add((BigDecimal) obj[1]).compareTo(afterBalance) != 0) {
-//                log.info("找到余额变动有问题的gift卡：{}",obj[0]);
-//            }
-//        }
-//        log.info("schedule end");
-//    }
-
-//    @Scheduled(cron = "0 51 18 * * ?")
+//    @Scheduled(cron = "0 31 7 * * ?")
 //    public void queryAllCardBalance() {
 //        log.info("schedule start");
 //        String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
@@ -224,21 +183,6 @@ public class TestTask {
 //        }
 //        log.info("flipTotal:{}", flipTotal);
 //        log.info("wsTotal:{}", swTotal);
-//    }
-
-//    @Scheduled(cron = "0 41 22 * * ?")
-//    public void checkCard() {
-//        log.info("schedule start");
-//        List<Card> totalCards = testDao.queryAllSWCard();
-//        for (Card c : totalCards) {
-//            if (testDao.hasRecord(c.getNo())) {
-//                c.setReason("flipos最开始上传的有问题");
-//            } else {
-//                c.setReason("迁移给过来的余额就和预付卡协会不一致");
-//            }
-//        }
-//        testDao.updateProblemCard(totalCards);
-//        log.info("schedule end");
 //    }
 
     @Data
