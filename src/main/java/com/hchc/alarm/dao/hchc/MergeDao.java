@@ -2,8 +2,10 @@ package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author wangrong
@@ -44,4 +46,16 @@ public class MergeDao extends HcHcBaseDao {
                 "and name like '%" + productStr + "%'";
         hJdbcTemplate.update(sql, codeStr);
     }
+
+    public boolean queryExistName(String name) {
+        String sql = "select f_id from t_waimai_name_code_mapping where f_product_name = ? ";
+        List<Long> ids = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), name);
+        return CollectionUtils.isEmpty(ids) ? false : true;
+    }
+
+    public void saveWaimaiNameCode(String productStr, String codeStr) {
+        String sql = "insert into t_waimai_name_code_mapping(f_hqid,f_product_name,f_code,f_create_time) values (?,?,?,now())";
+        hJdbcTemplate.update(sql, 3880, productStr, codeStr);
+    }
+
 }

@@ -281,4 +281,60 @@ public class TestDao extends HcHcBaseDao {
         List<Long> records = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), no);
         return CollectionUtils.isEmpty(records) ? false : true;
     }
+
+    public List<TestTask.Branch> queryDayBranchInfo(String dayText) {
+        String sql = "SELECT h.code, b.`name`, o.branch_id, DATE(o.created_at), SUM(o.price),SUM(o.commission) from t_order o INNER JOIN t_order_payment_record p on o.id = p.order_id \n" +
+                "INNER JOIN t_branch b on o.branch_id = b.id \n" +
+                "INNER JOIN t_headquarter h on o.hq_id = h.id\n" +
+                "where DATE(o.created_at)= ? and o.`status` = 'complete' GROUP BY o.branch_id";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            TestTask.Branch branch = new TestTask.Branch();
+            branch.setCode(r.getString(1));
+            branch.setName(r.getString(2));
+            branch.setBranchId(r.getInt(3));
+            branch.setDate(r.getString(4));
+            branch.setPrice(r.getBigDecimal(5));
+            branch.setCommission(r.getBigDecimal(6));
+            return branch;
+        }, dayText);
+    }
+
+    public void saveBranchInfo(List<TestTask.Branch> branches) {
+        String sql = "insert into f_waimai_troble_data(f_code,f_name,f_branchid,f_date,f_now_price,f_now_commission) values(?,?,?,?,?,?)";
+        List<Object[]> params = new ArrayList<>();
+        for (TestTask.Branch b : branches) {
+            params.add(new Object[]{b.getCode(), b.getName(), b.getBranchId(), b.getDate(), b.getPrice(), b.getCommission()});
+        }
+        hJdbcTemplate.batchUpdate(sql, params);
+    }
+
+    public List<TestTask.Branch> queryTrobleInfo() {
+        String sql = "SELECT h.`code`, b.`name`, o.branch_id,DATE(o.created_at),SUM(price),SUM(commission) from t_order o \n" +
+                "INNER JOIN waimai_order wo on o.bill = wo.sys_order_no \n" +
+                "INNER JOIN t_branch b on o.branch_id = b.id \n" +
+                "INNER JOIN t_headquarter h on o.hq_id = h.id\n" +
+                "where o.created_at > '2020-11-01 00:00:00' and o.`status`='complete' and wo.state = 13 \n" +
+                "GROUP BY o.branch_id, DATE(o.created_at) ORDER BY o.hq_id,o.branch_id;";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            TestTask.Branch branch = new TestTask.Branch();
+            branch.setCode(r.getString(1));
+            branch.setName(r.getString(2));
+            branch.setBranchId(r.getInt(3));
+            branch.setDate(r.getString(4));
+            branch.setPrice(r.getBigDecimal(5));
+            branch.setCommission(r.getBigDecimal(6));
+            return branch;
+        });
+
+    }
+
+    public void saveTrobleInfo(List<TestTask.Branch> branches) {
+        String sql = "update f_waimai_troble_data set f_troble_price = ? , f_troble_commission = ? , f_has_troble = 1 " +
+                "where f_branchid = ? and f_date = ? ";
+        List<Object[]> params = new ArrayList<>();
+        for (TestTask.Branch b : branches) {
+            params.add(new Object[]{b.getPrice(), b.getCommission(), b.getBranchId(), b.getDate()});
+        }
+        hJdbcTemplate.batchUpdate(sql, params);
+    }
 }

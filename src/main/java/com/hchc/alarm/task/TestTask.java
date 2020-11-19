@@ -164,26 +164,29 @@ public class TestTask {
 //
 //        log.info("schedule end");
 //    }
-//
-//    private void check(List<Card> cards) {
-//        SWResponse response;
-//        String reqUrl;
-//        BigDecimal swBalance;
-//        BigDecimal flipTotal = BigDecimal.ZERO;
-//        BigDecimal swTotal = BigDecimal.ZERO;
-//        for (Card c : cards) {
-//            reqUrl = URL + "&cardNo=" + c.getNo();
-//            response = restTemplate.postForObject(reqUrl, null, SWResponse.class);
-//            swBalance = new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon());
-//            if (c.getFlipBalance().compareTo(swBalance) != 0) {
-//                flipTotal.add(c.getFlipBalance());
-//                swTotal.add(swBalance);
-//                log.info("{}  {}  {}", c.getNo(), c.getFlipBalance(), swBalance);
-//            }
+
+//    @Scheduled(cron = "0 59 20 * * ?")
+//    public void scientist() throws ParseException {
+//        Date start = DatetimeUtil.parse("2020-11-01 00:00:00");
+//        Date end = DatetimeUtil.parse("2020-11-16 00:00:00");
+//        String dayText;
+//        while (start.getTime() <= end.getTime()) {
+//            dayText = DatetimeUtil.format(start, "yyyy-MM-dd");
+//            log.info("daytext:{} start", dayText);
+//            List<Branch> branches = testDao.queryDayBranchInfo(dayText);
+//            testDao.saveBranchInfo(branches);
+//            start = DatetimeUtil.addDay(start, 1);
 //        }
-//        log.info("flipTotal:{}", flipTotal);
-//        log.info("wsTotal:{}", swTotal);
 //    }
+//
+//    @Scheduled(cron = "0 12 21 * * ?")
+//    public void find() throws ParseException {
+//        log.info(" start");
+//        List<Branch> branches = testDao.queryTrobleInfo();
+//        testDao.saveTrobleInfo(branches);
+//        log.info(" end");
+//    }
+
 
     @Data
     public static class POrder {
@@ -213,6 +216,18 @@ public class TestTask {
         private BigDecimal swBalance;
         private boolean hasProblem;
         private String reason;
+    }
+
+    @Getter
+    @Setter
+    public static class Branch {
+        private String code;
+        private String name;
+        private int branchId;
+        private String date;
+        private BigDecimal price;
+        private BigDecimal commission;
+        private boolean hasProblem;
     }
 
 }

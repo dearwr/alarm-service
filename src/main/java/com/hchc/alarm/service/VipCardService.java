@@ -144,6 +144,9 @@ public class VipCardService {
                 productStr = parseCellValue(row.getCell(productIndex), false);
                 codeStr = parseCellValue(row.getCell(codeIndex), false);
                 mergeDao.updateWaiMaiCode(productStr, codeStr);
+//                if (!mergeDao.queryExistName(productStr)) {
+//                    mergeDao.saveWaimaiNameCode(productStr, codeStr);
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("error sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
