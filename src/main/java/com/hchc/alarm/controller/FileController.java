@@ -4,14 +4,11 @@ import com.hchc.alarm.dao.hchc.MergeDao;
 import com.hchc.alarm.model.niceconsole.ModelBO;
 import com.hchc.alarm.pack.MallResponse;
 import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.service.FileService;
 import com.hchc.alarm.service.HqFileService;
-import com.hchc.alarm.service.VipCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,7 +26,7 @@ public class FileController {
     @Autowired
     private HqFileService hqFileService;
     @Autowired
-    private VipCardService vipCardService;
+    private FileService fileService;
     @Autowired
     private MergeDao mergeDao;
 
@@ -59,7 +56,7 @@ public class FileController {
             return Output.fail("上传文件为空");
         }
         try {
-            return Output.ok(vipCardService.parse(file, hqId));
+            return Output.ok(fileService.parse(file, hqId));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[parse] happen err:{}", e.getMessage());
@@ -75,7 +72,7 @@ public class FileController {
             return Output.fail("上传文件为空");
         }
         try {
-            return Output.ok(vipCardService.parseNewCard(file, hqId));
+            return Output.ok(fileService.parseNewCard(file, hqId));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[parseNewCard] happen err:{}", e.getMessage());
@@ -91,10 +88,22 @@ public class FileController {
             return Output.fail("上传文件为空");
         }
         try {
-            return Output.ok(vipCardService.parseWaiMaiCode(file, hqId));
+            return Output.ok(fileService.parseWaiMaiCode(file, hqId));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[parseWaiMaiCode] happen err:{}", e.getMessage());
+            return Output.fail(e.getMessage());
+        }
+    }
+
+    @GetMapping("/fillTogoSku")
+    public Output fillTogoSku() {
+        log.info("[fillTogoSku] recv");
+        try {
+            return Output.ok(fileService.fillTogoSku());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[fillTogoSku] happen err:{}", e.getMessage());
             return Output.fail(e.getMessage());
         }
     }

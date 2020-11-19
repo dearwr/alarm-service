@@ -1,6 +1,7 @@
 package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
+import com.hchc.alarm.entity.Product;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -41,10 +42,10 @@ public class MergeDao extends HcHcBaseDao {
         hJdbcTemplate.update(sql, kidStr, cidStr, needPush);
     }
 
-    public void updateWaiMaiCode(String productStr, String codeStr) {
+    public void updateWaiMaiCode(String name, String code) {
         String sql = "update t_product set code = ? where hq_id = 3880 and platform in ('eleme','meituan') " +
-                "and name like '%" + productStr + "%'";
-        hJdbcTemplate.update(sql, codeStr);
+                "and name  = ?";
+        hJdbcTemplate.update(sql, code, name);
     }
 
     public boolean queryExistName(String name) {
@@ -58,4 +59,23 @@ public class MergeDao extends HcHcBaseDao {
         hJdbcTemplate.update(sql, 3880, productStr, codeStr);
     }
 
+    public List<Product> queryNoCodeProducts() {
+        String sql = "select id, name from t_product where hq_id = 3880 and platform in ('eleme','meituan') and code = ''";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            Product p = new Product();
+            p.setId(r.getInt(1));
+            p.setName(r.getString(2));
+            return p;
+        });
+    }
+
+    public List<Product> queryProductMapping() {
+        String sql = "select f_product_name,f_code from t_waimai_name_code_mapping ";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            Product p = new Product();
+            p.setName(r.getString(1));
+            p.setCode(r.getString(2));
+            return p;
+        });
+    }
 }

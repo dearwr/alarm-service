@@ -1,6 +1,7 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.dao.hchc.MergeDao;
+import com.hchc.alarm.entity.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -10,6 +11,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wangrong
@@ -25,7 +28,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class VipCardService {
+public class FileService {
 
     @Autowired
     private MergeDao mergeDao;
@@ -112,7 +115,6 @@ public class VipCardService {
     }
 
     private List<String> parseWaiMaiCode(Sheet sheet, int hqId) {
-        List<String> result = new ArrayList<>();
         Map<String, Integer> placeMap = new HashMap<>();
         String cValue;
         // 解析第一行表头
@@ -143,16 +145,20 @@ public class VipCardService {
                 log.info("sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
                 productStr = parseCellValue(row.getCell(productIndex), false);
                 codeStr = parseCellValue(row.getCell(codeIndex), false);
-                mergeDao.updateWaiMaiCode(productStr, codeStr);
-//                if (!mergeDao.queryExistName(productStr)) {
-//                    mergeDao.saveWaimaiNameCode(productStr, codeStr);
-//                }
+//                mergeDao.updateWaiMaiCode(productStr, codeStr);
+                if (!mergeDao.queryExistName(productStr)) {
+                    mergeDao.saveWaimaiNameCode(productStr, codeStr);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 log.info("error sheet:{}, row:{}", sheet.getSheetName(), row.getRowNum());
             }
         }
-        return result;
+        List<Product> nameList = mergeDao.queryNoCodeProducts();
+        if (!CollectionUtils.isEmpty(nameList)) {
+            return nameList.stream().map(p -> p.getId() + "  " + p.getName()).collect(Collectors.toList());
+        }
+        return null;
     }
 
     private List<String> parseAirport(Sheet sheet, int hqId) {
@@ -287,4 +293,24 @@ public class VipCardService {
         return cValue;
     }
 
+    public List<String> fillTogoSku() {
+        List<Product> noCodeProducts = mergeDao.queryNoCodeProducts();
+        if (CollectionUtils.isEmpty(noCodeProducts)) {
+            return null;
+        }
+        List<Product> productMapping = mergeDao.queryProductMapping();
+        for (Product np : noCodeProducts) {
+            for (Product mp : productMapping) {
+                if (np.getName().contains(mp.getName())) {
+                    mergeDao.updateWaiMaiCode(np.getName(), mp.getCode());
+                    break;
+                }
+            }
+        }
+        noCodeProducts = mergeDao.queryNoCodeProducts();
+        if (!CollectionUtils.isEmpty(noCodeProducts)) {
+            return noCodeProducts.stream().map(p -> p.getId() + "  " + p.getName()).collect(Collectors.toList());
+        }
+        return null;
+    }
 }
