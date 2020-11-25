@@ -24,13 +24,13 @@ public class AceWillTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    public static final String AceWill_DISH_LOSS_URL = "http://120.78.232.8:9500/sync/dishLoss";
-    public static final String AceWill_PUSH_URL = "http://120.78.232.8:9500/sync/push?hqId={1}&branchId={2}&date={3}";
-    public static final String AceWill_DAY_DONE_URL = "http://120.78.232.8:9500/sync/done?hqId={1}&branchId={2}&date={3}";
+//    public static final String AceWill_DISH_LOSS_URL = "http://120.78.232.8:9500/sync/dishLoss";
+//    public static final String AceWill_PUSH_URL = "http://120.78.232.8:9500/sync/push?hqId={1}&branchId={2}&date={3}";
+//    public static final String AceWill_DAY_DONE_URL = "http://120.78.232.8:9500/sync/done?hqId={1}&branchId={2}&date={3}";
 
-//    public static final String AceWill_DISH_LOSS_URL = "http://localhost:9500/sync/dishLoss";
-//    public static final String AceWill_PUSH_URL = "http://localhost:9500/sync/push?hqId={1}&branchId={2}&date={3}";
-//    public static final String AceWill_DAY_DONE_URL = "http://localhost:9500/sync/done?hqId={1}&branchId={2}&date={3}";
+    public static final String AceWill_DISH_LOSS_URL = "http://localhost:9500/sync/dishLoss";
+    public static final String AceWill_PUSH_URL = "http://localhost:9500/sync/push?hqId={1}&branchId={2}&date={3}";
+    public static final String AceWill_DAY_DONE_URL = "http://localhost:9500/sync/done?hqId={1}&branchId={2}&date={3}";
 
     @Scheduled(cron = "0 50 22 * * ?")
     public void scientist() throws ParseException {

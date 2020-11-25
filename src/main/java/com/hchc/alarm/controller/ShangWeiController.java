@@ -1,7 +1,7 @@
 package com.hchc.alarm.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.hchc.alarm.dao.hchc.ShangWeiMchDao;
+import com.hchc.alarm.dao.hchc.ShangWeiDao;
 import com.hchc.alarm.entity.ShangWeiMch;
 import com.hchc.alarm.pack.Output;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShangWeiController {
 
     @Autowired
-    private ShangWeiMchDao shangWeiMchDao;
+    private ShangWeiDao shangWeiDao;
 
     @PostMapping("update")
     public Output updateConfig(@RequestBody ShangWeiMch mch) {
         try {
             String data = JSON.toJSONString(mch);
             log.info("[updateConfig] recv mch:{}", data);
-            if (shangWeiMchDao.update(mch.getHqId(), data)) {
+            if (shangWeiDao.updateMchData(mch.getHqId(), data)) {
                 return Output.ok();
             }else {
                 return Output.fail("update fail");

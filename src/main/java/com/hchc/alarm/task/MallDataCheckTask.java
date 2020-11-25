@@ -16,7 +16,7 @@
 //import java.util.Date;
 //import java.util.List;
 //
-//import static com.hchc.alarm.constant.MallConstant.MARK_FULL_NAME_MAP;
+//import static com.hchc.alarm.constant.MallConstant.MARK_NAME_MAP;
 //
 ///**
 // * @author wangrong
@@ -47,8 +47,8 @@
 //        String endText = startText;
 //        BranchCheckBO branchCheckBO;
 //        for (MallBranchBO branchBO : immediateBranches) {
-//            if (MARK_FULL_NAME_MAP.get(branchBO.getMark()) == null) {
-//                log.info("[checkMallData] not find mapping for mark:{}, branchId:{}", branchBO.getMark(), branchBO.getBranchId());
+//            if (MARK_NAME_MAP.get(branchBO.getMallName()) == null) {
+//                log.info("[checkMallData] not find mapping for mark:{}, branchId:{}", branchBO.getMallName(), branchBO.getBranchId());
 //                continue;
 //            }
 //            branchCheckBO = new BranchCheckBO(branchBO);
@@ -56,7 +56,7 @@
 //            branchCheckBO.setEndTime(endTime);
 //            branchCheckBO.setStartText(startText);
 //            branchCheckBO.setEndText(endText);
-//            branchCheckBO.setMall(branchBO.getMark());
+//            branchCheckBO.setMall(branchBO.getMallName());
 //            log.info("[checkMallData] start check branchId:{}", branchBO.getBranchId());
 //            mallCheckService.saveFile(branchCheckBO, mallRecordDao.queryPushFailOrders(branchCheckBO));
 //            log.info("[checkMallData] end check branchId:{}", branchBO.getBranchId());
