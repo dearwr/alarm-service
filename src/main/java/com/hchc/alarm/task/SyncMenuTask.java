@@ -19,7 +19,7 @@ public class SyncMenuTask {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String PUSH_DATA_URL = "http://47.112.150.247:8013/menu/allBranch/sync/3880";
+    private final String PUSH_DATA_URL = "https://togo.51hchc.com/menu/allBranch/sync/3880";
 
     @Scheduled(cron = " 0 35 7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * ? ")
     public void syncMenu() {

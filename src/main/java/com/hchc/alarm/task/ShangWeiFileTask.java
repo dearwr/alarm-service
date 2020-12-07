@@ -30,7 +30,7 @@ public class ShangWeiFileTask {
     @Autowired
     private ShangWeiDao shangWeiDao;
 
-    @Scheduled(cron = "0 20 10 * * ?")
+    @Scheduled(cron = "0 30 9 * * ?")
     public void createFile() {
         log.info("********* start create shangwei file *************");
         long hqId = 3880;
