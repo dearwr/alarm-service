@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,13 @@ public class MallRecordController {
         if (hqId == 0 || branchId == 0) {
             List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
             rePushMallService.pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+            return Output.ok();
+        } else if (hqId == 1516 && branchId == 4070) {
+            RePushMallBO rePushMallBO = new RePushMallBO();
+            rePushMallBO.setHqId(hqId);
+            rePushMallBO.setBranchId(branchId);
+            rePushMallBO.setMallName(mallName);
+            rePushMallService.pushMallTransList(Collections.singletonList(rePushMallBO), start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
             return Output.ok();
         } else {
             List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);

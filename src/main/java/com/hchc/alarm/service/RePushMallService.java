@@ -72,4 +72,31 @@ public class RePushMallService {
         }
     }
 
+    public void pushMallTransList(List<RePushMallBO> rePushMallBOList, Date start, Date end, String abbDate, String url) {
+        for (RePushMallBO mall : rePushMallBOList) {
+            List<String> orderNos = mallRecordDao.queryAllUnPushTransOrders(mall.getBranchId(), abbDate);
+            if (orderNos == null || orderNos.isEmpty()) {
+                log.info("hqId={},branchId={},name={} 没有需要补传的订单", mall.getHqId(), mall.getBranchId(), mall.getMallName());
+                continue;
+            }
+            log.info("hqId={},branchId={},name={} 开始补传订单，orderNos={}", mall.getHqId(), mall.getBranchId(), mall.getMallName(), orderNos);
+            try {
+                PushMall pushMall = new PushMall(mall.getHqId(), mall.getBranchId(), start, end, orderNos);
+                Output output = remoteService.pushOrders(pushMall, url);
+                if (output != null && "0".equals(output.getCode())) {
+                    log.info("hqId={},branchId={},name={} 补传成功", mall.getHqId(), mall.getBranchId(), mall.getMallName());
+                } else {
+                    log.info("hqId={},branchId={},name={} 补传失败，fallOrderList={}", mall.getHqId(), mall.getBranchId(), mall.getMallName(), output.getData());
+                }
+            } catch (Exception e) {
+                log.info("hqId={},branchId={},name={} 补传发生异常：{}", mall.getHqId(), mall.getBranchId(), mall.getMallName(), e.getMessage());
+            }
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

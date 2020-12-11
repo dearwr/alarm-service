@@ -1,8 +1,8 @@
 package com.hchc.alarm.dao.hchc;
 
 import com.hchc.alarm.dao.HcHcBaseDao;
-import com.hchc.alarm.model.CheckOrderBO;
 import com.hchc.alarm.model.BranchCheckBO;
+import com.hchc.alarm.model.CheckOrderBO;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -93,6 +93,11 @@ public class MallRecordDao extends HcHcBaseDao {
                 "AND r.f_status IN('suc' , 'skip' , 'exist') AND r.f_mall = ? " +
                 ")";
         return hJdbcTemplate.queryForList(sql, String.class, hqId, branchId, start, end, hqId, branchId, abbDate, mallName);
+    }
+
+    public List<String> queryAllUnPushTransOrders(long branchId, String abbDate) {
+        String sql = "SELECT o.bill FROM t_order o WHERE branch_id = ?  AND DATE(created_at) = ? AND `status` = 'COMPLETE'";
+        return hJdbcTemplate.queryForList(sql, String.class, branchId, abbDate);
     }
 
 }
