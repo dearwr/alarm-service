@@ -4,7 +4,6 @@ import com.hchc.alarm.dao.hchc.ShangWeiDao;
 import com.hchc.alarm.entity.ShangWeiCard;
 import com.hchc.alarm.entity.ShangWeiFileRecord;
 import com.hchc.alarm.util.DatetimeUtil;
-import com.hchc.alarm.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -112,7 +111,6 @@ public class ShangWeiFileTask {
         List<ShangWeiCard> cards = shangWeiDao.queryNewGiftCards(hqId, date);
         int rowIndex = fillNewCardSheet(cards, sheet, 1);
         cards = shangWeiDao.queryNewVipCards(hqId, date);
-        log.info(" vip cards:{}", JsonUtils.toJson(cards));
         fillNewCardSheet(cards, sheet, rowIndex);
     }
 

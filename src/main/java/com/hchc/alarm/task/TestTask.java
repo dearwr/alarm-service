@@ -147,14 +147,14 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-//    @Scheduled(cron = "0 53 10 * * ?")
+//    @Scheduled(cron = "0 12 14 * * ?")
 //    public void queryAllCardBalance() {
 //        log.info("schedule start");
 //        String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
 //                "?isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
 //
 //        List<Card> cards = testDao.queryGiftCardBalance();
-////        check(cards);
+//        check(cards);
 //        cards = testDao.queryVipCardBalance1();
 //        check(cards);
 //        cards = testDao.queryVipCardBalance2();
@@ -172,6 +172,10 @@ public class TestTask {
 //            totalAmt = totalAmt.add(c.getFlipBalance());
 //            url = URL + "&cardNo=" + c.getNo();
 //            response = restTemplate.postForObject(url, null, SWResponse.class);
+//            if (CollectionUtils.isEmpty(response.getBody().getOrCardList())) {
+//                log.info("not find cardNo={} in shangwei system", c.getNo());
+//                continue;
+//            }
 //            c.setSwBalance(new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon()));
 //            if (c.getFlipBalance().compareTo(c.getSwBalance()) != 0) {
 //                log.info(" {} flip:{}, sw:{}", c.getNo(), c.getFlipBalance(), c.getSwBalance());
@@ -203,6 +207,32 @@ public class TestTask {
 //        testDao.saveTrobleInfo(branches);
 //        log.info(" end");
 //    }
+
+//    @Scheduled(cron = "0 34 15 * * ?")
+//    public void fillNewCardTask() {
+//        log.info("fillNewCardTask start");
+//        List<String> existCardIds = testDao.queryAllExistCardIds();
+//        log.info("existCardIds size : " + existCardIds.size());
+//        List<ComplexCard> cards = testDao.queryComplexCards();
+//        log.info("cards size : " + cards.size());
+//        List<ComplexCard> trimCards = new ArrayList<>();
+//        for (ComplexCard card : cards) {
+//            if (existCardIds.contains(card.getCardId())) {
+//                continue;
+//            }
+//            trimCards.add(card);
+//        }
+//        log.info("trimCards size : " + trimCards.size());
+//        testDao.batchSaveTrimCards(trimCards);
+//
+//        log.info("fillNewCardTask end");
+//    }
+
+    @Data
+    public static class ComplexCard {
+        private String number;
+        private String cardId;
+    }
 
 
     @Data

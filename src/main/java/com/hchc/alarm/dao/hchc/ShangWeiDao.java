@@ -3,13 +3,18 @@ package com.hchc.alarm.dao.hchc;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.entity.ShangWeiCard;
 import com.hchc.alarm.entity.ShangWeiFileRecord;
-import com.hchc.alarm.util.JsonUtils;
+import com.hchc.alarm.pack.MigrateCardInfo;
+import com.hchc.alarm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * @author wangrong
@@ -18,6 +23,18 @@ import java.util.List;
 @Repository
 @Slf4j
 public class ShangWeiDao extends HcHcBaseDao {
+
+    public void saveNewCard(String kidStr, String cidStr, BigDecimal balance) {
+        String sql = "insert into t_shangwei_prepaid_new_card(f_number, f_card_id, f_balance, f_createtime) " +
+                "values(?,?,?,now())";
+        hJdbcTemplate.update(sql, kidStr, cidStr, balance);
+    }
+
+    public void saveCardMapping(String kidStr, String cidStr, int needPush) {
+        String sql = "insert into t_shangwei_prepaid_card_mapping(f_number, f_card_id, f_need_push) " +
+                "values(?,?,?)";
+        hJdbcTemplate.update(sql, kidStr, cidStr, needPush);
+    }
 
     public boolean updateMchData(long hqId, String data) {
         String sql = "update t_shangwei_prepaid_mch set f_data = ? where f_hqid = ?";
@@ -35,7 +52,7 @@ public class ShangWeiDao extends HcHcBaseDao {
             record.setTotalBalance(r.getDouble("f_total_balance"));
             return record;
         }, hqId, dayText);
-        return CollectionUtils.isEmpty(fileRecords) ? null : fileRecords.get(0);
+        return isEmpty(fileRecords) ? null : fileRecords.get(0);
     }
 
     public List<ShangWeiCard> queryNewVipCards(long hqId, String date) {
@@ -47,8 +64,7 @@ public class ShangWeiDao extends HcHcBaseDao {
             card.setType("电子会员卡");
             return card;
         }, hqId, date);
-        log.info(" queryNewGiftCards cards:{}", JsonUtils.toJson(cards));
-        return CollectionUtils.isEmpty(cards) ? Collections.emptyList() : cards;
+        return isEmpty(cards) ? Collections.emptyList() : cards;
     }
 
     public List<ShangWeiCard> queryNewGiftCards(long hqId, String date) {
@@ -59,7 +75,7 @@ public class ShangWeiDao extends HcHcBaseDao {
             card.setType("礼品卡");
             return card;
         }, hqId, date);
-        return CollectionUtils.isEmpty(cards) ? Collections.emptyList() : cards;
+        return isEmpty(cards) ? Collections.emptyList() : cards;
     }
 
     public List<ShangWeiCard> queryGiftCardsTrs(long hqId, String date) {
@@ -73,7 +89,7 @@ public class ShangWeiDao extends HcHcBaseDao {
             card.setAfterBalance(r.getDouble("f_balance_after"));
             return card;
         }, hqId, date);
-        return CollectionUtils.isEmpty(cards) ? Collections.emptyList() : cards;
+        return isEmpty(cards) ? Collections.emptyList() : cards;
     }
 
     public List<ShangWeiCard> queryVipCardTrs(long hqId, String date) {
@@ -91,6 +107,35 @@ public class ShangWeiDao extends HcHcBaseDao {
             card.setAfterBalance(r.getDouble("f_balance_after"));
             return card;
         }, hqId, date);
-        return CollectionUtils.isEmpty(cards) ? Collections.emptyList() : cards;
+        return isEmpty(cards) ? Collections.emptyList() : cards;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void importCards(List<MigrateCardInfo> cardInfos) {
+        List<Object[]> cardParams = new ArrayList<>();
+        List<Object[]> mappingParams = new ArrayList<>();
+        List<Object[]> giveCardParams = new ArrayList<>();
+        for (MigrateCardInfo card : cardInfos) {
+            cardParams.add(new Object[]{card.getKid(), StringUtil.isBlank(card.getPassword()) ? "1111" : card.getPassword(),
+                    card.getBalance(), card.isGiveCard() ? card.getBalance() : 0});
+            mappingParams.add(new Object[]{card.getKid(), card.getCardId()});
+            if (card.isGiveCard()) {
+                giveCardParams.add(new Object[]{card.getKid(), card.getCardId()});
+            }
+        }
+
+        String sql = "insert into t_vip_card(hq_id, `number`, `name`, gender, `password`, balance, `status`, " +
+                "created_at, f_membernumber, f_mrvipnumber, grant_balance) values(199,?,'','',?,?,'FROZEN',NOW(),'','',?)";
+        hJdbcTemplate.batchUpdate(sql, cardParams);
+
+        sql = "insert into t_shangwei_prepaid_card_mapping(f_number, f_card_id, f_need_push) " +
+                "values(?,?,0)";
+        hJdbcTemplate.batchUpdate(sql, mappingParams);
+
+        if (!isEmpty(giveCardParams)) {
+            sql = "insert into t_shangwei_prepaid_new_card(f_number, f_card_id, f_createtime, f_open_status) " +
+                    "values(?,?,'2020-9-15 00:00:00', 1)";
+            hJdbcTemplate.batchUpdate(sql, giveCardParams);
+        }
     }
 }

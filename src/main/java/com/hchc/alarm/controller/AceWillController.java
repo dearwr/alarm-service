@@ -95,7 +95,7 @@ public class AceWillController {
                     output = restTemplate.getForObject(AceWill_DAY_DONE_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
                     if (output == null || !"0".equals(output.getCode())) {
                         log.info("[{}] day->{}, branchId:{} push day done fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
-                        return "day->" + dayText + ", branchId:" + branchId + " push day done fail, result:" + JSON.toJSONString(output);
+//                        return "day->" + dayText + ", branchId:" + branchId + " push day done fail, result:" + JSON.toJSONString(output);
                     }else {
                         log.info("[{}] day->{}, branchId:{} push day done success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
                     }

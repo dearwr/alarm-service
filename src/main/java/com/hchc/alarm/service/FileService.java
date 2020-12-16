@@ -1,6 +1,7 @@
 package com.hchc.alarm.service;
 
 import com.hchc.alarm.dao.hchc.MergeDao;
+import com.hchc.alarm.dao.hchc.ShangWeiDao;
 import com.hchc.alarm.entity.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -32,6 +33,8 @@ public class FileService {
 
     @Autowired
     private MergeDao mergeDao;
+    @Autowired
+    private ShangWeiDao shangWeiDao;
 
     public List<String> parse(MultipartFile file, int hqId) throws IOException {
         Workbook workbook = null;
@@ -256,10 +259,10 @@ public class FileService {
                 balanceStr = BigDecimal.valueOf(Double.parseDouble(parseCellValue(row.getCell(balanceIndex), false)));
 
                 if ("是".equals(newCardStr)) {
-                    mergeDao.saveNewCard(kidStr, cidStr, balanceStr);
-                    mergeDao.saveCardMapping(kidStr, cidStr, 0);
+                    shangWeiDao.saveNewCard(kidStr, cidStr, balanceStr);
+                    shangWeiDao.saveCardMapping(kidStr, cidStr, 0);
                 } else {
-                    mergeDao.saveCardMapping(kidStr, cidStr, "是".equals(needPushStr) ? 1 : 0);
+                    shangWeiDao.saveCardMapping(kidStr, cidStr, "是".equals(needPushStr) ? 1 : 0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
