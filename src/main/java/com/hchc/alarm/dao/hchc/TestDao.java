@@ -1,11 +1,14 @@
 package com.hchc.alarm.dao.hchc;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.pack.SWResponse;
 import com.hchc.alarm.task.TestTask;
+import com.hchc.alarm.util.JsonUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -340,5 +343,67 @@ public class TestDao extends HcHcBaseDao {
             params.add(new Object[]{card.getNumber(), card.getCardId(), "2020-9-15 00:00:00"});
         }
         hJdbcTemplate.batchUpdate(sql, params);
+    }
+
+    public List<TestTask.DeliveryBranch> queryDeliveryBranches(long hqId) {
+        String sql = "SELECT b.`code`,b.`name`,f.`data`, b.phone,b.address,\n" +
+                "case when sf.f_id is null then '否' else '是' end as shunfeng,\n" +
+                "case when fn.f_id is null then '否' else '是' end as fengniao \n " +
+                "from t_branch_feature f INNER JOIN t_branch b on f.branch_id = b.id\n" +
+                "LEFT JOIN t_delivery_sf_shop sf on sf.f_branch_id = f.branch_id\n" +
+                "LEFT JOIN t_delivery_fn_shop fn on fn.f_branch_id = f.branch_id\n" +
+                "where f.hq_id = ? and feature = 'delivery' and f.enabled = 1 ";
+        return hJdbcTemplate.query(sql, (r, i) -> {
+            TestTask.DeliveryBranch branch = new TestTask.DeliveryBranch();
+            branch.setCode(r.getString("code"));
+            branch.setName(r.getString("name"));
+            branch.setPhone(r.getString("phone"));
+            branch.setAddress(r.getString("address"));
+            branch.setHasSF(r.getString("shunfeng"));
+            branch.setHasFN(r.getString("fengniao"));
+            try {
+                String data = r.getString("data");
+                JsonNode jsonNode = JsonUtils.read(data);
+                long start = jsonNode.get("service_start_time").longValue();
+                String startTime = buildTime(start);
+                long end = jsonNode.get("service_end_time").longValue();
+                String endTime = buildTime(end);
+                branch.setBusinessHours(startTime + "-" + endTime);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return branch;
+        }, hqId);
+    }
+
+    private String buildTime(long time) {
+        String businessHours = "";
+        long hour = time / (60 * 60);
+        if (hour == 0) {
+            businessHours += "00";
+        } else if (hour < 10) {
+            businessHours += "0" + hour;
+        } else {
+            businessHours += hour;
+        }
+        businessHours += ":";
+        long minute = time % (60 * 60) / 60;
+        if (minute == 0) {
+            businessHours += "00";
+        } else if (minute < 10) {
+            businessHours += "0" + minute;
+        } else {
+            businessHours += minute;
+        }
+        businessHours += ":";
+        long second = time % (60 * 60) % 60 ;
+        if (second == 0) {
+            businessHours += "00";
+        } else if (second < 10) {
+            businessHours += "0" + second;
+        } else {
+            businessHours += second;
+        }
+        return businessHours;
     }
 }

@@ -3,11 +3,14 @@ package com.hchc.alarm.dao.hchc;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.entity.ShangWeiCard;
 import com.hchc.alarm.entity.ShangWeiFileRecord;
+import com.hchc.alarm.pack.ActiveCardInfo;
 import com.hchc.alarm.pack.MigrateCardInfo;
 import com.hchc.alarm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 @Repository
 @Slf4j
+@EnableTransactionManagement
 public class ShangWeiDao extends HcHcBaseDao {
 
     public void saveNewCard(String kidStr, String cidStr, BigDecimal balance) {
@@ -110,13 +114,17 @@ public class ShangWeiDao extends HcHcBaseDao {
         return isEmpty(cards) ? Collections.emptyList() : cards;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, transactionManager = "hTransactionManager")
     public void importCards(List<MigrateCardInfo> cardInfos) {
         List<Object[]> cardParams = new ArrayList<>();
         List<Object[]> mappingParams = new ArrayList<>();
         List<Object[]> giveCardParams = new ArrayList<>();
+        long hqId = 199;
         for (MigrateCardInfo card : cardInfos) {
-            cardParams.add(new Object[]{card.getKid(), StringUtil.isBlank(card.getPassword()) ? "1111" : card.getPassword(),
+            if (alreadyExist(hqId, card.getKid())) {
+                continue;
+            }
+            cardParams.add(new Object[]{hqId, card.getKid(), StringUtil.isBlank(card.getPassword()) ? "1111" : card.getPassword(),
                     card.getBalance(), card.isGiveCard() ? card.getBalance() : 0});
             mappingParams.add(new Object[]{card.getKid(), card.getCardId()});
             if (card.isGiveCard()) {
@@ -125,7 +133,7 @@ public class ShangWeiDao extends HcHcBaseDao {
         }
 
         String sql = "insert into t_vip_card(hq_id, `number`, `name`, gender, `password`, balance, `status`, " +
-                "created_at, f_membernumber, f_mrvipnumber, grant_balance) values(199,?,'','',?,?,'FROZEN',NOW(),'','',?)";
+                "created_at, f_membernumber, f_mrvipnumber, grant_balance) values(?,?,'','',?,?,'FROZEN',NOW(),'','',?)";
         hJdbcTemplate.batchUpdate(sql, cardParams);
 
         sql = "insert into t_shangwei_prepaid_card_mapping(f_number, f_card_id, f_need_push) " +
@@ -137,5 +145,36 @@ public class ShangWeiDao extends HcHcBaseDao {
                     "values(?,?,'2020-9-15 00:00:00', 1)";
             hJdbcTemplate.batchUpdate(sql, giveCardParams);
         }
+    }
+
+    private boolean alreadyExist(long hqId, String kid) {
+        String sql = "select id from t_vip_card where hq_id = ? and `number` = ? ";
+        List<Long> idList = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), hqId, kid);
+        return !CollectionUtils.isEmpty(idList);
+    }
+
+    public boolean alreadyActivated(String number) {
+        String sql = "select id from t_vip_card where hq_id = ? and `number` = ? and `status` = 'ACTIVE' ";
+        List<Long> idList = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), 199, number);
+        return !CollectionUtils.isEmpty(idList);
+    }
+
+    public boolean queryIsGiveCard(String number) {
+        String sql = "select id from t_vip_card where hq_id = ? and `number` = ? and balance = grant_balance ";
+        List<Long> idList = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), 199, number);
+        return !CollectionUtils.isEmpty(idList);
+    }
+
+    @Transactional(rollbackFor = Exception.class,transactionManager = "hTransactionManager")
+    public void activeCard(ActiveCardInfo cardInfo) {
+        String sql = "update t_vip_card set `status` = 'ACTIVE' where hq_id = ? and `number` = ?";
+        hJdbcTemplate.update(sql, 199, cardInfo.getKid());
+
+        if (queryIsGiveCard(cardInfo.getKid())) {
+            return;
+        }
+        sql = "insert into t_shangwei_prepaid_new_card(f_number, f_card_id, f_createtime) " +
+                "values (?,?,now()) ";
+        hJdbcTemplate.update(sql, cardInfo.getKid(), cardInfo.getCardId());
     }
 }

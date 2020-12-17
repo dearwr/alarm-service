@@ -228,6 +228,73 @@ public class TestTask {
 //        log.info("fillNewCardTask end");
 //    }
 
+//    @Scheduled(cron = "0 53 15 * * ?")
+//    public void pullDeliveryBranches() {
+//        log.info("pullDeliveryBranches start");
+//        String fileName = "手机外送门店清单.xlsx";
+//        File file = FileUtils.getFile("/data", "share", "prepaid", "shangwei", "3880", "report", fileName);
+//        try (FileOutputStream fos = new FileOutputStream(file)) {
+//            Workbook workbook;
+//            workbook = new XSSFWorkbook();
+//            createReportSheet(workbook);
+//            workbook.write(fos);
+//            workbook.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            deleteFile(file);
+//        }
+//        log.info("pullDeliveryBranches end");
+//    }
+//
+//    private void createReportSheet(Workbook workbook) {
+//        Sheet sheet = workbook.createSheet("sheet1");
+//        sheet.autoSizeColumn(1);
+//        sheet.autoSizeColumn(1, true);
+//        Row row = sheet.createRow(0);
+//        row.createCell(0).setCellValue("Flipos Erp代码（开通手机外卖门店）");
+//        row.createCell(1).setCellValue("Flipos门店名称（开通手机外卖门店）");
+//        row.createCell(2).setCellValue("外送门店营业时间");
+//        row.createCell(3).setCellValue("门店电话");
+//        row.createCell(4).setCellValue("门店地址");
+//        row.createCell(5).setCellValue("是否有顺丰");
+//        row.createCell(6).setCellValue("是否有蜂鸟");
+//
+//        List<DeliveryBranch> branches = testDao.queryDeliveryBranches(3880);
+//        DeliveryBranch branch;
+//        for (int i = 0; i < branches.size(); i++) {
+//            row = sheet.createRow(i + 1);
+//            branch = branches.get(i);
+//            row.createCell(0).setCellValue(branch.getCode());
+//            row.createCell(1).setCellValue(branch.getName());
+//            row.createCell(2).setCellValue(branch.getBusinessHours());
+//            row.createCell(3).setCellValue(branch.getPhone());
+//            row.createCell(4).setCellValue(branch.getAddress());
+//            row.createCell(5).setCellValue(branch.hasSF);
+//            row.createCell(6).setCellValue(branch.hasFN);
+//        }
+//    }
+//
+//    private void deleteFile(File file) {
+//        try {
+//            FileUtils.forceDelete(file);
+//            log.info("[deleteFile] 删除文件成功 filePath:{}", file.getPath());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    @Data
+    public static class DeliveryBranch {
+        private String code;
+        private String name;
+        private String businessHours;
+        private String phone;
+        private String address;
+        private String hasSF;
+        private String hasFN;
+    }
+
+
     @Data
     public static class ComplexCard {
         private String number;
