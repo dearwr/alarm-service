@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Setter
 public class MigrateCardInfo {
 
+    private long hqId;
     private String cardId;
     private String kid;
     private String password;

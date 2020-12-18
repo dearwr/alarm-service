@@ -59,7 +59,7 @@ public class ShangWeiController {
             if (cardInfo.getBalance().compareTo(BigDecimal.ZERO) < 0) {
                 return Output.fail("余额不能小于0");
             }
-            if (shangWeiDao.alreadyActivated(cardInfo.getKid())) {
+            if (shangWeiDao.alreadyActivated(cardInfo)) {
                 return Output.fail("已经激活过了");
             }
 //            shangWeiDao.activeCard(cardInfo);

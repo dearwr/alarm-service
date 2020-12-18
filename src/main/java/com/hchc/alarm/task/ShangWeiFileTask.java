@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,13 +30,13 @@ public class ShangWeiFileTask {
     @Autowired
     private ShangWeiDao shangWeiDao;
 
-    @Scheduled(cron = "0 30 9 * * ?")
+    @Scheduled(cron = "0 30 09 * * ?")
     public void createFile() {
         log.info("********* start create shangwei file *************");
         long hqId = 3880;
         try {
             createReportFile(hqId, new Date());
-            createTotalBalanceFile(hqId, new Date());
+            createBalanceDetailFile(hqId, new Date());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,12 +91,7 @@ public class ShangWeiFileTask {
         row.createCell(7).setCellValue(fileRecord.getTotalBalance());
         row.createCell(8).setCellValue(fileRecord.getCardSize());
 
-        CellStyle cellStyle = centerStyle(workbook);
-        for (int i = 0; i < sheet.getLastRowNum(); i++) {
-            for (int j = 0; j < sheet.getRow(i).getLastCellNum(); j++) {
-                sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
-            }
-        }
+        setCenterStyle(workbook, sheet);
     }
 
     private void createNewCardSheet(Workbook workbook, String sheetName, long hqId, String date) {
@@ -166,7 +162,91 @@ public class ShangWeiFileTask {
         return startIndex + cards.size() - 1;
     }
 
-    private void createTotalBalanceFile(long hqId, Date date) {
+    private File createBalanceDetailFile(long hqId, Date date) {
+        String fileName = "截止" + DatetimeUtil.dayText(date) + "零点预付卡余额明细表.xlsx";
+        File file = FileUtils.getFile("/data", "share", "prepaid", "shangwei", String.valueOf(hqId), "report", fileName);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            Workbook workbook;
+            workbook = new XSSFWorkbook();
+
+            String dayText = DatetimeUtil.dayText(date);
+            createBalanceDetailSheet(workbook, "预付卡余额明细", hqId, dayText);
+            workbook.write(fos);
+            workbook.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            deleteFile(file);
+        }
+        return file;
+    }
+
+    private void createBalanceDetailSheet(Workbook workbook, String sheetName, long hqId, String dayText) throws ParseException {
+        ShangWeiFileRecord record = shangWeiDao.queryFileRecord(hqId, dayText);
+        if (record == null) {
+            return;
+        }
+        java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+        nf.setGroupingUsed(false);
+        Sheet sheet = workbook.createSheet(sheetName);
+        for (int i = 0; i <= 3; i++) {
+            sheet.setColumnWidth(i, 18 * 256);
+        }
+        sheet.autoSizeColumn(1);
+        sheet.autoSizeColumn(1, true);
+        Row row = sheet.createRow(0);
+        row.createCell(0).setCellValue("#预付卡余额统计表");
+        row = sheet.createRow(1);
+        row.createCell(0).setCellValue("#商户名称：Wagas Group");
+        row = sheet.createRow(2);
+        String dayStr = DatetimeUtil.format(DatetimeUtil.parseDayText(dayText), "yyyy/MM/dd");
+        row.createCell(0).setCellValue("#数据周期：[截至" + dayStr + " 00:00:00]");
+        row = sheet.createRow(3);
+        dayStr = DatetimeUtil.format(new Date(), "yyyy/MM/dd HH:mm:ss");
+        row.createCell(0).setCellValue("#导出日期：[" + dayStr + "]");
+        row = sheet.createRow(5);
+        row.createCell(0).setCellValue("#--------------------数据汇总--------------------");
+        row = sheet.createRow(6);
+        row.createCell(0).setCellValue("预收资金总本金：：" + nf.format(record.getTotalBalance()));
+        row = sheet.createRow(7);
+        row.createCell(0).setCellValue("预收资金总面额：" + nf.format(record.getTotalBalance()));
+        row = sheet.createRow(9);
+        row.createCell(0).setCellValue("#--------------------数据说明--------------------");
+        row = sheet.createRow(10);
+        row.createCell(0).setCellValue("迁移实体卡：前系统发放的芯片卡及二维码卡；电子会员卡：新系统中电子会员卡，" +
+                "包含迁移过来的余额及新系统中充值；礼品卡：新系统的礼品卡");
+        row = sheet.createRow(12);
+        row.createCell(0).setCellValue("#--------------------明细列表--------------------");
+        row = sheet.createRow(13);
+        row.createCell(0).setCellValue("卡号");
+        row.createCell(1).setCellValue("卡类型");
+        row.createCell(2).setCellValue("本金余额");
+        row.createCell(3).setCellValue("面额余额");
+
+        String abbDate = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
+        List<ShangWeiCard> cards = shangWeiDao.queryGiftCardBalance(hqId, abbDate);
+        int startWriteRow = writeBalanceDetailData(sheet, 14, cards);
+        cards = shangWeiDao.querySystemCardBalance(hqId, abbDate);
+        startWriteRow = writeBalanceDetailData(sheet, startWriteRow, cards);
+        cards = shangWeiDao.queryMigrateCardBalance(hqId, abbDate);
+        startWriteRow = writeBalanceDetailData(sheet, startWriteRow, cards);
+        row = sheet.createRow(startWriteRow);
+        row.createCell(2).setCellValue(nf.format(record.getTotalBalance()));
+        row.createCell(3).setCellValue(nf.format(record.getTotalBalance()));
+
+    }
+
+    private int writeBalanceDetailData(Sheet sheet, int startWriteRow, List<ShangWeiCard> cards) {
+        Row row;
+        ShangWeiCard card;
+        for (int i = 0; i < cards.size(); i++) {
+            card = cards.get(i);
+            row = sheet.createRow(i + startWriteRow);
+            row.createCell(0).setCellValue(card.getNo());
+            row.createCell(1).setCellValue(card.getType());
+            row.createCell(2).setCellValue(card.getBalance());
+            row.createCell(3).setCellValue(card.getBalance());
+        }
+        return startWriteRow + cards.size();
     }
 
     /**
@@ -183,11 +263,15 @@ public class ShangWeiFileTask {
         }
     }
 
-    private CellStyle centerStyle( Workbook workbook) {
+    private void setCenterStyle(Workbook workbook, Sheet sheet) {
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setWrapText(true);
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
-        return cellStyle;
+        for (int i = 0; i < sheet.getLastRowNum(); i++) {
+            for (int j = 0; j < sheet.getRow(i).getLastCellNum(); j++) {
+                sheet.getRow(i).getCell(j).setCellStyle(cellStyle);
+            }
+        }
     }
 
 }

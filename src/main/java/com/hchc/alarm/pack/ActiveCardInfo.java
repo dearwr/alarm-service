@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Getter
 public class ActiveCardInfo {
 
+    private long hqId;
+
     private String kid;
 
     private String cardId;
