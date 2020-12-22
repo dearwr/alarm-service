@@ -6,6 +6,7 @@ import com.hchc.alarm.enums.PushTypeEm;
 import com.hchc.alarm.model.MallBranchBO;
 import com.hchc.alarm.model.MallServiceBO;
 import com.hchc.alarm.pack.MallConsoleInfo;
+import com.hchc.alarm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
-import static com.hchc.alarm.constant.MallConstant.MARK_NAME_MAP;
 
 /**
  * @author wangrong
@@ -32,15 +32,14 @@ public class BranchMallService {
     public MallConsoleInfo queryMallConsoleInfos() {
         List<MallBranchBO> branchInfos = branchMallDao.queryBranchInfos(null);
         Map<String, List<MallBranchBO>> mallBranches = branchInfos.stream()
-                // 过滤mall不存在的
+                // 过滤displayName不存在的
                 .filter(b -> {
-                    if (MARK_NAME_MAP.get(b.getMallName()) == null) {
-                        log.info("[queryMallConsoleInfos] not find mapping for mall:{}, branchId:{}", b.getMallName(), b.getBranchId());
+                    if (StringUtil.isBlank(b.getDisplayName()) || b.getMallName() == null) {
+                        log.info("[queryMallConsoleInfos] not find displayName for mall:{}, branchId:{}", b.getMallName(), b.getBranchId());
                         return false;
                     }
                     return true;
                 })
-                // 按mark分组
                 .collect(Collectors.groupingBy(MallBranchBO::getMallName));
 
         List<MallServiceBO> malls = new ArrayList<>();
@@ -87,26 +86,27 @@ public class BranchMallService {
     }
 
     private void handleMallBranches(Map<String, List<MallBranchBO>> mallBranches, List<MallServiceBO> malls, List<String> cities) {
+        MallBranchBO mallBranchBO;
         MallServiceBO mallServiceBO;
         String pCode;
         String pName;
         String pType;
+        String city;
         for (String mall : mallBranches.keySet()) {
-            cities.add(MARK_NAME_MAP.get(mall).substring(0, 2));
+            mallBranchBO = mallBranches.get(mall).get(0);
+            city = mallBranchBO.getDisplayName().substring(0, 2);
+            cities.add(city);
             mallServiceBO = new MallServiceBO();
             mallServiceBO.setMall(mall);
-            mallServiceBO.setName(MARK_NAME_MAP.get(mall));
-            mallServiceBO.setCity(MARK_NAME_MAP.get(mall).substring(0, 2));
+            mallServiceBO.setName(mallBranchBO.getDisplayName());
+            mallServiceBO.setCity(city);
             mallServiceBO.setMallBranches(mallBranches.get(mall));
             for (MallBranchBO info : mallBranches.get(mall)) {
                 pCode = info.getType();
                 pName = PushMethodEm.getNameByCode(pCode);
                 if (pName != null) {
                     mallServiceBO.setMethod(pName);
-                    break;
                 }
-            }
-            for (MallBranchBO info : mallBranches.get(mall)) {
                 pType = null;
                 if (info.getUrl() != null) {
                     pType = PushTypeEm.webservice.name();
@@ -117,7 +117,6 @@ public class BranchMallService {
                 }
                 if (pType != null) {
                     mallServiceBO.setType(pType);
-                    break;
                 }
             }
             malls.add(mallServiceBO);

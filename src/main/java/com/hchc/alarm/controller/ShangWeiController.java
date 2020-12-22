@@ -62,7 +62,7 @@ public class ShangWeiController {
             if (shangWeiDao.alreadyActivated(cardInfo)) {
                 return Output.fail("已经激活过了");
             }
-//            shangWeiDao.activeCard(cardInfo);
+            shangWeiDao.activeCard(cardInfo);
             return Output.ok();
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class ShangWeiController {
     public Output importCards(@RequestBody List<MigrateCardInfo> cardInfos) {
         try {
             log.info("[importCards] recv :{}", JSON.toJSONString(cardInfos));
-//            shangWeiDao.importCards(cardInfos);
+            shangWeiDao.importCards(cardInfos);
             return Output.ok();
         } catch (Exception e) {
             e.printStackTrace();

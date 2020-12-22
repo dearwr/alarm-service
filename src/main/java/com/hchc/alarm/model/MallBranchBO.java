@@ -14,6 +14,7 @@ import lombok.Setter;
 public class MallBranchBO extends BranchBO {
 
     private String mallName;
+    private String displayName;
 
     private String url;     // 正式地址
     private String testUrl; // 测试地址

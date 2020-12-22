@@ -1,6 +1,6 @@
 package com.hchc.alarm.controller;
 
-import com.hchc.alarm.constant.RePushMallConstant;
+import com.hchc.alarm.constant.MallConstant;
 import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.model.RePushMallBO;
@@ -48,14 +48,14 @@ public class MallRecordController {
         Date end = DatetimeUtil.dayEnd(date);
         if (hqId == 0 || branchId == 0) {
             List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
-            rePushMallService.pushMallList(rePushMalls, start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+            rePushMallService.pushMallList(rePushMalls, start, end, abbDate, MallConstant.MALL_ORDER_URL);
             return Output.ok();
         } else if (hqId == 1516 && branchId == 4070) {
             RePushMallBO rePushMallBO = new RePushMallBO();
             rePushMallBO.setHqId(hqId);
             rePushMallBO.setBranchId(branchId);
             rePushMallBO.setMallName(mallName);
-            rePushMallService.pushMallTransList(Collections.singletonList(rePushMallBO), start, end, abbDate, RePushMallConstant.MALL_ORDER_URL);
+            rePushMallService.pushMallTransList(Collections.singletonList(rePushMallBO), start, end, abbDate, MallConstant.MALL_ORDER_URL);
             return Output.ok();
         } else {
             List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);
@@ -63,7 +63,7 @@ public class MallRecordController {
                 return Output.ok("no UnPush orderNos");
             }
             PushMall pushMall = new PushMall(hqId, branchId, start, end, orderList);
-            return remoteService.pushOrders(pushMall, RePushMallConstant.MALL_ORDER_URL);
+            return remoteService.pushOrders(pushMall, MallConstant.MALL_ORDER_URL);
         }
     }
 
