@@ -4,7 +4,9 @@ import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.BranchMallService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by wangrong 2020/5/18
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/mallConsole")
 @Slf4j
-public class MallController {
+public class MallConsoleController {
 
     @Autowired
     private BranchMallService branchMallService;

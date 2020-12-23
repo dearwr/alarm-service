@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/kdsConsole")
 @Slf4j
-public class KdsController {
+public class KdsConsoleController {
 
     @Autowired
     private BranchKdsBaseDao branchKdsDao;

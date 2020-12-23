@@ -92,7 +92,7 @@ public class JsonUtils {
         return mapper.createObjectNode();
     }
 
-    public static ArrayNode cretaeArrayNode(){
+    public static ArrayNode createArrayNode(){
         return mapper.createArrayNode();
     }
 }

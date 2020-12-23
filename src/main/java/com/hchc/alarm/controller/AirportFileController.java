@@ -1,19 +1,13 @@
 package com.hchc.alarm.controller;
 
-import com.hchc.alarm.dao.hchc.MallProductCodeDao;
 import com.hchc.alarm.pack.MallResponse;
 import com.hchc.alarm.service.AirportFileService;
-import com.hchc.alarm.util.DatetimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.text.ParseException;
-import java.util.Date;
 
 /**
  * @author wangrong
@@ -25,8 +19,6 @@ public class AirportFileController {
 
     @Autowired
     private AirportFileService airportFileService;
-    @Autowired
-    private MallProductCodeDao mallProductCodeDao;
 
     @PostMapping("/upload")
     public MallResponse fileUpload(MultipartFile sourceFile, int hqId, int branchId) {
@@ -45,29 +37,6 @@ public class AirportFileController {
         } else {
             return MallResponse.fail("不支持解析该文件，请检查文件名");
         }
-    }
-
-    @GetMapping("/deleteRecord")
-    public MallResponse deleteRecord(int hqId, int branchId, String time) {
-        log.info("[deleteRecord] hqId:{}, branchId:{}, time:{}", hqId, branchId, time);
-        Date createTime;
-        try {
-            createTime = DatetimeUtil.parse(time);
-        } catch (ParseException e) {
-            log.info("[deleteRecord] parse timeString error: {}", e.getMessage());
-            return MallResponse.fail(e.getMessage());
-        }
-        mallProductCodeDao.deleteRecord(hqId, branchId, createTime);
-        return MallResponse.ok();
-    }
-
-    @GetMapping("/changeSku")
-    public MallResponse changeSku(int branchId, String code, String sku) {
-        int result = mallProductCodeDao.updateSku(branchId, code, sku);
-        if (result > 0) {
-            return MallResponse.ok();
-        }
-        return MallResponse.fail();
     }
 
 }
