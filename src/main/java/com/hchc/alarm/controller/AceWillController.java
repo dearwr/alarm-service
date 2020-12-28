@@ -19,7 +19,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static com.hchc.alarm.task.AceWillTask.*;
+import static com.hchc.alarm.task.AceWillTask.AceWill_DAY_DONE_URL;
+import static com.hchc.alarm.task.AceWillTask.AceWill_PUSH_URL;
 
 /**
  * @author wangrong
@@ -65,13 +66,13 @@ public class AceWillController {
             log.info("[{}] day->{} start push", methodName, dayText);
             for (String branchId : branchIdList) {
                 try {
-                    syncPack = new SyncDishLossReqPack(hqId, branchId, DatetimeUtil.format(startDate), DatetimeUtil.format(DatetimeUtil.dayEnd(startDate)));
-                    output = restTemplate.postForEntity(AceWill_DISH_LOSS_URL, syncPack, Output.class).getBody();
-                    if (output == null || !"0".equals(output.getCode())) {
-                        log.info("[{}] day->{}, branchId:{} push dishLoss fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
-                    }else {
-                        log.info("[{}] day->{}, branchId:{} push dishLoss success, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
-                    }
+//                    syncPack = new SyncDishLossReqPack(hqId, branchId, DatetimeUtil.format(startDate), DatetimeUtil.format(DatetimeUtil.dayEnd(startDate)));
+//                    output = restTemplate.postForEntity(AceWill_DISH_LOSS_URL, syncPack, Output.class).getBody();
+//                    if (output == null || !"0".equals(output.getCode())) {
+//                        log.info("[{}] day->{}, branchId:{} push dishLoss fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+//                    }else {
+//                        log.info("[{}] day->{}, branchId:{} push dishLoss success, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+//                    }
                     output = restTemplate.getForObject(AceWill_PUSH_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
                     if (output == null || !"0".equals(output.getCode())) {
                         log.info("[{}] day->{}, branchId:{} push order fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));

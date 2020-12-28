@@ -147,23 +147,20 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-//    @Scheduled(cron = "0 12 14 * * ?")
+//    @Scheduled(cron = "0 23 11 * * ?")
 //    public void queryAllCardBalance() {
 //        log.info("schedule start");
-//        String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
-//                "?isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
-//
 //        List<Card> cards = testDao.queryGiftCardBalance();
-//        check(cards);
+//        checkShangWeiCard(cards);
 //        cards = testDao.queryVipCardBalance1();
-//        check(cards);
+//        checkShangWeiCard(cards);
 //        cards = testDao.queryVipCardBalance2();
-//        check(cards);
+//        checkShangWeiCard(cards);
 //
 //        log.info("schedule end");
 //    }
 //
-//    private void check(List<Card> cards) {
+//    private void checkShangWeiCard(List<Card> cards) {
 //        SWResponse response;
 //        String url;
 //        List<Card> problemCards = new ArrayList<>();
@@ -173,17 +170,16 @@ public class TestTask {
 //            url = URL + "&cardNo=" + c.getNo();
 //            response = restTemplate.postForObject(url, null, SWResponse.class);
 //            if (CollectionUtils.isEmpty(response.getBody().getOrCardList())) {
-//                log.info("not find cardNo={} in shangwei system", c.getNo());
+//                log.info("[checkShangWeiCard] not find cardNo={} in shangwei system", c.getNo());
 //                continue;
 //            }
 //            c.setSwBalance(new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon()));
 //            if (c.getFlipBalance().compareTo(c.getSwBalance()) != 0) {
-//                log.info(" {} flip:{}, sw:{}", c.getNo(), c.getFlipBalance(), c.getSwBalance());
 //                problemCards.add(c);
 //            }
 //        }
-//        log.info("checked cards size:{}, totalAmt:{}", cards.size(), totalAmt);
-//        log.info("problemsCards:{}", JsonUtils.toJson(problemCards));
+//        log.info("[checkShangWeiCard] checked cards size:{}, totalAmt:{}", cards.size(), totalAmt);
+//        log.info("[checkShangWeiCard] find problemsCards:{}", JsonUtils.toJson(problemCards));
 //    }
 
 //    @Scheduled(cron = "0 59 20 * * ?")

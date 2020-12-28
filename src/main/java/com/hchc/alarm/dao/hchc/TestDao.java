@@ -140,7 +140,7 @@ public class TestDao extends HcHcBaseDao {
     }
 
     public List<TestTask.Card> queryGiftCardBalance() {
-        String sql = "select f_gift_card_no, f_balance from t_gift_card_balance_status where f_hqid = 3880 and f_abbdate = '20201215'";
+        String sql = "select f_gift_card_no, f_balance from t_gift_card_balance_status where f_hqid = 3880 and f_abbdate = '20201227'";
         List<TestTask.Card> cardBalanceRecords = hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
@@ -155,7 +155,7 @@ public class TestDao extends HcHcBaseDao {
 
     public List<TestTask.Card> queryVipCardBalance1() {
         String sql = "SELECT f_vip_card_no,f_balance from t_vip_card_balance_status " +
-                "where f_hqid = 3880 and f_abbdate = '20201215' and LENGTH(f_vip_card_no) < 12";
+                "where f_hqid = 3880 and f_abbdate = '20201227' and LENGTH(f_vip_card_no) < 12";
         return hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
@@ -166,7 +166,7 @@ public class TestDao extends HcHcBaseDao {
 
     public List<TestTask.Card> queryVipCardBalance2() {
         String sql = "SELECT f_mapping_no,f_balance from t_vip_card_balance_status " +
-                "where f_hqid = 3880 and f_abbdate = '20201215' and LENGTH(f_vip_card_no) > 12";
+                "where f_hqid = 3880 and f_abbdate = '20201227' and LENGTH(f_vip_card_no) > 12";
         return hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
