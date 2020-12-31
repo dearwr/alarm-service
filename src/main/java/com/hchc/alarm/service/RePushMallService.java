@@ -1,6 +1,5 @@
 package com.hchc.alarm.service;
 
-import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.dao.hchc.BranchMallDao;
 import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.PushMall;
@@ -32,7 +31,6 @@ public class RePushMallService {
 
     public List<RePushMallBO> queryValidMalls() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidMalls();
-        log.info("[queryValidMalls] malls => {}", JSON.toJSONString(rePushMalls));
         return rePushMalls.stream().filter(m -> {
             if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName()) || "theplace".equals(m.getMallName()) || "raffles".equals(m.getMallName()) || "airport".equals(m.getMallName())) {  // 特殊商场
                 return false;

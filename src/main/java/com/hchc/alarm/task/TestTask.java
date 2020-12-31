@@ -147,14 +147,15 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-//    @Scheduled(cron = "0 23 11 * * ?")
+//    @Scheduled(cron = "0 20 13 * * ?")
 //    public void queryAllCardBalance() {
 //        log.info("schedule start");
-//        List<Card> cards = testDao.queryGiftCardBalance();
+//        String abbDate = "20201231";
+//        List<Card> cards = testDao.queryGiftCardBalance(abbDate);
 //        checkShangWeiCard(cards);
-//        cards = testDao.queryVipCardBalance1();
+//        cards = testDao.queryVipCardBalance1(abbDate);
 //        checkShangWeiCard(cards);
-//        cards = testDao.queryVipCardBalance2();
+//        cards = testDao.queryVipCardBalance2(abbDate);
 //        checkShangWeiCard(cards);
 //
 //        log.info("schedule end");

@@ -139,40 +139,41 @@ public class TestDao extends HcHcBaseDao {
         return list.get(0);
     }
 
-    public List<TestTask.Card> queryGiftCardBalance() {
-        String sql = "select f_gift_card_no, f_balance from t_gift_card_balance_status where f_hqid = 3880 and f_abbdate = '20201227'";
+    public List<TestTask.Card> queryGiftCardBalance(String abbDate) {
+        String sql = "select f_gift_card_no, f_balance from t_gift_card_balance_status " +
+                "where f_hqid = 3880 and f_abbdate = ? ";
         List<TestTask.Card> cardBalanceRecords = hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
             card.setFlipBalance(rs.getBigDecimal(2));
             return card;
-        });
+        }, abbDate);
         if (CollectionUtils.isEmpty(cardBalanceRecords)) {
             return Collections.emptyList();
         }
         return cardBalanceRecords;
     }
 
-    public List<TestTask.Card> queryVipCardBalance1() {
+    public List<TestTask.Card> queryVipCardBalance1(String abbDate) {
         String sql = "SELECT f_vip_card_no,f_balance from t_vip_card_balance_status " +
-                "where f_hqid = 3880 and f_abbdate = '20201227' and LENGTH(f_vip_card_no) < 12";
+                "where f_hqid = 3880 and f_abbdate = ? and LENGTH(f_vip_card_no) < 12";
         return hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
             card.setFlipBalance(rs.getBigDecimal(2));
             return card;
-        });
+        }, abbDate);
     }
 
-    public List<TestTask.Card> queryVipCardBalance2() {
+    public List<TestTask.Card> queryVipCardBalance2(String abbDate) {
         String sql = "SELECT f_mapping_no,f_balance from t_vip_card_balance_status " +
-                "where f_hqid = 3880 and f_abbdate = '20201227' and LENGTH(f_vip_card_no) > 12";
+                "where f_hqid = 3880 and f_abbdate = ? and LENGTH(f_vip_card_no) > 12";
         return hJdbcTemplate.query(sql, (rs, i) -> {
             TestTask.Card card = new TestTask.Card();
             card.setNo(rs.getString(1));
             card.setFlipBalance(rs.getBigDecimal(2));
             return card;
-        });
+        }, abbDate);
     }
 
     public void updateProblemCard(List<TestTask.Card> card) {
@@ -396,7 +397,7 @@ public class TestDao extends HcHcBaseDao {
             businessHours += minute;
         }
         businessHours += ":";
-        long second = time % (60 * 60) % 60 ;
+        long second = time % (60 * 60) % 60;
         if (second == 0) {
             businessHours += "00";
         } else if (second < 10) {

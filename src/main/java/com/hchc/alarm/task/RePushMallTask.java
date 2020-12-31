@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wangrong
@@ -42,6 +43,20 @@ public class RePushMallTask {
     @Scheduled(cron = "0 0 9,10,11,14,15,16,21,22,23 * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
+        Date start = DatetimeUtil.dayBegin(new Date());
+        String abbDate = DatetimeUtil.dayText(start);
+        rePushMallService.pushMallList(rePushMalls, start, new Date(), abbDate, MallConstant.MALL_ORDER_URL);
+    }
+
+    /**
+     * Peets需要实时推的商场
+     */
+    @Scheduled(cron = "0 */3 * * * ? ")
+    public void pushImmediateMalls() {
+        List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
+        rePushMalls = rePushMalls.stream()
+                .filter(m -> m.getBranchId() == 6686)
+                .collect(Collectors.toList());
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);
         rePushMallService.pushMallList(rePushMalls, start, new Date(), abbDate, MallConstant.MALL_ORDER_URL);
