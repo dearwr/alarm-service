@@ -51,8 +51,8 @@ public class AceWillController {
 
     @GetMapping("pushData")
     public String pushData(long hqId, String branches, String startDay, String endDay) throws ParseException {
-        String methodName = "rePushAndDone";
-        log.info("[{}] recv param hqId:{}, branches:{}, startDay:{}, endDay:{}", methodName, hqId, branches, startDay, endDay);
+        String methodName = "pushData";
+        log.info("[{}] recv param {} {} {} {}", methodName, hqId, branches, startDay, endDay);
         List<String> branchIdList = Arrays.asList(branches.split(","));
         String pattern = "yyyyMMdd";
         Date startDate = DatetimeUtil.parse(startDay, pattern);
@@ -68,26 +68,26 @@ public class AceWillController {
                     syncPack = new SyncDishLossReqPack(hqId, branchId, DatetimeUtil.format(startDate), DatetimeUtil.format(DatetimeUtil.dayEnd(startDate)));
                     output = restTemplate.postForEntity(AceWill_DISH_LOSS_URL, syncPack, Output.class).getBody();
                     if (output == null || !"0".equals(output.getCode())) {
-                        log.info("[{}] day->{}, branchId:{} push dishLoss fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        log.info("[{}] day->{}, {} push dishLoss fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
                     }else {
-                        log.info("[{}] day->{}, branchId:{} push dishLoss success, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        log.info("[{}] day->{}, {} push dishLoss success, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
                     }
                     output = restTemplate.getForObject(AceWill_PUSH_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
                     if (output == null || !"0".equals(output.getCode())) {
-                        log.info("[{}] day->{}, branchId:{} push order fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        log.info("[{}] day->{}, {} push order fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
                         return "day->" + dayText + ", branchId:" + branchId + " push order fail, result:" + JSON.toJSONString(output);
                     }else {
-                        log.info("[{}] day->{}, branchId:{} push order success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
+                        log.info("[{}] day->{}, {} push order success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
                     }
                     output = restTemplate.getForObject(AceWill_DAY_DONE_URL, Output.class, hqId, branchId, DatetimeUtil.format(startDate));
                     if (output == null || !"0".equals(output.getCode())) {
-                        log.info("[{}] day->{}, branchId:{} push day done fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
+                        log.info("[{}] day->{}, {} push day done fail, result:{}", methodName, dayText, branchId, JSON.toJSONString(output));
 //                        return "day->" + dayText + ", branchId:" + branchId + " push day done fail, result:" + JSON.toJSONString(output);
                     }else {
-                        log.info("[{}] day->{}, branchId:{} push day done success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
+                        log.info("[{}] day->{}, {} push day done success, result:{}", methodName, dayText, branchId, JSON.toJSON(output));
                     }
                 } catch (Exception e) {
-                    log.info("[{}] day->{}, branchId:{} push fail, error:{}", methodName, dayText, branchId, e.getMessage());
+                    log.info("[{}] day->{}, {} push fail, error:{}", methodName, dayText, branchId, e.getMessage());
                     return "day->" + dayText + ", branchId:" + branchId + ", push happen error:" + e.getMessage();
                 }
             }

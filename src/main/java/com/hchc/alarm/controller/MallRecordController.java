@@ -39,7 +39,7 @@ public class MallRecordController {
 
     @GetMapping("/pushUnSuccess")
     public Output pushUnSuccess(long hqId, long branchId, String mallName, String abbDate) throws ParseException {
-        log.info("[pushUnSuccess] recv hqId:{}, branchId:{}, mallName:{}, abbDate:{}", hqId, branchId, mallName, abbDate);
+        log.info("[pushUnSuccess] recv param {} {} {} {}", hqId, branchId, mallName, abbDate);
         if (StringUtils.isEmpty(mallName) || StringUtils.isEmpty(abbDate)) {
             return Output.fail("param exit empty");
         }

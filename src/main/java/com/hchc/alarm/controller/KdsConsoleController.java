@@ -57,7 +57,7 @@ public class KdsConsoleController {
                     kdsConsoleInfo.setOpenState("开启");
                 }else {
                     kdsConsoleInfo.setWxCount(0);
-                    kdsConsoleInfo.setOpenState("禁用");
+                    kdsConsoleInfo.setOpenState("关闭");
                 }
                 kdsConsoleInfo.setUuid(kds.getUuid());
                 branchBO = branchDao.query(kds.getHqId(), kds.getBranchId());

@@ -7,7 +7,10 @@ import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.service.MallCheckService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 
@@ -33,7 +36,7 @@ public class MallCheckController {
 
     @PostMapping("/queryCheckInfos")
     public Output queryCheckInfos(int hqId, int branchId, String year, String month) {
-        log.info("[queryCheckInfos] param hqId:{}, branchId:{}, year:{}, month:{}", hqId, branchId, year, month);
+        log.info("[queryCheckInfos] recv param {} {} {} {}", hqId, branchId, year, month);
         BranchCheckBO checkBO = new BranchCheckBO();
         checkBO.setHqId(hqId);
         checkBO.setBranchId(branchId);
