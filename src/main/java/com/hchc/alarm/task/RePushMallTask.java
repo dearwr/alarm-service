@@ -27,7 +27,7 @@ public class RePushMallTask {
     /**
      * 晚上定时补传
      */
-    @Scheduled(cron = " 0 25 3,5  * * ? ")
+    @Scheduled(cron = " 0 25 1,2,3,4,5  * * ? ")
     public void rePushOnNight() {
         log.info("[rePushOnNight] start");
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
@@ -40,7 +40,7 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 0 9,10,11,14,15,16,21,22,23 * * ? ")
+    @Scheduled(cron = "0 */20 * * * ? ")
     public void rePushOnDay() {
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date start = DatetimeUtil.dayBegin(new Date());
@@ -51,7 +51,7 @@ public class RePushMallTask {
     /**
      * Peets需要实时推的商场
      */
-    @Scheduled(cron = "0 */3 * * * ? ")
+    @Scheduled(cron = "*/30 * * * * ? ")
     public void pushImmediateMalls() {
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         rePushMalls = rePushMalls.stream()

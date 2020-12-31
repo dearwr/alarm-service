@@ -22,13 +22,13 @@ public class AmazonPushTask {
     @Autowired
     private RestTemplate restTemplate;
 
-//    private final String PUSH_DATA_URL = "http://120.78.232.8:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
-    private final String PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
+    private final String PUSH_DATA_URL = "http://120.78.232.8:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
+//    private final String PUSH_DATA_URL = "http://47.112.150.247:9503/amazon/schedule/pushAllData/{1}?branchIds={2}&start={3}&end={4}";
 
     // amazon品牌号
     private final String AMAZON_HQID = "2382";
     //  门店
-    private Integer[] branchIds = new Integer[]{3127, 4971};
+    private Integer[] branchIds = new Integer[]{3127, 4971, 6774};
 
     @Scheduled(cron = " 0 45 1 * * ? ")
     public void pushData() {

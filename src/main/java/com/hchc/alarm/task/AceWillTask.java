@@ -45,7 +45,7 @@ public class AceWillTask {
     @Scheduled(cron = "0 20 1 * * ?")
     public void zhuYe() throws ParseException {
         long hqId = 3558L;
-        String branches = "5376,5377,5378,5379,5380,5381,5382,5383,5384,5385,5386,5387";
+        String branches = "5376,5377,5378,5379,5380,5381,5382,5383,5384,5385,5386,5387,6875";
         String hqName = "zhuye";
         String startDay = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
         String endDay = startDay;

@@ -32,7 +32,8 @@ public class RePushMallService {
     public List<RePushMallBO> queryValidMalls() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidMalls();
         return rePushMalls.stream().filter(m -> {
-            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName()) || "theplace".equals(m.getMallName()) || "raffles".equals(m.getMallName()) || "airport".equals(m.getMallName())) {  // 特殊商场
+            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())
+                    || "theplace".equals(m.getMallName()) || "raffles".equals(m.getMallName()) || "airport".equals(m.getMallName())) {  // 特殊商场
                 return false;
             } else if (m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
                 return false;
