@@ -11,8 +11,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
 
 /**
  * @author wangrong
@@ -30,7 +32,7 @@ public class MallCheckService {
     public List<CheckOrderBO> saveFile(BranchCheckBO branchCheckBO, List<CheckOrderBO> failOrders) {
         File recordFile = getRecordFile(branchCheckBO);
         if (recordFile == null) {
-            log.info("[checkDataAndSaveToFile] 获取记录文件失败");
+            log.info("[saveFile] 获取记录文件失败");
             return failOrders;
         }
         // 写并保存记录文件
@@ -66,7 +68,7 @@ public class MallCheckService {
             workbook.close();
         } catch (Exception e) {
             e.printStackTrace();
-            log.info("[checkDataAndSaveToFile]保存数据失败 file:{}, reason:{}", recordFile.getAbsolutePath(), e.getMessage());
+            log.info("[saveFile]保存数据失败 file:{}, reason:{}", recordFile.getAbsolutePath(), e.getMessage());
             return failOrders;
         }
         return failOrders;

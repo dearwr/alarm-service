@@ -22,7 +22,7 @@ public class SyncMenuTask {
     private final String PUSH_DATA_URL = "https://togo.51hchc.com/menu/allBranch/sync/3880";
 
     @Scheduled(cron = " 0 35 7,8,9,10,11,12,13,14,15,16,17,18,19,20,21 * * ? ")
-    public void syncMenu() {
+    public void syncWagasMenu() {
         log.info("##################### Sync menu task ########################");
         log.info("[Sync menu] start");
         Output result = restTemplate.getForObject(PUSH_DATA_URL, Output.class);
