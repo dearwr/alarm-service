@@ -3,6 +3,7 @@ package com.hchc.alarm.service;
 import com.hchc.alarm.dao.hchc.MergeDao;
 import com.hchc.alarm.dao.hchc.ShangWeiDao;
 import com.hchc.alarm.entity.Product;
+import com.hchc.alarm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -13,6 +14,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -35,6 +38,8 @@ public class FileService {
     private MergeDao mergeDao;
     @Autowired
     private ShangWeiDao shangWeiDao;
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<String> parse(MultipartFile file, int hqId) throws IOException {
         Workbook workbook = null;
@@ -297,14 +302,31 @@ public class FileService {
     }
 
     public List<String> fillTogoSku() {
+        Set<Product> productMapping = new HashSet<>();
+        List<Product> codeMappings = mergeDao.queryProductMapping();
+        if (!StringUtils.isEmpty(codeMappings)) {
+            productMapping.addAll(codeMappings);
+        }
+        String fetchSkuUrl = "http://120.78.232.8:9500/sync/sku?hqId=3880";
+        String result = restTemplate.getForObject(fetchSkuUrl, String.class);
+        String[] products = result.split("\n");
+        String[] unions;
+        for (String p : products) {
+            log.info(p);
+            unions = p.split("\t");
+            for (int i = 0; i < unions.length; i++) {
+                if (StringUtil.isNotBlank(unions[0])) {
+                    productMapping.add(new Product(unions[1], unions[0]));
+                }
+            }
+        }
         List<Product> noCodeProducts = mergeDao.queryNoCodeProducts();
         if (CollectionUtils.isEmpty(noCodeProducts)) {
             return null;
         }
-        List<Product> productMapping = mergeDao.queryProductMapping();
         for (Product np : noCodeProducts) {
             for (Product mp : productMapping) {
-                if (np.getName().contains(mp.getName())) {
+                if (np.getName().contains(mp.getName()) || mp.getName().contains(np.getName())) {
                     mergeDao.updateWaiMaiCode(np.getName(), mp.getCode());
                     break;
                 }
