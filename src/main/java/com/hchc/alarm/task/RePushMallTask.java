@@ -42,10 +42,11 @@ public class RePushMallTask {
      */
     @Scheduled(cron = "0 */20 * * * ? ")
     public void rePushOnDay() {
+
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);
-        rePushMallService.pushMallList(rePushMalls, start, new Date(), abbDate, MallConstant.MALL_ORDER_URL);
+        rePushMallService.pushMallList(rePushMalls, start, DatetimeUtil.addMinute(new Date(), -1), abbDate, MallConstant.MALL_ORDER_URL);
     }
 
     /**

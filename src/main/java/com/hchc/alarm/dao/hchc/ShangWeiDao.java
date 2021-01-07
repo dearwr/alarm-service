@@ -215,8 +215,8 @@ public class ShangWeiDao extends HcHcBaseDao {
         if (queryIsGiveCard(cardInfo)) {
             return;
         }
-        sql = "insert into t_shangwei_prepaid_new_card(f_hqid, f_number, f_card_id, f_createtime) " +
-                "values (?,?,?,now()) ";
-        hJdbcTemplate.update(sql, cardInfo.getHqId(), cardInfo.getKid(), cardInfo.getCardId());
+        sql = "insert into t_shangwei_prepaid_new_card(f_hqid, f_number, f_card_id, f_createtime, f_balance) " +
+                "values (?,?,?,now(),?) ";
+        hJdbcTemplate.update(sql, cardInfo.getHqId(), cardInfo.getKid(), cardInfo.getCardId(), cardInfo.getBalance());
     }
 }
