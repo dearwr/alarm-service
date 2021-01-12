@@ -155,18 +155,18 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-    @Scheduled(cron = "0 15 9 * * ?")
-    public void queryAllCardBalance() {
-        log.info("schedule start");
+    @Scheduled(cron = "0 25 11 * * ?")
+    public void checkCardBalance() {
+        log.info(" checkCardBalance schedule start");
         String abbDate = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
-        List<Card> cards = testDao.queryGiftCardBalance(abbDate);
-        checkShangWeiCard(cards);
-        cards = testDao.queryVipCardBalance1(abbDate);
-        checkShangWeiCard(cards);
-        cards = testDao.queryVipCardBalance2(abbDate);
+//        List<Card> cards = testDao.queryGiftCardBalance(abbDate);
+//        checkShangWeiCard(cards);
+//        cards = testDao.queryVipCardBalance1(abbDate);
+//        checkShangWeiCard(cards);
+        List<Card> cards = testDao.queryVipCardBalance2(abbDate);
         checkShangWeiCard(cards);
 
-        log.info("schedule end");
+        log.info("checkCardBalance schedule end");
     }
 
     private void checkShangWeiCard(List<Card> cards) {
