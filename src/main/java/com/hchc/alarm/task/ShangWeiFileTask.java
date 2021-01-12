@@ -30,7 +30,7 @@ public class ShangWeiFileTask {
     @Autowired
     private ShangWeiDao shangWeiDao;
 
-    @Scheduled(cron = "0 5 7 * * ?")
+    @Scheduled(cron = "0 10 8 * * ?")
     public void createFile() {
         log.info("********* start create shangwei file *************");
         long hqId = 3880;
@@ -43,7 +43,7 @@ public class ShangWeiFileTask {
         log.info("********* end create shangwei file *************");
     }
 
-    private File createReportFile(long hqId, Date date) {
+    private void createReportFile(long hqId, Date date) {
         String fileName = "截止" + DatetimeUtil.dayText(date) + "零点预付卡数据上报.xlsx";
         File file = FileUtils.getFile("/data", "share", "prepaid", "shangwei", String.valueOf(hqId), "report", fileName);
         try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -61,7 +61,6 @@ public class ShangWeiFileTask {
             e.printStackTrace();
             deleteFile(file);
         }
-        return file;
     }
 
     private void createReportSheet(Workbook workbook, String sheetName, long hqId, String date) {
@@ -162,7 +161,7 @@ public class ShangWeiFileTask {
         return startIndex + cards.size() - 1;
     }
 
-    private File createBalanceDetailFile(long hqId, Date date) {
+    private void createBalanceDetailFile(long hqId, Date date) {
         String fileName = "截止" + DatetimeUtil.dayText(date) + "零点预付卡余额明细表.xlsx";
         File file = FileUtils.getFile("/data", "share", "prepaid", "shangwei", String.valueOf(hqId), "report", fileName);
         try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -177,7 +176,6 @@ public class ShangWeiFileTask {
             e.printStackTrace();
             deleteFile(file);
         }
-        return file;
     }
 
     private void createBalanceDetailSheet(Workbook workbook, String sheetName, long hqId, String dayText) throws ParseException {

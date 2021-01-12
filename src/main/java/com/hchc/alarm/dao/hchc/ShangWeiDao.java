@@ -60,7 +60,6 @@ public class ShangWeiDao extends HcHcBaseDao {
     }
 
     public List<ShangWeiCard> queryNewVipCards(long hqId, String date) {
-        log.info("queryNewGiftCards hqId:{},date:{}", hqId, date);
         String sql = "select f_cardno from t_shangwei_prepaid_vipcard where f_hqid = ? and date(f_createtime) = ?";
         List<ShangWeiCard> cards = hJdbcTemplate.query(sql, (r, i) -> {
             ShangWeiCard card = new ShangWeiCard();

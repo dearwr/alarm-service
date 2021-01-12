@@ -311,12 +311,17 @@ public class FileService {
         String result = restTemplate.getForObject(fetchSkuUrl, String.class);
         String[] products = result.split("\n");
         String[] unions;
+        String name;
         for (String p : products) {
             log.info(p);
             unions = p.split("\t");
             for (int i = 0; i < unions.length; i++) {
                 if (StringUtil.isNotBlank(unions[0])) {
-                    productMapping.add(new Product(unions[1], unions[0]));
+                    name = unions[1];
+                    if (unions[1].contains("[")) {
+                        name = unions[1].substring(0, unions[1].indexOf("["));
+                    }
+                    productMapping.add(new Product(name, unions[0]));
                 }
             }
         }
