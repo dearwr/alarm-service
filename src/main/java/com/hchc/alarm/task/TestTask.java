@@ -1,24 +1,16 @@
 package com.hchc.alarm.task;
 
 import com.hchc.alarm.dao.hchc.TestDao;
-import com.hchc.alarm.pack.SWResponse;
-import com.hchc.alarm.util.DatetimeUtil;
-import com.hchc.alarm.util.JsonUtils;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author wangrong
@@ -155,41 +147,45 @@ public class TestTask {
 //        log.info("schedule end");
 //    }
 
-    @Scheduled(cron = "0 25 9 * * ?")
-    public void checkCardBalance() {
-        log.info(" checkCardBalance schedule start");
-        String abbDate = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
-        List<Card> cards = testDao.queryGiftCardBalance(abbDate);
-        checkShangWeiCard(cards);
-        cards = testDao.queryVipCardBalance1(abbDate);
-        checkShangWeiCard(cards);
-        cards = testDao.queryVipCardBalance2(abbDate);
-        checkShangWeiCard(cards);
-
-        log.info("checkCardBalance schedule end");
-    }
-
-    private void checkShangWeiCard(List<Card> cards) {
-        SWResponse response;
-        String url;
-        List<Card> problemCards = new ArrayList<>();
-        BigDecimal totalAmt = BigDecimal.ZERO;
-        for (Card c : cards) {
-            totalAmt = totalAmt.add(c.getFlipBalance());
-            url = URL + "&cardNo=" + c.getNo();
-            response = restTemplate.postForObject(url, null, SWResponse.class);
-            if (CollectionUtils.isEmpty(response.getBody().getOrCardList())) {
-                log.info("[checkShangWeiCard] not find cardNo={} in shangwei system", c.getNo());
-                continue;
-            }
-            c.setSwBalance(new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon()));
-            if (c.getFlipBalance().compareTo(c.getSwBalance()) != 0) {
-                problemCards.add(c);
-            }
-        }
-        log.info("[checkShangWeiCard] checked cards size:{}, totalAmt:{}", cards.size(), totalAmt);
-        log.info("[checkShangWeiCard] find problemsCards:{}", JsonUtils.toJson(problemCards));
-    }
+//    @Scheduled(cron = "0 40 15 * * ?")
+//    public void checkCardBalance() {
+//        log.info(" checkCardBalance schedule start");
+//        String abbDate = DatetimeUtil.dayText(DatetimeUtil.addDay(new Date(), -1));
+//        List<Card> cards = testDao.queryGiftCardBalance(abbDate);
+//        checkShangWeiCard(cards);
+//        cards = testDao.queryVipCardBalance1(abbDate);
+//        checkShangWeiCard(cards);
+//        cards = testDao.queryVipCardBalance2(abbDate);
+//        checkShangWeiCard(cards);
+//        log.info("checkCardBalance schedule end");
+//    }
+//
+//    private void checkShangWeiCard(List<Card> cards) {
+//        SWResponse response;
+//        String url;
+//        List<Card> problemCards = new ArrayList<>();
+//        BigDecimal totalAmt = BigDecimal.ZERO;
+//        try {
+//            for (Card c : cards) {
+//                totalAmt = totalAmt.add(c.getFlipBalance());
+//                url = URL + "&cardNo=" + c.getNo();
+//                response = restTemplate.postForObject(url, null, SWResponse.class);
+//                if (CollectionUtils.isEmpty(response.getBody().getOrCardList())) {
+//                    log.info("[checkShangWeiCard] not find cardNo={} in shangwei system", c.getNo());
+//                    continue;
+//                }
+//                c.setSwBalance(new BigDecimal(response.getBody().getOrCardList().get(0).getCardMon()));
+//                if (c.getFlipBalance().compareTo(c.getSwBalance()) != 0) {
+//                    problemCards.add(c);
+//                }
+//            }
+//            log.info("[checkShangWeiCard] checked cards size:{}, totalAmt:{}", cards.size(), totalAmt);
+//            log.info("[checkShangWeiCard] find problemsCards:{}", JsonUtils.toJson(problemCards));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            log.info("[checkShangWeiCard] happen error:{}", e.getMessage());
+//        }
+//    }
 
 //    @Scheduled(cron = "0 59 20 * * ?")
 //    public void scientist() throws ParseException {

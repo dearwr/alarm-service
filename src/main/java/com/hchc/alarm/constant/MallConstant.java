@@ -7,7 +7,9 @@ import java.text.Collator;
  */
 public class MallConstant {
 
-    public static final String MALL_ORDER_URL = "http://47.115.30.87:9501/pushOrderToMall/pushToTestMall";
+//    public static final String MALL_ORDER_URL = "http://47.115.30.87:9501/pushOrderToMall/pushToTestMall";
+        public static final String MALL_ORDER_URL = "http://120.25.75.153:9501/pushOrderToMall/pushToTestMall";
+
 
     /**
      * 中文比较器
