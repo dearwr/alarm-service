@@ -32,7 +32,7 @@ public class RemoteService {
 
     public Output pushOrders(PushMall pushMall, String url) {
         Output output = restTemplate.postForEntity(url, pushMall, Output.class).getBody();
-        log.info("[pushOrders] res :{}", JSON.toJSONString(output));
+        log.info("[pushOrders] recv result :{}", JSON.toJSONString(output));
         return output;
     }
 

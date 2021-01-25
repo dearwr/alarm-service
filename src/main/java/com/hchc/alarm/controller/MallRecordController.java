@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -50,14 +49,14 @@ public class MallRecordController {
             List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
             rePushMallService.pushMallList(rePushMalls, start, end, abbDate, MallConstant.MALL_ORDER_URL);
             return Output.ok();
-        } else if (hqId == 1516 && branchId == 4070) {
+        } /*else if (hqId == 1516 && branchId == 4070) {
             RePushMallBO rePushMallBO = new RePushMallBO();
             rePushMallBO.setHqId(hqId);
             rePushMallBO.setBranchId(branchId);
             rePushMallBO.setMallName(mallName);
             rePushMallService.pushMallTransList(Collections.singletonList(rePushMallBO), start, end, abbDate, MallConstant.MALL_ORDER_URL);
             return Output.ok();
-        } else {
+        }*/ else {
             List<String> orderList = mallRecordDao.queryAllUnPushOrderNo(hqId, branchId, start, end, abbDate, mallName);
             if (CollectionUtils.isEmpty(orderList)) {
                 return Output.ok("no UnPush orderNos");
