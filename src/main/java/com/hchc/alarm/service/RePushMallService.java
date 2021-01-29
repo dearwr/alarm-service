@@ -5,10 +5,14 @@ import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.model.RePushMallBO;
 import com.hchc.alarm.pack.Output;
+import com.hchc.alarm.util.JsonUtils;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +33,27 @@ public class RePushMallService {
     @Autowired
     private RemoteService remoteService;
 
+    /**
+     * 接口上传异常的门店
+     */
+    public static List<Long> ERR_BRANCH = new ArrayList<>();
+    static {
+        ERR_BRANCH.add(5837L);
+    }
+
     public List<RePushMallBO> queryValidMalls() {
         List<RePushMallBO> rePushMalls = branchMallDao.queryValidMalls();
         return rePushMalls.stream().filter(m -> {
-            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) || "marzano".equals(m.getMallName())
-                    || "theplace".equals(m.getMallName()) || "raffles".equals(m.getMallName()) || "airport".equals(m.getMallName()) || "spk".equals(m.getMallName())) {  // 特殊商场
+            // 特殊商场
+            if ("peets".equals(m.getMallName()) || "seesaw".equals(m.getMallName()) ||
+                    "marzano".equals(m.getMallName()) || "wdt".equals(m.getMallName()) ||
+                    "theplace".equals(m.getMallName()) || "raffles".equals(m.getMallName()) ||
+                    "airport".equals(m.getMallName()) || "spk".equals(m.getMallName()) ||
+                    "wanxiangcheng".equals(m.getMallName())) {
                 return false;
             } else if (m.getBranchId() == 2177L || m.getBranchId() == 3441L) { // 内网、九龙仓
+                return false;
+            } else if (ERR_BRANCH.contains(m.getBranchId())) {
                 return false;
             } else {
                 return true;
@@ -103,5 +121,21 @@ public class RePushMallService {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        TestMall mall = new TestMall();
+        mall.setMalls(list.stream().map(l -> {
+            PushMall m = new PushMall();
+            m.setOrderList(Collections.singletonList(l));
+            return m;
+        }).collect(Collectors.toList()));
+        System.out.println(JsonUtils.toJson(mall));
+    }
+
+    @Data
+    static class TestMall{
+        List<PushMall> malls;
     }
 }

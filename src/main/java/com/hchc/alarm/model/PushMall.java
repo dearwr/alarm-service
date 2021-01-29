@@ -29,4 +29,8 @@ public class PushMall {
         this.endTime = end;
         this.orderList = orderList;
     }
+
+    public PushMall() {
+
+    }
 }
