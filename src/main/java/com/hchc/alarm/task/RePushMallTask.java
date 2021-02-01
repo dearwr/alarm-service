@@ -40,7 +40,7 @@ public class RePushMallTask {
     /**
      * 白天补传
      */
-    @Scheduled(cron = "0 */20 * * * ? ")
+    @Scheduled(cron = "0 */10 * * * ? ")
     public void rePushOnDay() {
 
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();

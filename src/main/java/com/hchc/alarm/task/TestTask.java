@@ -57,7 +57,7 @@ public class TestTask {
     /**
      * 校验商委卡余额
      */
-    @Scheduled(cron = "0 30 15 * * ?")
+    @Scheduled(cron = "0 20 10 * * ?")
     public void checkShangWeiBalance() {
         execCheckShangWeiBalance();
     }
