@@ -74,26 +74,26 @@ public class ShangWeiController {
 
 
     @PostMapping("activeCard/batch")
-    public Output batchActiveCard(@RequestBody List<ActiveCardInfo> cardInfos) {
-        log.info("[batchActiveCard] recv :{}", JSON.toJSONString(cardInfos));
+    public Output batchActiveCard(@RequestBody List<ActiveCardInfo> cardInfo) {
+        log.info("[batchActiveCard] recv :{}", JSON.toJSONString(cardInfo));
         String cardId = null;
         try {
-            for (ActiveCardInfo cardInfo : cardInfos) {
-                cardId = cardInfo.getCardId();
-                if (StringUtil.isBlank(cardInfo.getCardId()) || StringUtil.isBlank(cardInfo.getKid())) {
+            for (ActiveCardInfo ci : cardInfo) {
+                cardId = ci.getCardId();
+                if (StringUtil.isBlank(ci.getCardId()) || StringUtil.isBlank(ci.getKid())) {
                     return Output.fail(cardId + " 卡号和映射的卡号不能为空");
                 }
-                if (cardInfo.getBalance() == null) {
+                if (ci.getBalance() == null) {
                     return Output.fail(cardId + " 金额不能为空");
                 }
-                if (cardInfo.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+                if (ci.getBalance().compareTo(BigDecimal.ZERO) < 0) {
                     return Output.fail(cardId + " 余额不能小于0");
                 }
-                if (shangWeiDao.alreadyActivated(cardInfo)) {
+                if (shangWeiDao.alreadyActivated(ci)) {
                     log.info(cardId + "已经激活过了");
                     continue;
                 }
-                shangWeiDao.activeCard(cardInfo);
+                shangWeiDao.activeCard(ci);
             }
             return Output.ok();
         } catch (Exception e) {

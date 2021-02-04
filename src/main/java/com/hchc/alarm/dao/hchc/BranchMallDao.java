@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.model.MallBranchBO;
 import com.hchc.alarm.model.RePushMallBO;
+import com.hchc.alarm.model.TBranchMall;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +38,27 @@ public class BranchMallDao extends HcHcBaseDao {
             sql += " and f_type in ('" + typeStr + "')";
         }
         return hJdbcTemplate.query(sql, this::queryMapping);
+    }
+
+    public List<TBranchMall> query(String mallName) {
+        String sql = "SELECT * FROM t_branch_mall WHERE f_mall = ? AND f_enable = TRUE ";
+        List<TBranchMall> tBranchMalls = hJdbcTemplate.query(sql, (set, num) -> map(set), mallName);
+        if (CollectionUtils.isEmpty(tBranchMalls)) {
+            return null;
+        }
+        return tBranchMalls;
+    }
+
+    public TBranchMall map(ResultSet set) throws SQLException {
+        TBranchMall branchMall = new TBranchMall();
+        branchMall.setId(set.getLong("f_id"));
+        branchMall.setHqId(set.getLong("f_hqid"));
+        branchMall.setBranchId(set.getLong("f_branchid"));
+        branchMall.setType(set.getString("f_type"));
+        branchMall.setMall(set.getString("f_mall"));
+        branchMall.setEnable(set.getBoolean("f_enable"));
+        branchMall.setConfig(set.getString("f_config"));
+        return branchMall;
     }
 
     private RePushMallBO mapping(ResultSet rs, int num) throws SQLException {

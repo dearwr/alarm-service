@@ -1,6 +1,8 @@
 package com.hchc.alarm.task;
 
+import com.hchc.alarm.dao.hchc.BranchMallDao;
 import com.hchc.alarm.dao.hchc.TestDao;
+import com.hchc.alarm.model.TBranchMall;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.SWResponse;
 import com.hchc.alarm.util.DatetimeUtil;
@@ -28,6 +30,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wangrong
@@ -43,7 +46,23 @@ public class TestTask {
     @Autowired
     private TestDao testDao;
     @Autowired
+    private BranchMallDao branchMallDao;
+    @Autowired
     private RestTemplate restTemplate;
+
+    /**
+     * 之前传wdt，改传 HARMAY ERP的地址
+     */
+    private final String HARMAY_ORDER_PUSH_URL = "http://120.78.232.8:9897/harmay/sync/orderPush/";
+    private static final List<Long> TO_HARMAY_BRANCHES = new ArrayList<>();
+
+    static {
+        /*introlemons*/
+        TO_HARMAY_BRANCHES.add(6509L);
+        /*马里昂巴*/
+        TO_HARMAY_BRANCHES.add(6708L);
+    }
+
 
     /**
      * 更新wagas蜂鸟门店名
@@ -71,6 +90,7 @@ public class TestTask {
 //        execQueryWagasERPNoSkuItems(3880,"20210125");
 //    }
 
+
     /**
      * 查询配送平台骑手接单时间
      */
@@ -79,6 +99,29 @@ public class TestTask {
 //        execQueryDeliveryTime();
 //    }
 
+
+//    @Scheduled(cron = "0 */5 * * * ?")
+//    public void syncOrdersToHarMay() {
+//        log.info("[syncOrdersToHarMay] start");
+//        execSyncOrdersToHarMay();
+//        log.info("[syncOrdersToHarMay] end");
+//    }
+
+    private void execSyncOrdersToHarMay() {
+        List<TBranchMall> branchMalls = branchMallDao.query("wdt");
+        if (CollectionUtils.isEmpty(branchMalls)) {
+            log.info("No merchant was found that required order push");
+            return;
+        }
+        branchMalls = branchMalls.stream().filter(m -> TO_HARMAY_BRANCHES.contains(m.getBranchId())).collect(Collectors.toList());
+        String pushDay = DatetimeUtil.format(new Date());
+        branchMalls.forEach(tBranchMall -> {
+            String orderPushUrl = HARMAY_ORDER_PUSH_URL + tBranchMall.getHqId() + "/" + tBranchMall.getBranchId() +
+                    "?start=" + pushDay + "&end=" + pushDay;
+            Output resPack = restTemplate.getForObject(orderPushUrl, Output.class);
+            log.info("url: {}, 订单推送返回结果：{}", orderPushUrl, JsonUtils.toJson(resPack));
+        });
+    }
 
 
     private void execUpdateWagasFengNiaoShopName(long hqId) {
