@@ -194,10 +194,16 @@ public class ShangWeiDao extends HcHcBaseDao {
         return !CollectionUtils.isEmpty(idList);
     }
 
-    public boolean alreadyActivated(ActiveCardInfo cardInfo) {
-        String sql = "select id from t_vip_card where hq_id = ? and `number` = ? and `status` = 'ACTIVE' ";
-        List<Long> idList = hJdbcTemplate.query(sql, (r, i) -> r.getLong(1), cardInfo.getHqId(), cardInfo.getKid());
-        return !CollectionUtils.isEmpty(idList);
+    public String checkCardIsActive(ActiveCardInfo cardInfo) {
+        String sql = "select `status` from t_vip_card where hq_id = ? and `number` = ?";
+        List<String> statusList = hJdbcTemplate.query(sql, (r, i) -> r.getString(1), cardInfo.getHqId(), cardInfo.getKid());
+        if (CollectionUtils.isEmpty(statusList)) {
+            return "不存在该卡";
+        }
+        if ("ACTIVE".equals(statusList.get(0))) {
+            return "卡已经是激活状态";
+        }
+        return null;
     }
 
     public boolean queryIsGiveCard(ActiveCardInfo cardInfo) {
