@@ -5,14 +5,11 @@ import com.hchc.alarm.dao.hchc.MallRecordDao;
 import com.hchc.alarm.model.PushMall;
 import com.hchc.alarm.model.RePushMallBO;
 import com.hchc.alarm.pack.Output;
-import com.hchc.alarm.util.JsonUtils;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +36,8 @@ public class RePushMallService {
     public static List<Long> ERR_BRANCH = new ArrayList<>();
     static {
         ERR_BRANCH.add(5837L);
+        ERR_BRANCH.add(5768L);
+        ERR_BRANCH.add(5835L);
     }
 
     public List<RePushMallBO> queryValidMalls() {
@@ -85,7 +84,7 @@ public class RePushMallService {
                 log.info("{} {} {} 补传发生异常：{}", hqId, branchId, mallName, e.getMessage());
             }
             try {
-                TimeUnit.MILLISECONDS.sleep(3000);
+                TimeUnit.MILLISECONDS.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -123,19 +122,4 @@ public class RePushMallService {
         }
     }
 
-    public static void main(String[] args) {
-        List<String> list = new ArrayList<>();
-        TestMall mall = new TestMall();
-        mall.setMalls(list.stream().map(l -> {
-            PushMall m = new PushMall();
-            m.setOrderList(Collections.singletonList(l));
-            return m;
-        }).collect(Collectors.toList()));
-        System.out.println(JsonUtils.toJson(mall));
-    }
-
-    @Data
-    static class TestMall{
-        List<PushMall> malls;
-    }
 }

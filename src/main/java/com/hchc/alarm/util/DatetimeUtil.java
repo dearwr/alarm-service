@@ -11,9 +11,9 @@ import java.util.Date;
  */
 public class DatetimeUtil {
 
-    private static final String TIMESTAMP_PATTERN = "yyyyMMddHHmmssSSS";
+    public static final String TIMESTAMP_PATTERN = "yyyyMMddHHmmssSSS";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    private static final String DATE_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
 
     public static String now() {
         return new SimpleDateFormat(TIMESTAMP_PATTERN).format(new Date());

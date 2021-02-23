@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
+/** 茶颜机场商品映射文件导入
  * @author wangrong
  */
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/file/airport")
 @Slf4j
 public class AirportFileController {
 
@@ -28,15 +28,11 @@ public class AirportFileController {
         }
         if (sourceFile == null || sourceFile.isEmpty()) {
             log.info("上传文件为空");
-            return MallResponse.fail("你没有选择要上传的文件");
+            return MallResponse.fail("上传文件为空");
         }
         String fileName = sourceFile.getOriginalFilename();
         log.info("[fileUpload] fileName{}, hqId:{}, branchId:{}", fileName, hqId, branchId);
-        if ("airport.xlsx".equals(fileName) || "airport.xls".equals(fileName)) {
-            return airportFileService.parseFile(sourceFile, hqId, branchId);
-        } else {
-            return MallResponse.fail("不支持解析该文件，请检查文件名");
-        }
+        return airportFileService.parseFile(sourceFile, hqId, branchId);
     }
 
 }

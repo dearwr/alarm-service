@@ -34,7 +34,6 @@ public class AirportFileService {
 
     @Autowired
     private MallProductCodeDao mallProductCodeDao;
-    private final String TIMESTAMP = "yyyyMMddHHmmss";
 
     public MallResponse parseFile(MultipartFile sourceFile, int hqId, int branchId) {
         Workbook workbook;
@@ -62,16 +61,16 @@ public class AirportFileService {
             List<Map<String, String>> dataList = parseDataRows(firstSheet, indexToNameMap);
             // 将解析的数据转化为数据对象
             List<MallProductCode> mallProductCodeList = buildData(dataList, hqId, branchId);
-            // 保存到数据库
+            // 保存数据到数据库
             boolean isSaved = persistData(mallProductCodeList);
             if (isSaved) {
-                // 保存上传的文件
+                // 服务器保存上传的文件
                 if (saveSourceFile(sourceFile, hqId, branchId)) {
                     return MallResponse.ok();
                 }
-                return MallResponse.fail("数据库保存数据成功，服务器保存文件失败!");
+                return MallResponse.fail("数据库导入数据成功，服务器保存文件失败!");
             } else {
-                return MallResponse.fail("数据库保存数据失败!");
+                return MallResponse.fail("数据库导入数据失败!");
             }
         } catch (Exception e) {
             log.info("解析文件报错：" + e.getMessage());
@@ -225,7 +224,7 @@ public class AirportFileService {
      */
     private boolean saveSourceFile(MultipartFile sourceFile, int hqId, int branchId) {
         String sourceFileName = sourceFile.getOriginalFilename();
-        String saveFileName = sourceFileName.replace("airport", "airport-" + DatetimeUtil.format(new Date(), TIMESTAMP));
+        String saveFileName = sourceFileName.replace("airport", "airport-" + DatetimeUtil.format(new Date(), DatetimeUtil.TIMESTAMP_PATTERN));
         try {
             File file = FileUtils.getFile(FileUtils.getUserDirectory(), "data", "mall", "airport", String.valueOf(hqId), String.valueOf(branchId));
             if (!file.exists()) {

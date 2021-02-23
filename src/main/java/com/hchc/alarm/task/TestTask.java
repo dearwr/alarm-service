@@ -76,7 +76,7 @@ public class TestTask {
     /**
      * 校验商委卡余额
      */
-    @Scheduled(cron = "0 20 10 * * ?")
+    @Scheduled(cron = "0 22 10 * * ?")
     public void checkShangWeiBalance() {
         execCheckShangWeiBalance();
     }
@@ -94,7 +94,7 @@ public class TestTask {
     /**
      * 查询配送平台骑手接单时间
      */
-//    @Scheduled(cron = "0 53 15 * * ?")
+//    @Scheduled(cron = "0 11 19 * * ?")
 //    public void queryDeliveryTime() {
 //        execQueryDeliveryTime();
 //    }
@@ -288,9 +288,10 @@ public class TestTask {
             row.createCell(2).setCellValue("月份");
             row.createCell(3).setCellValue("星期");
             row.createCell(4).setCellValue("发起配送时间");
-            row.createCell(5).setCellValue("时间段(小时)");
-            row.createCell(6).setCellValue("订单号");
-            row.createCell(7).setCellValue("接单用时(分钟)");
+            row.createCell(5).setCellValue("配送员接单时间");
+            row.createCell(6).setCellValue("发起配送时间段（小时）");
+            row.createCell(7).setCellValue("订单号");
+            row.createCell(8).setCellValue("接单用时(分钟)");
 
             int querySize = 10000;
             int start = 0;
@@ -311,16 +312,17 @@ public class TestTask {
                     row.createCell(2).setCellValue(order.getMonth());
                     row.createCell(3).setCellValue(order.getWeek());
                     row.createCell(4).setCellValue(order.getDay());
-                    row.createCell(5).setCellValue(order.getInterval());
-                    row.createCell(6).setCellValue(order.getNo());
-                    row.createCell(7).setCellValue(order.getWaitTime());
+                    row.createCell(5).setCellValue(order.getPickTime());
+                    row.createCell(6).setCellValue(order.getInterval());
+                    row.createCell(7).setCellValue(order.getNo());
+                    row.createCell(8).setCellValue(order.getWaitTime());
                 }
                 start += querySize;
             } while (size == querySize);
             workbook.write(fos);
             workbook.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("发生异常：" + e.getMessage());
             deleteFile(file);
         }
         log.info("execQueryDeliveryTime end");
@@ -426,6 +428,7 @@ public class TestTask {
         private int month;
         private int week;
         private String day;
+        private String pickTime;
         private String interval;
         private String no;
         private double waitTime;

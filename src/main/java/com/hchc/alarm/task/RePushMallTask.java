@@ -27,7 +27,7 @@ public class RePushMallTask {
     /**
      * 晚上定时补传
      */
-    @Scheduled(cron = " 0 25 1,2,3,4,5  * * ? ")
+    @Scheduled(cron = " 0 25 1,2,3,4,5 * * ? ")
     public void rePushOnNight() {
         log.info("[rePushOnNight] start");
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
@@ -42,7 +42,7 @@ public class RePushMallTask {
      */
     @Scheduled(cron = "0 */10 * * * ? ")
     public void rePushOnDay() {
-
+        log.info("[rePushOnDay] start");
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);

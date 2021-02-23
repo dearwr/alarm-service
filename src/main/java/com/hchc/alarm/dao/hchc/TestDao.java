@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
 
@@ -211,7 +212,7 @@ public class TestDao extends HcHcBaseDao {
 
     public List<TestTask.DeliveryOrder> queryDeliveryTime(int start, int end, int state) {
         String sql = "SELECT b.city,fo.f_create_time,fo.f_order_no,fo.f_history from t_delivery_sf_order fo " +
-                "JOIN t_branch b on fo.f_branchid = b.id where  f_state = ? LIMIT ?,?";
+                "JOIN t_branch b on fo.f_branchid = b.id where f_hqid = 3880 and  f_create_time > '2021-01-01 00:00:00' and  f_state = ? LIMIT ?,?";
         return hJdbcTemplate.query(sql, (r, i) -> {
             TestTask.DeliveryOrder order = new TestTask.DeliveryOrder();
             order.setCity(r.getString("city"));
@@ -269,6 +270,7 @@ public class TestDao extends HcHcBaseDao {
                     }
                 }
             }
+            order.setPickTime(DatetimeUtil.format(new Timestamp(receiveTime)));
             order.setWaitTime(roundHalfUpToBigDouble((receiveTime - pushTime) / 1000 / 60.0));
             if (order.getWaitTime() == 0) {
                 order.setWaitTime(1.00);
