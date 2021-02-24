@@ -5,7 +5,9 @@ import com.hchc.alarm.dao.hchc.TestDao;
 import com.hchc.alarm.model.TBranchMall;
 import com.hchc.alarm.pack.Output;
 import com.hchc.alarm.pack.SWResponse;
+import com.hchc.alarm.service.FileService;
 import com.hchc.alarm.util.DatetimeUtil;
+import com.hchc.alarm.util.FileUtil;
 import com.hchc.alarm.util.JsonUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -24,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class TestTask {
     private static final String URL = "http://yfk.sww.sh.gov.cn/organizationfk_proxy/orSelectSendCardInfoAction.do" +
             "?pageNo=1&pageSize=10&isRegister=&usciNo=91310000753817795P&uniqueNo=310106H6213146100149&industrycode=H62&OSessionId=AYFJBSHDCJEBDRHLGHCFCXFZEYACIFCC";
 
+    @Autowired
+    private FileService fileService;
     @Autowired
     private TestDao testDao;
     @Autowired
@@ -94,10 +97,10 @@ public class TestTask {
     /**
      * 查询配送平台骑手接单时间
      */
-//    @Scheduled(cron = "0 11 19 * * ?")
-//    public void queryDeliveryTime() {
-//        execQueryDeliveryTime();
-//    }
+    @Scheduled(cron = "0 13 16 * * ?")
+    public void queryDeliveryTime() {
+        execQueryDeliveryTime();
+    }
 
 
 //    @Scheduled(cron = "0 */5 * * * ?")
@@ -235,7 +238,7 @@ public class TestTask {
             workbook.close();
         } catch (Exception e) {
             e.printStackTrace();
-            deleteFile(file);
+            FileUtil.deleteFile(file);
         }
         log.info("queryDeliveryBranches end");
     }
@@ -267,74 +270,17 @@ public class TestTask {
             workbook.close();
         } catch (Exception e) {
             e.printStackTrace();
-            deleteFile(file);
+            FileUtil.deleteFile(file);
         }
         log.info("execQueryWagasERPNoSkuItems end");
     }
 
-    public void execQueryDeliveryTime() {
+    public File execQueryDeliveryTime() {
         log.info("execQueryDeliveryTime start");
-        String fileName = "顺丰骑手接单用时情况.xlsx";
-        File file = FileUtils.getFile("/data", "share", "prepaid", "shangwei", "3880", "report", fileName);
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            Workbook workbook;
-            workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("sheet1");
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(1, true);
-            Row row = sheet.createRow(0);
-            row.createCell(0).setCellValue("城市");
-            row.createCell(1).setCellValue("年份");
-            row.createCell(2).setCellValue("月份");
-            row.createCell(3).setCellValue("星期");
-            row.createCell(4).setCellValue("发起配送时间");
-            row.createCell(5).setCellValue("配送员接单时间");
-            row.createCell(6).setCellValue("发起配送时间段（小时）");
-            row.createCell(7).setCellValue("订单号");
-            row.createCell(8).setCellValue("接单用时(分钟)");
-
-            int querySize = 10000;
-            int start = 0;
-            int size;
-            do {
-                List<DeliveryOrder> orders = testDao.queryDeliveryTime(start, querySize, 17);
-                if (CollectionUtils.isEmpty(orders)) {
-                    break;
-                }
-                size = orders.size();
-                DeliveryOrder order;
-                int index = 0;
-                for (int i = start; i < start + size; i++) {
-                    order = orders.get(index++);
-                    row = sheet.createRow(i + 1);
-                    row.createCell(0).setCellValue(order.getCity());
-                    row.createCell(1).setCellValue(order.getYeah());
-                    row.createCell(2).setCellValue(order.getMonth());
-                    row.createCell(3).setCellValue(order.getWeek());
-                    row.createCell(4).setCellValue(order.getDay());
-                    row.createCell(5).setCellValue(order.getPickTime());
-                    row.createCell(6).setCellValue(order.getInterval());
-                    row.createCell(7).setCellValue(order.getNo());
-                    row.createCell(8).setCellValue(order.getWaitTime());
-                }
-                start += querySize;
-            } while (size == querySize);
-            workbook.write(fos);
-            workbook.close();
-        } catch (Exception e) {
-            log.info("发生异常：" + e.getMessage());
-            deleteFile(file);
-        }
+        File file = fileService.createPickTimeFile(3880, "2020-01-01 00:00:00",
+                "2021-01-01 00:00:00", new String[]{"shunfeng"});
         log.info("execQueryDeliveryTime end");
-    }
-
-    private void deleteFile(File file) {
-        try {
-            FileUtils.forceDelete(file);
-            log.info("[deleteFile] 删除文件成功 filePath:{}", file.getPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return file;
     }
 
     @Data

@@ -1,10 +1,16 @@
 package com.hchc.alarm.service;
 
+import com.hchc.alarm.constant.DeliveryCompany;
+import com.hchc.alarm.dao.hchc.FileDao;
 import com.hchc.alarm.dao.hchc.MergeDao;
 import com.hchc.alarm.dao.hchc.ShangWeiDao;
 import com.hchc.alarm.entity.Product;
+import com.hchc.alarm.task.TestTask;
+import com.hchc.alarm.util.DatetimeUtil;
+import com.hchc.alarm.util.FileUtil;
 import com.hchc.alarm.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -18,7 +24,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -40,6 +48,8 @@ public class FileService {
     private ShangWeiDao shangWeiDao;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private FileDao fileDao;
 
     public List<String> parse(MultipartFile file, int hqId) throws IOException {
         Workbook workbook = null;
@@ -342,5 +352,88 @@ public class FileService {
             return noCodeProducts.stream().map(p -> p.getId() + "  " + p.getName()).collect(Collectors.toList());
         }
         return null;
+    }
+
+    public File createPickTimeFile(long hqId, String start, String end, String[] companies) {
+        log.info("createPickTimeFile start");
+        String fileName = "骑手接单用时情况.xlsx";
+        File file;
+        try {
+            // 创建目录
+            file = FileUtils.getFile("/data", "share", "delivery", String.valueOf(hqId), DatetimeUtil.dayText(new Date()));
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            // 创建文件
+            file = FileUtils.getFile(file, fileName);
+            if (file.exists()) {
+                FileUtil.deleteFile(file);
+            }
+            file.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[createPickTimeFile] 创建文件失败");
+            return null;
+        }
+        List<String> platforms = new ArrayList<>();
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            Workbook workbook;
+            workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("sheet1");
+
+            Row row = sheet.createRow(1);
+            row.createCell(0).setCellValue("筛选时间：");
+            row.createCell(1).setCellValue(start + "至" + end);
+
+            row = sheet.createRow(4);
+            row.createCell(0).setCellValue("城市");
+            row.createCell(1).setCellValue("年份");
+            row.createCell(2).setCellValue("月份");
+            row.createCell(3).setCellValue("星期");
+            row.createCell(4).setCellValue("发起配送时间");
+            row.createCell(5).setCellValue("配送员接单时间");
+            row.createCell(6).setCellValue("发起配送时间段（小时）");
+            row.createCell(7).setCellValue("订单号");
+            row.createCell(8).setCellValue("接单用时(分钟)");
+            row.createCell(9).setCellValue("配送平台");
+
+            int rowIndex = 0;
+            String platform;
+            for (String company : companies) {
+                platform = DeliveryCompany.fetchPlatform(company);
+                platforms.add(platform);
+                List<TestTask.DeliveryOrder> orders = fileDao.queryDeliveryTime(start, end, hqId, company);
+                if (CollectionUtils.isEmpty(orders)) {
+                    continue;
+                }
+                TestTask.DeliveryOrder order;
+                for (int i = 0; i < orders.size(); i++) {
+                    order = orders.get(i);
+                    row = sheet.createRow((rowIndex++) + 5);
+                    row.createCell(0).setCellValue(order.getCity());
+                    row.createCell(1).setCellValue(order.getYeah());
+                    row.createCell(2).setCellValue(order.getMonth());
+                    row.createCell(3).setCellValue(order.getWeek());
+                    row.createCell(4).setCellValue(order.getDay());
+                    row.createCell(5).setCellValue(order.getPickTime());
+                    row.createCell(6).setCellValue(order.getInterval());
+                    row.createCell(7).setCellValue(order.getNo());
+                    row.createCell(8).setCellValue(order.getWaitTime());
+                    row.createCell(9).setCellValue(platform);
+                }
+            }
+
+            row = sheet.createRow(0);
+            row.createCell(0).setCellValue("配送平台：");
+            row.createCell(1).setCellValue(String.join("、", platforms));
+
+            workbook.write(fos);
+            workbook.close();
+        } catch (Exception e) {
+            log.info("[createPickTimeFile] 发生异常：" + e.getMessage());
+            FileUtil.deleteFile(file);
+        }
+        log.info("createPickTimeFile end");
+        return file;
     }
 }

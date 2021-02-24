@@ -1,6 +1,6 @@
 package com.hchc.alarm.task;
 
-import com.hchc.alarm.constant.MallConstant;
+import com.hchc.alarm.constant.CommonConstant;
 import com.hchc.alarm.model.RePushMallBO;
 import com.hchc.alarm.service.RePushMallService;
 import com.hchc.alarm.util.DatetimeUtil;
@@ -34,7 +34,7 @@ public class RePushMallTask {
         Date end = DatetimeUtil.getDayStart(new Date());
         Date start = DatetimeUtil.addDay(end, -1);
         String abbDate = DatetimeUtil.dayText(start);
-        rePushMallService.pushMallList(rePushMalls, start, end, abbDate, MallConstant.MALL_ORDER_URL);
+        rePushMallService.pushMallList(rePushMalls, start, end, abbDate, CommonConstant.MALL_ORDER_URL);
     }
 
     /**
@@ -46,7 +46,7 @@ public class RePushMallTask {
         List<RePushMallBO> rePushMalls = rePushMallService.queryValidMalls();
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);
-        rePushMallService.pushMallList(rePushMalls, start, DatetimeUtil.addMinute(new Date(), -1), abbDate, MallConstant.MALL_ORDER_URL);
+        rePushMallService.pushMallList(rePushMalls, start, DatetimeUtil.addMinute(new Date(), -1), abbDate, CommonConstant.MALL_ORDER_URL);
     }
 
     /**
@@ -60,7 +60,7 @@ public class RePushMallTask {
                 .collect(Collectors.toList());
         Date start = DatetimeUtil.dayBegin(new Date());
         String abbDate = DatetimeUtil.dayText(start);
-        rePushMallService.pushMallList(rePushMalls, start, new Date(), abbDate, MallConstant.MALL_ORDER_URL);
+        rePushMallService.pushMallList(rePushMalls, start, new Date(), abbDate, CommonConstant.MALL_ORDER_URL);
     }
 
 }

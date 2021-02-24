@@ -3,16 +3,12 @@ package com.hchc.alarm.dao.hchc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.hchc.alarm.dao.HcHcBaseDao;
 import com.hchc.alarm.task.TestTask;
-import com.hchc.alarm.util.DatetimeUtil;
 import com.hchc.alarm.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -208,80 +204,6 @@ public class TestDao extends HcHcBaseDao {
         } else {
             return "FLIPOS";
         }
-    }
-
-    public List<TestTask.DeliveryOrder> queryDeliveryTime(int start, int end, int state) {
-        String sql = "SELECT b.city,fo.f_create_time,fo.f_order_no,fo.f_history from t_delivery_sf_order fo " +
-                "JOIN t_branch b on fo.f_branchid = b.id where f_hqid = 3880 and  f_create_time > '2021-01-01 00:00:00' and  f_state = ? LIMIT ?,?";
-        return hJdbcTemplate.query(sql, (r, i) -> {
-            TestTask.DeliveryOrder order = new TestTask.DeliveryOrder();
-            order.setCity(r.getString("city"));
-            order.setNo(r.getString("f_order_no"));
-            Date creatTime = r.getTimestamp("f_create_time");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(creatTime);
-            order.setYeah(calendar.get(Calendar.YEAR));
-            order.setMonth(calendar.get(Calendar.MONTH) + 1);
-            int week = calendar.get(Calendar.DAY_OF_WEEK) -1;
-            if (week == 0) {
-                week = 7;
-            }
-            order.setWeek(week);
-            order.setDay(DatetimeUtil.format(creatTime));
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            order.setInterval(hour + "-" + (++hour));
-            List<TestTask.Status> statusList = JsonUtils.parseList(r.getString("f_history"), TestTask.Status.class);
-            long pushTime = 0;
-            long receiveTime = 0;
-            int rIndex = 0;
-            TestTask.Status status;
-            for (int ix = 0; ix < statusList.size(); ix++) {
-                status = statusList.get(ix);
-                if (status.getCode() == 10) {
-                    rIndex = ix;
-                    try {
-                        receiveTime = DatetimeUtil.parse(status.getDatetime()).getTime();
-                        break;
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            for (int s = rIndex - 1; s >= 0; s--) {
-                status = statusList.get(s);
-                if (status.getCode() != 1) {
-                    try {
-                        status = statusList.get(s + 1);
-                        if (status.getCode() != 10) {
-                            pushTime = DatetimeUtil.parse(status.getDatetime()).getTime();
-                            break;
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (s == 0) {
-                    try {
-                        status = statusList.get(s);
-                        pushTime = DatetimeUtil.parse(status.getDatetime()).getTime();
-                        break;
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            order.setPickTime(DatetimeUtil.format(new Timestamp(receiveTime)));
-            order.setWaitTime(roundHalfUpToBigDouble((receiveTime - pushTime) / 1000 / 60.0));
-            if (order.getWaitTime() == 0) {
-                order.setWaitTime(1.00);
-            }
-            return order;
-        }, state, start, end);
-    }
-
-    public static double roundHalfUpToBigDouble(double val){
-        BigDecimal b = new BigDecimal(val);
-        return b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
 }

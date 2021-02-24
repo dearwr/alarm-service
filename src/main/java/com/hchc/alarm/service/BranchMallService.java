@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.hchc.alarm.constant.MallConstant.CHINESE_COMPARATOR;
+import static com.hchc.alarm.constant.CommonConstant.CHINESE_COMPARATOR;
 
 /**
  * @author wangrong
